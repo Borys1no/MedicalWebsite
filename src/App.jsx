@@ -1,18 +1,17 @@
-import { useEffect, useState } from "react";
-import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "./firebase";
-import AuthForm from "./components/LoginRegister";
-import { collection, addDoc, getDocs } from "firebase/firestore";
-import { db } from "./firebase";  // Asegúrate de que este es el path correcto a tu archivo firebase.js
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import Navbar from './components/Navbar/Navbar';
+import Home from './components/Paginas/Home/Home';
 
-function App() {
-  return(
-    <div className="App">
-      <h1>Bienvenido</h1>
-      <AuthForm/>
-
-    </div>
+const App = () => {
+  return (
+    <Router>
+      <Navbar />
+      <Routes>
+        <Route path="/" element={<Navigate to="/home" />} />
+        <Route path="/home" element={<Home />} />
+      </Routes>
+    </Router>
   );
-}
+};
 
 export default App;
