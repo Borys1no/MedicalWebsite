@@ -1,15 +1,18 @@
 import React from 'react';
 import './Home.css';
+import { assets } from '../../../assets/assets';
+
 
 const Home = () => {
   return (
     <div className="home-container">
       <header className="home-header">
         <div className="banner">
+          <img src={assets.Banner} alt="Banner"  />
           <div className="banner-content">
             <h1 className="banner-title">Cuida tu salud a cualquier hora</h1>
             <p className="banner-subtitle">Monitoreo de hipertensión, niveles de glucosa, y más</p>
-            <button className="btn-primary">Agenda tu Cita Médica</button>
+            <a href="#" className="btn-primary">Agenda tu Cita Médica</a>
           </div>
         </div>
       </header>
@@ -17,17 +20,23 @@ const Home = () => {
         <h2 className="section-title">Nuestras Especialidades</h2>
         <div className="specialties-grid">
           <div className="specialty-card">
-            <div className="icon-placeholder">[Icono]</div>
+            <div className="icon-placeholder">
+              <img src={assets.Cardiologia} alt="Especialidad Cardiologia"  />
+            </div>
             <h3>Cardiología</h3>
             <p>Cuida tu corazón con nuestros expertos en cardiología.</p>
           </div>
           <div className="specialty-card">
-            <div className="icon-placeholder">[Icono]</div>
+            <div className="icon-placeholder">
+              <img src={assets.Nutricion} alt="Nutricion"/>
+            </div>
             <h3>Nutrición</h3>
             <p>Mejora tu salud alimenticia con nuestros especialistas en nutrición.</p>
           </div>
           <div className="specialty-card">
-            <div className="icon-placeholder">[Icono]</div>
+            <div className="icon-placeholder">
+              <img src={assets.Pediatra} alt="Pediatra" />
+            </div>
             <h3>Pediatría</h3>
             <p>El mejor cuidado para la salud de los más pequeños.</p>
           </div>

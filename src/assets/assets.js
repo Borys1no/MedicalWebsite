@@ -1,12 +1,11 @@
-import DoctorCinturaParaArriba from './imagenes de prueba/DoctorCinturaParaArriba.jpg'
-import DocotorEnfermero from './imagenes de prueba/DocotorEnfermero.jpg'
-import DoctorSinFonodo from './imagenes de prueba/DoctorSinFonodo.png'
-import Doctorsonriendo from './imagenes de prueba/Doctorsonriendo.png'
 
-
+import Banner from './imagenesPrueba/banner.jpg'
+import Cardiologia from './imagenesPrueba/cardiologia.jpg'
+import Nutricion from './imagenesPrueba/nutricion.jpg'
+import Pediatra from './imagenesPrueba/pediatra.jpg'
 export const assets ={
-    DoctorCinturaParaArriba,
-    DocotorEnfermero,
-    DoctorSinFonodo,
-    Doctorsonriendo
+    Banner,
+    Cardiologia,
+    Nutricion,
+    Pediatra
 }
