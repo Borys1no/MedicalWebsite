@@ -1,24 +1,15 @@
 .navbar {
-    background-color: #333;
-    padding: 1rem;
-}
+    padding: 8px;
+    background-color: #7FB3D5 !important;
+    font-weight: 500;
+  }
 
-.nav-list {
-    list-style: none;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 1.5rem; /* Añadido espacio entre elementos del menú */
-    margin: 0;
-    padding: 0;
-}
-
-.nav-item a {
+  .btn{
+    background-color: #2874A6;
     color: white;
-    text-decoration: none;
-    font-size: 1.2rem;
-}
 
-.nav-item a:hover {
-    text-decoration: underline;
-}
+  }
+  .btn:hover{
+    background-color: #7FB3D5;
+    border: 1px solid #2874A6 !important;
+  }
