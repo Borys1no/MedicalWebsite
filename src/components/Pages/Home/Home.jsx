@@ -11,34 +11,34 @@ const Home = () => {
           <img src={assets.Banner} alt="Banner" />
           <div className="banner-content">
             <h1 className="banner-title">Cuida tu salud a cualquier hora</h1>
-            <p className="banner-subtitle">Monitoreo de hipertensión, niveles de glucosa, y más</p>
+            <p className="banner-subtitle">Alivio tu dolor, Mejoro tu calidad de vida.</p>
             <a href="#" className="btn-primary">Agenda tu Cita Médica</a>
           </div>
         </div>
       </header>
       <section className="specialties-section">
-        <h2 className="section-title">Nuestras Especialidades</h2>
+        <h2 className="section-title">Lo mejor para tu salud</h2>
         <div className="specialties-grid">
           <div className="specialty-card">
             <div className="icon-placeholder">
               <img src={assets.Cardiologia} alt="Especialidad Cardiologia" />
             </div>
-            <h3>Cardiología</h3>
-            <p>Cuida tu corazón con nuestros expertos en cardiología.</p>
+            <h3>Reumatólogo-Internista</h3>
+            <p>Médico especializado en diagnosticar y tratar enfermedades articulares y del sistema inmune, con enfoque integral en la salud general del paciente.</p>
           </div>
           <div className="specialty-card">
             <div className="icon-placeholder">
               <img src={assets.Nutricion} alt="Nutricion" />
             </div>
-            <h3>Nutrición</h3>
-            <p>Mejora tu salud alimenticia con nuestros especialistas en nutrición.</p>
+            <h3>Terapista Neural</h3>
+            <p>Especialista que utiliza terapia neural para tratar el dolor y otros problemas de salud mediante la estimulación del sistema nervioso.</p>
           </div>
           <div className="specialty-card">
             <div className="icon-placeholder">
               <img src={assets.Pediatra} alt="Pediatra" />
             </div>
-            <h3>Pediatría</h3>
-            <p>El mejor cuidado para la salud de los más pequeños.</p>
+            <h3>Médico Biorregulador y Funcional</h3>
+            <p>Profesional que busca equilibrar y restaurar las funciones naturales del cuerpo usando tratamientos integrativos y personalizados.</p>
           </div>
         </div>
 
