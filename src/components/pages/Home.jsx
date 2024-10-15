@@ -6,7 +6,7 @@ const Home = () => {
     <div className="home-container">
       {/* Navbar */}
       <nav className="navbar">
-        <div className="navbar-logo">Doctor Web</div>
+        <div className="navbar-logo">Dr. Emilio Aroca Briones</div>
         <ul className="navbar-menu">
           <li><a href="#">Inicio</a></li>
           <li><a href="#">Servicios</a></li>
