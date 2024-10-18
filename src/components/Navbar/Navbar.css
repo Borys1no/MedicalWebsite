@@ -13,3 +13,8 @@
     background-color: #7FB3D5;
     border: 1px solid #2874A6 !important;
   }
+  
+  .nav-item .nav-link.active {
+    color: white; /* Cambia el color cuando esté activa */
+  }
+  

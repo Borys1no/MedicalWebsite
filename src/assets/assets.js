@@ -5,6 +5,10 @@ import Nutricion from './imagenesPrueba/nutricion.jpg'
 import Pediatra from './imagenesPrueba/pediatra.jpg'
 import Doctor from './imagenesPrueba/Doctor.png'
 import Doctorsonriendo from './imagenesPrueba/Doctorsonriendo.jpeg'
+import ConsultoriaIA from './imagenesPrueba/ConsultoriaIA.webp'
+import arrowRightCircle from './imagenesPrueba/arrowRightCircle.svg'
+import Artritis from './imagenesPrueba/Artritis.webp'
+import lightbulb from './imagenesPrueba/lightbulb.svg'
 
 export const assets ={
     Banner,
@@ -12,5 +16,9 @@ export const assets ={
     Nutricion,
     Pediatra,
     Doctor,
-    Doctorsonriendo
+    Doctorsonriendo,
+    ConsultoriaIA,
+    arrowRightCircle,
+    Artritis,
+    lightbulb
 }
