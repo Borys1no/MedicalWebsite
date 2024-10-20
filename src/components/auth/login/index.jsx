@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Navigate, Link, useNavigate } from 'react-router-dom';
 import { doSignInWithEmailAndPassword, doSignInWithGoogle } from '../../../Firebase/auth';
-import { useAuth } from '../../contexts/authContext';
+import { useAuth } from '../../../contexts/authContext';
 import { db } from '../../../Firebase/firebase';
 import { doc, getDoc } from 'firebase/firestore';
 import './login.css'; // Importa los estilos
