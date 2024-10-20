@@ -3,6 +3,7 @@ import { useAuth } from "../../contexts/authContext";
 import { Navigate } from "react-router-dom";
 import { db } from "../../Firebase/firebase";
 import { doc, getDoc } from "firebase/firestore";
+import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
 
 const ProtectedRoute = ({ role, children }) => {
   const { currentUser } = useAuth();
