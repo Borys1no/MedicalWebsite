@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Navigate, Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../../contexts/authContext';
-import { doCreateUserWithEmailAndPassword } from '../../../firebase/auth';
+import { useAuth } from '../../contexts/authContext';
+import { doCreateUserWithEmailAndPassword } from '../../../Firebase/auth';
 import './register.css'; // Importa los estilos
 
 const Register = () => {

@@ -1,18 +1,41 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, Outlet } from 'react-router-dom';
 import Navbar from './components/Navbar/Navbar';
 import Home from './components/Pages/Home/Home';
-
+import { AuthProvider } from './components/contexts/authContext'; // Importa tu AuthProvider
+import LoginMenu from "./components/auth/login";
+import Register from "./components/auth/register";
 
 const App = () => {
   return (
-    <Router>
+    <AuthProvider> {/* Envuelve la app con el AuthProvider */}
+      <Router>
+        <Routes>
+          {/* Rutas públicas con Navbar */}
+          <Route element={<WithNavbar />}>
+            <Route path="/" element={<Navigate to="/Home" />} />
+            <Route path="/Home" element={<Home />} />
+            <Route path="/login" element={<LoginMenu />} />
+            <Route path="/register" element={<Register />} />
+            {/* Otras rutas aquí */}
+          </Route>
+        </Routes>
+      </Router>
+    </AuthProvider>
+  );
+};
+
+// Componente para las rutas que incluyen el Navbar
+const WithNavbar = () => {
+  return (
+    <>
       <Navbar />
-      <Routes>
-        <Route path="/" element={<Navigate to="/Home" />} />
-        <Route path="/Home" element={<Home />} />
-      </Routes>
-    </Router>
+      <Outlet /> {/* Aquí se renderizan los componentes hijos */}
+    </>
   );
 };
 
 export default App;
+
+
+
+
