@@ -42,28 +42,28 @@ const Login = () => {
     const onSubmit = async (e) => {
         e.preventDefault();
         setErrorMessage('');
-    
+
         if (!isSigningIn) {
             setIsSigningIn(true);
             try {
-    
+
                 // Intentar iniciar sesión con email y password
                 const userCredential = await doSignInWithEmailAndPassword(email, password);
-    
+
                 // Verificar si el usuario está autenticado
                 const user = userCredential.user;
-    
+
                 if (!user) {
                     throw new Error("Error: No se pudo autenticar al usuario");
                 }
-    
+
                 // Obtener el documento de Firestore con el UID del usuario
                 const userDoc = await getDoc(doc(db, 'users', user.uid));
-                
-    
+
+
                 if (userDoc.exists()) {
                     const role = userDoc.data().role;
-                    
+
                     if (role === 'admin') {
                         navigate('/dashboard/AdminHome');
                     } else {
@@ -80,11 +80,6 @@ const Login = () => {
             }
         }
     };
-    
-    
-    
-    
-
 
     const onGoogleSignIn = async (e) => {
         e.preventDefault();
@@ -100,10 +95,10 @@ const Login = () => {
             }
         }
     };
-    if (loading) {
-        return <div>Cargando...</div>
-    }
 
+    if (loading) {
+        return <div>Cargando...</div>;
+    }
 
     return (
         <div>
@@ -115,7 +110,7 @@ const Login = () => {
                         <h3 className="L-title">Welcome Back</h3>
                     </div>
                     <form onSubmit={onSubmit} className="space-y-5">
-                        <div>
+                        <div style={{ marginBottom: '20px' }}>
                             <label className="L-label">Email</label>
                             <input
                                 type="email"
@@ -127,7 +122,7 @@ const Login = () => {
                             />
                         </div>
 
-                        <div>
+                        <div style={{ marginBottom: '30px' }}>
                             <label className="L-label">Password</label>
                             <input
                                 type="password"
@@ -145,6 +140,7 @@ const Login = () => {
                             type="submit"
                             disabled={isSigningIn}
                             className={`L-button ${isSigningIn ? 'L-buttonDisabled' : ''}`}
+                            style={{ marginBottom: '30px' }}  // Estilo actualizado
                         >
                             {isSigningIn ? 'Signing In...' : 'Sign In'}
                         </button>
@@ -169,7 +165,6 @@ const Login = () => {
             </main>
         </div>
     );
-
 };
 
 export default Login;

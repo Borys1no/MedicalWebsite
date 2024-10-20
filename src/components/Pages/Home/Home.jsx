@@ -65,7 +65,7 @@ const Home = () => {
             </div>
             <div className="info-button-card" onClick={() => handleCardClick('La reumatología pediátrica es una rama de la medicina que se encarga del diagnóstico y tratamiento de enfermedades reumáticas en niños y adolescentes. Estas enfermedades, que afectan principalmente las articulaciones, músculos y huesos, incluyen condiciones como la artritis juvenil, el lupus y otras enfermedades autoinmunes. Un tratamiento temprano es esencial para mejorar la calidad de vida y el pronóstico a largo plazo de los pacientes jóvenes.')}>              <img src={assets.arrowRightCircle} alt="Pediatría" className="info-icon-left" />
               <div className="info-button-text">
-                <h3>Reumatología Pediátria</h3>
+                <h3>Reumatología Pediátrica</h3>
                 <p>Ver más</p>
               </div>
             </div>

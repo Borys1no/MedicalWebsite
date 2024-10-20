@@ -8,24 +8,23 @@ const SideBar = () => {
   const { currentUser } = useAuth();
   const navigate = useNavigate();
 
-  const handleLogout = async ()=>{
-    try{
+  const handleLogout = async () => {
+    try {
       await auth.signOut();
-      console.log("Sesion cerrada correctamente")
+      console.log("Sesión cerrada correctamente");
       navigate('/login');
-    }catch(error){
-      console.error("Error al cerrar sesion: ", error);
+    } catch (error) {
+      console.error("Error al cerrar sesión: ", error);
     }
-
   };
-  
+
   console.log("Usuario autenticado en SideBar:", currentUser);
 
   return (
     <div className="sidebar-container">
       <div className="sidebar">
         <a href="#">Agenda</a>
-        <a href="#">Configuracion</a>
+        <a href="#">Configuración</a>
       </div>
       <div className="perfil">
         {currentUser ? (
@@ -33,7 +32,7 @@ const SideBar = () => {
         ) : (
           <p>Cargando información...</p>
         )}
-        <button className='logout-btn' onClick={handleLogout}>Cerrar sesion</button>
+        <button className='logout-btn' onClick={handleLogout}>Cerrar sesión</button>
       </div>
     </div>
   );
