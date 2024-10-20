@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, Navigate, Outlet } from 'react-router-dom';
 import Navbar from './components/Navbar/Navbar';
 import Home from './components/Pages/Home/Home';
-import { AuthProvider } from './components/contexts/authContext'; // Importa tu AuthProvider
+import { AuthProvider } from './contexts/authContext'; // Importa tu AuthProvider
 import LoginMenu from "./components/auth/login";
 import Register from "./components/auth/register";
 
