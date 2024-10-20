@@ -1,0 +1,139 @@
+/* General */
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  background-color: #f0f4f8;
+}
+
+main {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f0f4f8;
+}
+
+/* Login-specific styles */
+.L-container {
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+  width: 100%;
+  max-width: 400px;
+  transition: all 0.3s ease-in-out;
+}
+
+.L-container:hover {
+  transform: translateY(-10px);
+}
+
+.L-title {
+  font-size: 1.8rem;
+  color: #2c3e50;
+}
+
+.L-input {
+  width: 100%;
+  padding: 0.75rem;
+  margin-top: 0.5rem;
+  border: 1px solid #dcdfe6;
+  border-radius: 5px;
+  transition: border-color 0.3s ease;
+}
+
+.L-input:focus {
+  border-color: #6366f1;
+  outline: none;
+}
+
+.L-button {
+  width: 100%;
+  padding: 0.75rem;
+  background-color: #6366f1;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.L-button:hover {
+  background-color: #4f46e5;
+}
+
+.L-button:disabled {
+  background-color: #d1d5db;
+  cursor: not-allowed;
+}
+
+.L-errorMessage {
+  color: #e74c3c;
+  font-weight: bold;
+}
+
+.L-orDivider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 1rem 0;
+}
+
+.L-orDivider::before,
+.L-orDivider::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid #dcdfe6;
+}
+
+.L-orDivider::before {
+  margin-right: 0.5em;
+}
+
+.L-orDivider::after {
+  margin-left: 0.5em;
+}
+
+.L-googleBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem;
+  border: 1px solid #dcdfe6;
+  border-radius: 5px;
+  background-color: #fff;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.L-googleBtn:hover {
+  background-color: #f5f5f5;
+}
+
+.L-googleBtn:disabled {
+  background-color: #d1d5db;
+  cursor: not-allowed;
+}
+
+.L-textCenter {
+  text-align: center;
+}
+
+.L-textSm {
+  font-size: 0.875rem;
+}
+
+.L-textBold {
+  font-weight: bold;
+}
+
+.L-link {
+  color: #6366f1;
+  text-decoration: none;
+}
+
+.L-link:hover {
+  text-decoration: underline;
+}
