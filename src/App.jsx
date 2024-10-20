@@ -1,13 +1,23 @@
-import { BrowserRouter as Router, Routes, Route, Navigate, Outlet } from 'react-router-dom';
-import Navbar from './components/Navbar/Navbar';
-import Home from './components/Pages/Home/Home';
-import { AuthProvider } from './contexts/authContext'; // Importa tu AuthProvider
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+  Outlet,
+} from "react-router-dom";
+import Navbar from "./components/Navbar/Navbar";
+import Home from "./components/Pages/Home/Home";
+import { AuthProvider } from "./contexts/authContext"; // Importa tu AuthProvider
 import LoginMenu from "./components/auth/login";
 import Register from "./components/auth/register";
+import AdminHome from "./components/pages/Admin/AdminHome/HomeAdmin";
+import ProtectedRoute from "./components/ProtectedRoutes/ProtectedRoutes";
 
 const App = () => {
   return (
-    <AuthProvider> {/* Envuelve la app con el AuthProvider */}
+    <AuthProvider>
+      {" "}
+      {/* Envuelve la app con el AuthProvider */}
       <Router>
         <Routes>
           {/* Rutas públicas con Navbar */}
@@ -17,6 +27,16 @@ const App = () => {
             <Route path="/login" element={<LoginMenu />} />
             <Route path="/register" element={<Register />} />
             {/* Otras rutas aquí */}
+
+            {/* Rutas protegidas sin Navbar */}
+            <Route
+              path="/dashboard/AdminHome"
+              element={
+                <ProtectedRoute role="admin">
+                  <AdminHome />
+                </ProtectedRoute>
+              }
+            />
           </Route>
         </Routes>
       </Router>
@@ -35,7 +55,3 @@ const WithNavbar = () => {
 };
 
 export default App;
-
-
-
-

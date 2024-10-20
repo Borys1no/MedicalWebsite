@@ -1,6 +1,6 @@
 import React from 'react'
 import './HomeAdmin.css'
-import SideBar from './SideBar/SideBar';
+import SideBar from '../SideBar/SideBar';
 
 const AdminHome = () => {
   return (

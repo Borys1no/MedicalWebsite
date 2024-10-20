@@ -1,8 +1,8 @@
 import React from 'react';
-import { useAuth } from '../../contexts/authContext';
+import { useAuth } from '../../../../contexts/authContext';
 import { useNavigate } from 'react-router-dom';
-import { auth } from '../../firebase/firebase';
-import './SideBard.css';
+import { auth } from '../../../../Firebase/firebase';
+import './SideBar.css';
 
 const SideBar = () => {
   const { currentUser } = useAuth();
