@@ -6,6 +6,7 @@ import {
   Outlet,
 } from "react-router-dom";
 import Navbar from "./components/Navbar/Navbar";
+import Footer from "./components/footer/footer"; // Import the Footer component
 import Home from "./components/Pages/Home/Home";
 import { AuthProvider } from "./contexts/authContext"; // Importa tu AuthProvider
 import LoginMenu from "./components/auth/login";
@@ -44,12 +45,13 @@ const App = () => {
   );
 };
 
-// Componente para las rutas que incluyen el Navbar
+// Componente para las rutas que incluyen el Navbar y Footer
 const WithNavbar = () => {
   return (
     <>
       <Navbar />
       <Outlet /> {/* Aquí se renderizan los componentes hijos */}
+      <Footer /> {/* Footer added here to be displayed on all pages with the Navbar */}
     </>
   );
 };

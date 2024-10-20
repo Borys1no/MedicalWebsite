@@ -9,6 +9,7 @@ import ConsultoriaIA from './imagenesPrueba/ConsultoriaIA.webp'
 import arrowRightCircle from './imagenesPrueba/arrowRightCircle.svg'
 import Artritis from './imagenesPrueba/Artritis.webp'
 import lightbulb from './imagenesPrueba/lightbulb.svg'
+import instagramIcon from './imagenesPrueba/instagramIcon.svg'
 
 export const assets ={
     Banner,
@@ -20,5 +21,6 @@ export const assets ={
     ConsultoriaIA,
     arrowRightCircle,
     Artritis,
-    lightbulb
+    lightbulb,
+    instagramIcon
 }

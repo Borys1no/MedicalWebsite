@@ -1,6 +1,6 @@
 import React from 'react';
 import './Footer.css';
-import { assets } from '../../../assets/assets';
+import { assets } from '../../assets/assets';
 
 const Footer = () => {
   return (
@@ -13,7 +13,7 @@ const Footer = () => {
           <p>Email: emilio_aroca@yahoo.com</p>
         </div>
         <div className="footer-social">
-          <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer">
+          <a href="https://www.instagram.com/dremilioarocabriones/" target="_blank" rel="noopener noreferrer">
             <img src={assets.instagramIcon} alt="Instagram" className="social-icon" />
           </a>
         </div>
