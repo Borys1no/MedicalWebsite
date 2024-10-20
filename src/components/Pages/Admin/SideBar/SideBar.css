@@ -1,0 +1,58 @@
+
+body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: Arial, sans-serif;
+    background-color: #282c34; 
+}
+
+.sidebar-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    width: 250px;
+    position: fixed;
+    background-color: #333; 
+    color: white;
+    padding-top: 20px;
+}
+
+.sidebar {
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar a {
+    padding: 15px;
+    text-decoration: none;
+    color: white;
+    display: block;
+    font-size: 18px;
+    transition: background 0.3s ease;
+}
+
+.sidebar a:hover {
+    background-color: #575757; 
+}
+
+.perfil {
+    margin-top: auto; 
+    padding: 15px;
+    background-color: #444; 
+    color: white;
+    text-align: center;
+    border-top: 1px solid #575757;
+}
+
+.perfil p {
+    margin: 0;
+    font-size: 16px;  
+}
+
+
+.content {
+    margin-left: 250px;
+    padding: 20px;
+    width: calc(100% - 250px);
+}
