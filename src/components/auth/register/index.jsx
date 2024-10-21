@@ -3,7 +3,7 @@ import { Navigate, Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../contexts/authContext';
 import { doCreateUserWithEmailAndPassword } from '../../../Firebase/auth';
 import { db } from '../../../Firebase/firebase'; // Asegúrate de importar la instancia de Firestore
-import { doc, setDoc, getDocs, query, where, collection } from 'firebase/firestore';
+import { doc, setDoc } from 'firebase/firestore';
 import './register.css'; // Importa los estilos
 
 const Register = () => {
@@ -18,7 +18,6 @@ const Register = () => {
     const [password, setPassword] = useState('');
     const [confirmPassword, setconfirmPassword] = useState('');
     const [isRegistering, setIsRegistering] = useState(false);
-    const [loading, setLoading] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
 
     const { userLoggedIn } = useAuth();
@@ -29,47 +28,33 @@ const Register = () => {
             setErrorMessage('Las contraseñas no coinciden');
             return;
         }
-    
-        setIsRegistering(true);
-        setLoading(true);
-    
-        try {
-            // Verificar si ya existe la cédula en la base de datos
-            const q = query(collection(db, 'users'), where('identificacion', '==', identificacion));
-            const querySnapshot = await getDocs(q);
-    
-            if (!querySnapshot.empty) {
-                setErrorMessage('Ya existe un usuario con esta cédula.');
+
+        if (!isRegistering) {
+            setIsRegistering(true);
+            try {
+                const userCredential = await doCreateUserWithEmailAndPassword(email, password);
+                const user = userCredential.user;
+
+                // Guardar los datos adicionales en Firestore
+                await setDoc(doc(db, 'users', user.uid), {
+                    tipoDocumento,
+                    identificacion,
+                    nombres,
+                    apellidos,
+                    email,
+                    fechaNacimiento,
+                    telefono
+                });
+
+                navigate('/home');
+            } catch (error) {
+                setErrorMessage('Error al registrar: ' + error.message);
+                console.error("Error al registrar usuario:", error);
+            } finally {
                 setIsRegistering(false);
-                setLoading(false);
-                return;
             }
-    
-            // Crear usuario con Firebase Auth
-            const userCredential = await doCreateUserWithEmailAndPassword(email, password);
-            const user = userCredential.user;
-    
-            // Guardar los datos adicionales en Firestore
-            await setDoc(doc(db, 'users', user.uid), {
-                tipoDocumento,
-                identificacion,
-                nombres,
-                apellidos,
-                email,
-                fechaNacimiento,
-                telefono
-            });
-    
-            navigate('/home');
-        } catch (error) {
-            setErrorMessage('Error al registrar: ' + error.message);
-            console.error("Error al registrar usuario:", error);
-        } finally {
-            setIsRegistering(false);
-            setLoading(false);
         }
     };
-    
 
     return (
         <>
@@ -83,8 +68,6 @@ const Register = () => {
                         </div>
                     </div>
                     <form onSubmit={onSubmit} className="R-form">
-                        {loading && <p className="R-loading">Cargando...</p>}
-
                         <div>
                             <label className="R-label">Tipo de Documento</label>
                             <select
