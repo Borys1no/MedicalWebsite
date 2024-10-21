@@ -30,7 +30,7 @@ const App = () => {
 
           {/* Rutas protegidas para Admin con Navbar y SideBar */}
           <Route
-            path="/AdminHome"
+            path="/dashboard/AdminHome"
             element={
               <ProtectedRoute role="admin">
                 <AdminHome />
