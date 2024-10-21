@@ -14,7 +14,7 @@ import Register from "./components/auth/register/index";
 import AdminHome from "./components/Pages/Admin/AdminHome/HomeAdmin";
 import ProtectedRoute from "./components/ProtectedRoutes/ProtectedRoutes";
 import ProtectedRouteGeneral from "./components/ProtectedRoutes/ProtectedRouteGeneral";
-import AgendarCita from "./components/pages/AgendarCita/AgendarCita";
+import AgendarCita from "./components/Pages/AgendarCita/AgendarCita";
 
 const App = () => {
   return (
