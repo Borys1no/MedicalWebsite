@@ -2,25 +2,74 @@ import React, { useState } from 'react';
 import { Navigate, Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../contexts/authContext';
 import { doCreateUserWithEmailAndPassword } from '../../../Firebase/auth';
+import { db } from '../../../Firebase/firebase'; // Asegúrate de importar la instancia de Firestore
+import { doc, setDoc, getDocs, query, where, collection } from 'firebase/firestore';
 import './register.css'; // Importa los estilos
 
 const Register = () => {
     const navigate = useNavigate();
+    const [tipoDocumento, setTipoDocumento] = useState('cedula');
+    const [identificacion, setIdentificacion] = useState('');
+    const [nombres, setNombres] = useState('');
+    const [apellidos, setApellidos] = useState('');
     const [email, setEmail] = useState('');
+    const [fechaNacimiento, setFechaNacimiento] = useState('');
+    const [telefono, setTelefono] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setconfirmPassword] = useState('');
     const [isRegistering, setIsRegistering] = useState(false);
+    const [loading, setLoading] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
 
     const { userLoggedIn } = useAuth();
 
     const onSubmit = async (e) => {
         e.preventDefault();
-        if (!isRegistering) {
-            setIsRegistering(true);
-            await doCreateUserWithEmailAndPassword(email, password);
+        if (password !== confirmPassword) {
+            setErrorMessage('Las contraseñas no coinciden');
+            return;
+        }
+    
+        setIsRegistering(true);
+        setLoading(true);
+    
+        try {
+            // Verificar si ya existe la cédula en la base de datos
+            const q = query(collection(db, 'users'), where('identificacion', '==', identificacion));
+            const querySnapshot = await getDocs(q);
+    
+            if (!querySnapshot.empty) {
+                setErrorMessage('Ya existe un usuario con esta cédula.');
+                setIsRegistering(false);
+                setLoading(false);
+                return;
+            }
+    
+            // Crear usuario con Firebase Auth
+            const userCredential = await doCreateUserWithEmailAndPassword(email, password);
+            const user = userCredential.user;
+    
+            // Guardar los datos adicionales en Firestore
+            await setDoc(doc(db, 'users', user.uid), {
+                tipoDocumento,
+                identificacion,
+                nombres,
+                apellidos,
+                email,
+                fechaNacimiento,
+                telefono
+            });
+    
+            navigate('/home');
+        } catch (error) {
+            setErrorMessage('Error al registrar: ' + error.message);
+            console.error("Error al registrar usuario:", error);
+        } finally {
+            setIsRegistering(false);
+            setLoading(false);
         }
     };
+    
 
     return (
         <>
@@ -34,6 +83,53 @@ const Register = () => {
                         </div>
                     </div>
                     <form onSubmit={onSubmit} className="R-form">
+                        {loading && <p className="R-loading">Cargando...</p>}
+
+                        <div>
+                            <label className="R-label">Tipo de Documento</label>
+                            <select
+                                value={tipoDocumento}
+                                onChange={(e) => setTipoDocumento(e.target.value)}
+                                className="R-input"
+                            >
+                                <option value="cedula">Cédula</option>
+                                <option value="pasaporte">Pasaporte</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label className="R-label">Número de Identificación</label>
+                            <input
+                                type="text"
+                                required
+                                value={identificacion}
+                                onChange={(e) => setIdentificacion(e.target.value)}
+                                className="R-input"
+                            />
+                        </div>
+
+                        <div>
+                            <label className="R-label">Nombres</label>
+                            <input
+                                type="text"
+                                required
+                                value={nombres}
+                                onChange={(e) => setNombres(e.target.value)}
+                                className="R-input"
+                            />
+                        </div>
+
+                        <div>
+                            <label className="R-label">Apellidos</label>
+                            <input
+                                type="text"
+                                required
+                                value={apellidos}
+                                onChange={(e) => setApellidos(e.target.value)}
+                                className="R-input"
+                            />
+                        </div>
+
                         <div>
                             <label className="R-label">Correo electrónico</label>
                             <input
@@ -42,6 +138,30 @@ const Register = () => {
                                 required
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
+                                className="R-input"
+                            />
+                        </div>
+
+                        <div>
+                            <label className="R-label">Fecha de Nacimiento</label>
+                            <input
+                                type="date"
+                                required
+                                value={fechaNacimiento}
+                                onChange={(e) => setFechaNacimiento(e.target.value)}
+                                className="R-input"
+                            />
+                        </div>
+
+                        <div>
+                            <label className="R-label">Teléfono</label>
+                            <input
+                                type="tel"
+                                pattern="[0-9]{10}"
+                                maxLength="10"
+                                required
+                                value={telefono}
+                                onChange={(e) => setTelefono(e.target.value)}
                                 className="R-input"
                             />
                         </div>

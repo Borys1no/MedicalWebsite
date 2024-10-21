@@ -2,10 +2,12 @@
 .R-main {
   display: flex;
   justify-content: center;
-  align-items: center;
-  height: 100vh;
+  align-items: flex-start; /* Cambiado para que el contenido comience desde el principio */
+  min-height: 100vh; /* Cambiado para que no limite el scroll, pero ocupe al menos la pantalla completa */
+  padding: 20px; /* Agregamos algo de espacio para evitar que el contenido esté demasiado pegado */
   background-color: #f0f4f8;
-}
+  overflow-y: auto; /* Permite el desplazamiento vertical */
+} 
 
 .R-container {
   background-color: #fff;
@@ -91,4 +93,23 @@
 
 .R-link:hover {
   text-decoration: underline;
+}
+
+/* Estilos generales del componente Register */
+
+.R-radio-group {
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.R-radio-group label {
+  font-size: 0.875rem;
+  color: #6b7280;
+  display: flex;
+  align-items: center;
+}
+
+.R-radio-group input {
+  margin-right: 0.5rem;
 }

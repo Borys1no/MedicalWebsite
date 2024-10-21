@@ -13,8 +13,14 @@ const Footer = () => {
           <p>Email: emilio_aroca@yahoo.com</p>
         </div>
         <div className="footer-social">
+          <a href="https://www.facebook.com/emilioarocab/?locale=es_LA" target="_blank" rel="noopener noreferrer">
+            <img src={assets.facebookIcon} alt="Facebook" className="social-icon" />
+          </a>
           <a href="https://www.instagram.com/dremilioarocabriones/" target="_blank" rel="noopener noreferrer">
             <img src={assets.instagramIcon} alt="Instagram" className="social-icon" />
+          </a>
+          <a href="https://www.serecuador.com.ec/medicos/dr-emilio-aroca/" target="_blank" rel="noopener noreferrer">
+            <img src={assets.profileIcon} alt="profileIcon" className="social-icon" />
           </a>
         </div>
       </div>

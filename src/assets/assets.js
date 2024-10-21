@@ -10,6 +10,8 @@ import arrowRightCircle from './imagenesPrueba/arrowRightCircle.svg'
 import Artritis from './imagenesPrueba/Artritis.webp'
 import lightbulb from './imagenesPrueba/lightbulb.svg'
 import instagramIcon from './imagenesPrueba/instagramIcon.svg'
+import facebookIcon from './imagenesPrueba/facebookIcon.svg'
+import profileIcon from './imagenesPrueba/profileIcon.svg'
 
 export const assets ={
     Banner,
@@ -22,5 +24,7 @@ export const assets ={
     arrowRightCircle,
     Artritis,
     lightbulb,
-    instagramIcon
+    instagramIcon,
+    facebookIcon,
+    profileIcon
 }
