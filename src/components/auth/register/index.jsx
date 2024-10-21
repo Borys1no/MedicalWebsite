@@ -30,12 +30,12 @@ const Register = () => {
                 <div className="R-container">
                     <div className="R-header">
                         <div className="mt-2">
-                            <h3 className="R-title">Create a New Account</h3>
+                            <h3 className="R-title">Crea una Nueva Cuenta</h3>
                         </div>
                     </div>
                     <form onSubmit={onSubmit} className="R-form">
                         <div>
-                            <label className="R-label">Email</label>
+                            <label className="R-label">Correo electrónico</label>
                             <input
                                 type="email"
                                 autoComplete="email"
@@ -47,7 +47,7 @@ const Register = () => {
                         </div>
 
                         <div>
-                            <label className="R-label">Password</label>
+                            <label className="R-label">Contraseña</label>
                             <input
                                 disabled={isRegistering}
                                 type="password"
@@ -60,7 +60,7 @@ const Register = () => {
                         </div>
 
                         <div>
-                            <label className="R-label">Confirm Password</label>
+                            <label className="R-label">Confirmar Contraseña</label>
                             <input
                                 disabled={isRegistering}
                                 type="password"
@@ -79,11 +79,11 @@ const Register = () => {
                             disabled={isRegistering}
                             className={`R-button ${isRegistering ? 'R-buttonDisabled' : ''}`}
                         >
-                            {isRegistering ? 'Signing Up...' : 'Sign Up'}
+                            {isRegistering ? 'Registrando...' : 'Registrar'}
                         </button>
                         <div className="R-textCenter">
-                            Already have an account? {' '}
-                            <Link to="/login" className="R-link">Continue</Link>
+                            ¿Ya tienes una cuenta? {' '}
+                            <Link to="/login" className="R-link">Continuar</Link>
                         </div>
                     </form>
                 </div>

@@ -23,7 +23,7 @@ const Home = () => {
           <div className="banner-content">
             <h1 className="banner-title">Cuida tu salud a cualquier hora</h1>
             <p className="banner-subtitle" style={{ marginBottom: '60px' }}>Alivio tu dolor, Mejoro tu calidad de vida.</p>
-            <a href="#" className="btn-primary">Agenda tu Cita Médica</a>
+            <a href="/AgendarCita" className="btn-primary">Agenda tu Cita Médica</a>
           </div>
         </div>
       </header>
