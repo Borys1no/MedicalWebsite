@@ -47,7 +47,7 @@ const Login = () => {
             setIsSigningIn(true);
             try {
 
-                // Intentar iniciar sesión con email y password
+                // Intentar iniciar sesión con email y contraseña
                 const userCredential = await doSignInWithEmailAndPassword(email, password);
 
                 // Verificar si el usuario está autenticado
@@ -107,11 +107,11 @@ const Login = () => {
             <main className="L-main">
                 <div className="L-container">
                     <div className="L-textCenter">
-                        <h3 className="L-title">Welcome Back</h3>
+                        <h3 className="L-title">Bienvenido de nuevo</h3>
                     </div>
                     <form onSubmit={onSubmit} className="space-y-5">
                         <div style={{ marginBottom: '20px' }}>
-                            <label className="L-label">Email</label>
+                            <label className="L-label">Correo electrónico</label>
                             <input
                                 type="email"
                                 autoComplete="email"
@@ -123,7 +123,7 @@ const Login = () => {
                         </div>
 
                         <div style={{ marginBottom: '30px' }}>
-                            <label className="L-label">Password</label>
+                            <label className="L-label">Contraseña</label>
                             <input
                                 type="password"
                                 autoComplete="current-password"
@@ -142,16 +142,16 @@ const Login = () => {
                             className={`L-button ${isSigningIn ? 'L-buttonDisabled' : ''}`}
                             style={{ marginBottom: '30px' }}  // Estilo actualizado
                         >
-                            {isSigningIn ? 'Signing In...' : 'Sign In'}
+                            {isSigningIn ? 'Iniciando sesión...' : 'Iniciar sesión'}
                         </button>
                     </form>
 
                     <div className="L-textCenter L-textSm">
-                        Don't have an account? <Link to="/register" className="L-link">Sign up</Link>
+                        ¿No tienes una cuenta? <Link to="/register" className="L-link">Regístrate</Link>
                     </div>
 
                     <div className="L-orDivider">
-                        <span>OR</span>
+                        <span>O</span>
                     </div>
 
                     <button
@@ -159,7 +159,7 @@ const Login = () => {
                         onClick={onGoogleSignIn}
                         className={`L-googleBtn ${isSigningIn ? 'L-googleBtnDisabled' : ''}`}
                     >
-                        Continue with Google
+                        Continuar con Google
                     </button>
                 </div>
             </main>

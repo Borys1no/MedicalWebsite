@@ -13,19 +13,31 @@ import LoginMenu from "./components/auth/login/index";
 import Register from "./components/auth/register/index";
 import AdminHome from "./components/Pages/Admin/AdminHome/HomeAdmin";
 import ProtectedRoute from "./components/ProtectedRoutes/ProtectedRoutes";
+import ProtectedRouteGeneral from "./components/ProtectedRoutes/ProtectedRouteGeneral";
+import AgendarCita from "./components/pages/AgendarCita/AgendarCita";
 
 const App = () => {
   return (
     <AuthProvider>
       <Router>
         <Routes>
-          {/* Rutas públicas con Navbar y Footer */}
+          {/* Rutas públicas y protegidas con Navbar y Footer */}
           <Route element={<WithNavbarFooter />}>
             <Route path="/" element={<Navigate to="/Home" />} />
             <Route path="/Home" element={<Home />} />
             <Route path="/login" element={<LoginMenu />} />
             <Route path="/register" element={<Register />} />
-            <Route path="/footer" element={<Footer/>} />
+            <Route path="/footer" element={<Footer />} />
+
+            {/* Ruta protegida para agendar cita, requiere login */}
+            <Route
+              path="/AgendarCita"
+              element={
+                <ProtectedRouteGeneral>
+                  <AgendarCita />
+                </ProtectedRouteGeneral>
+              }
+            />
           </Route>
 
           {/* Rutas protegidas para Admin con Navbar y SideBar */}
@@ -50,20 +62,6 @@ const WithNavbarFooter = () => {
       <Navbar />
       <Outlet />
       <Footer />
-    </>
-  );
-};
-
-// Componente para las rutas protegidas que incluyen el Navbar y el Sidebar
-const WithNavbarAndSidebar = () => {
-  return (
-    <>
-      <div style={{ display: "flex" }}>
-        <SideBar />
-        <div style={{ flex: 1, marginLeft: "250px" }}>
-          <Outlet />
-        </div>
-      </div>
     </>
   );
 };
