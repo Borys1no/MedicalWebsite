@@ -4,7 +4,8 @@ export default {
     node: true,
   },
   parserOptions: {
-    "ecmaVersion": 2018,
+    ecmaVersion: 2018,
+    sourceType: "module",
   },
   extends: [
     "eslint:recommended",
@@ -13,10 +14,9 @@ export default {
   rules: {
     "no-restricted-globals": ["error", "name", "length"],
     "prefer-arrow-callback": "error",
-    "quotes": ["error", "double", {"allowTemplateLiterals": true}],
-    "no-unused-vars": "off"  // Desactiva temporalmente la regla
+    "quotes": ["error", "double", { "allowTemplateLiterals": true }],
+    "no-unused-vars": "off",
   },
-  
   overrides: [
     {
       files: ["**/*.spec.*"],
