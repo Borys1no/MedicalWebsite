@@ -66,9 +66,8 @@ const WithNavbarFooter = () => {
   );
 };
 
-<<<<<<< HEAD
 // Componente para las rutas protegidas que incluyen el Navbar y el Sidebar
-/*const WithNavbarAndSidebar = () => {
+const WithNavbarAndSidebar = () => {
   return (
     <>
       <div style={{ display: "flex" }}>
@@ -80,8 +79,6 @@ const WithNavbarFooter = () => {
     </>
   );
 };
-*/
 
-=======
->>>>>>> 21534642d144989a660ff693cef2474ac5e932b8
+
 export default App;
