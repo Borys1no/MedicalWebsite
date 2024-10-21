@@ -6,14 +6,13 @@ import {
   Outlet,
 } from "react-router-dom";
 import Navbar from "./components/Navbar/Navbar";
-import Footer from "./components/Footer/Footer";
+import Footer from "./components/footer/footer";
 import Home from "./components/Pages/Home/Home";
 import { AuthProvider } from "./contexts/authContext";
-import LoginMenu from "./components/auth/login";
-import Register from "./components/auth/register";
-import AdminHome from "./components/pages/Admin/AdminHome/HomeAdmin";
+import LoginMenu from "./components/auth/login/index";
+import Register from "./components/auth/register/index";
+import AdminHome from "./components/Pages/Admin/AdminHome/HomeAdmin";
 import ProtectedRoute from "./components/ProtectedRoutes/ProtectedRoutes";
-import SideBar from "./components/pages/Admin/SideBar/SideBar";
 
 const App = () => {
   return (
@@ -26,14 +25,15 @@ const App = () => {
             <Route path="/Home" element={<Home />} />
             <Route path="/login" element={<LoginMenu />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/footer" element={<Footer/>} />
           </Route>
 
           {/* Rutas protegidas para Admin con Navbar y SideBar */}
           <Route
-            path="/dashboard/AdminHome"
+            path="/AdminHome"
             element={
               <ProtectedRoute role="admin">
-                <WithNavbarAndSidebar />
+                <AdminHome />
               </ProtectedRoute>
             }
           />
