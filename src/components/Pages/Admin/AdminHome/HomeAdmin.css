@@ -1,0 +1,71 @@
+/* CSS General */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+  }
+  
+  /* Admin Container */
+  .admin-container {
+    display: flex;
+    flex-direction: row;
+    height: 100vh;
+  }
+  
+  /* Contenido */
+  .content {
+    flex: 1;
+    padding: 20px;
+    overflow: auto;
+    margin-left: 300px; /* Considerando el ancho del sidebar */
+  }
+  
+  /* Título */
+  .txt-title {
+    margin-bottom: 20px;
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #333;
+  }
+  
+  /* Modal */
+  .Modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    z-index: 1000; /* Asegurar que el modal esté al frente */
+    width: 90%;
+    max-width: 500px;
+  }
+  
+  .Overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999; /* Debe estar debajo del modal pero encima del calendario */
+  }
+  
+  /* Botón de Cerrar */
+  .close-modal-btn {
+    margin-top: 20px;
+    background-color: #e74c3c;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  
+  .close-modal-btn:hover {
+    background-color: #c0392b;
+  }
+  
