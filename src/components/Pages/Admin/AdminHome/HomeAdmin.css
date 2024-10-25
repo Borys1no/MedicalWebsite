@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /* CSS General */
 body {
     margin: 0;
@@ -41,6 +42,22 @@ body {
     z-index: 1000; /* Asegurar que el modal esté al frente */
     width: 90%;
     max-width: 500px;
+=======
+.Modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    right: auto;
+    bottom: auto;
+    margin-right: -50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 2rem;
+    border-radius: 8px;
+    max-width: 400px;
+    width: 100%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+>>>>>>> refs/remotes/origin/master
   }
   
   .Overlay {
@@ -50,6 +67,7 @@ body {
     right: 0;
     bottom: 0;
     background-color: rgba(0, 0, 0, 0.5);
+<<<<<<< HEAD
     z-index: 999; /* Debe estar debajo del modal pero encima del calendario */
   }
   
@@ -58,6 +76,14 @@ body {
     margin-top: 20px;
     background-color: #e74c3c;
     color: #fff;
+=======
+  }
+  
+  .close-btn {
+    margin-top: 1rem;
+    background-color: #2874a6;
+    color: white;
+>>>>>>> refs/remotes/origin/master
     border: none;
     padding: 10px 20px;
     border-radius: 5px;
@@ -65,7 +91,12 @@ body {
     transition: background 0.3s ease;
   }
   
+<<<<<<< HEAD
   .close-modal-btn:hover {
     background-color: #c0392b;
+=======
+  .close-btn:hover {
+    background-color: #1b5e86;
+>>>>>>> refs/remotes/origin/master
   }
   
