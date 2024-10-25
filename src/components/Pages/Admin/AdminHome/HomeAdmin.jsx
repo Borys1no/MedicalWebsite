@@ -20,6 +20,7 @@ const AdminHome = () => {
   const [isUnavailableModalOpen, setIsUnavailableModalOpen] = useState(false);
   const [selectedSlot, setSelectedSlot] = useState(null);
 
+  // Cargar las citas del calendario
   const fetchAppointments = async (startDate, endDate) => {
     setLoading(true);
     try {
@@ -29,14 +30,17 @@ const AdminHome = () => {
         where('startTime', '<=', endDate)
       );
       const querySnapshot = await getDocs(q);
-      const appointments = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        title: doc.data().userId ? 'Cita Agendada' : 'No Disponible',
-        start: doc.data().startTime.toDate(),
-        end: doc.data().endTime.toDate(),
-        userId: doc.data().userId,
-        color: doc.data().userId ? '#5cb85c' : '#d9534f', // Verde si está agendado, rojo si es no disponible
-      }));
+      const appointments = querySnapshot.docs.map((doc) => {
+        const data = doc.data();
+        return {
+          id: doc.id,
+          title: data.type === 'NoDisponible' ? 'No Disponible' : 'Cita Agendada',
+          start: data.startTime.toDate(),
+          end: data.endTime.toDate(),
+          userId: data.userId,
+          color: data.type === 'NoDisponible' ? '#d9534f' : '#5cb85c', // Rojo para no disponible, verde para citas
+        };
+      });
       setEvents(appointments);
     } catch (error) {
       console.error('Error al cargar citas:', error);
@@ -44,71 +48,91 @@ const AdminHome = () => {
     setLoading(false);
   };
 
+  // Actualizar el calendario cuando cambian las fechas visibles
   const handleDatesSet = (arg) => {
     const startDate = arg.start;
     const endDate = arg.end;
     fetchAppointments(startDate, endDate);
   };
 
+  // Mostrar modal al hacer clic en un evento
   const handleEventClick = async (clickInfo) => {
-    if (clickInfo.event.extendedProps.userId) {
-      setSelectedEvent(clickInfo.event);
-      const userId = clickInfo.event.extendedProps.userId;
+    setSelectedEvent(clickInfo.event);
+    const userId = clickInfo.event.extendedProps.userId;
 
-      if (userId) {
-        try {
-          const userDoc = await getDoc(doc(db, 'users', userId));
-          if (userDoc.exists()) {
-            setPatientInfo(userDoc.data());
-          } else {
-            console.error('No se encontró información del usuario');
-            setPatientInfo(null);
-          }
-        } catch (error) {
-          console.error('Error al cargar información del usuario:', error);
+    if (userId) {
+      try {
+        const userDoc = await getDoc(doc(db, 'users', userId));
+        if (userDoc.exists()) {
+          setPatientInfo(userDoc.data());
+        } else {
+          console.error('No se encontró información del usuario');
           setPatientInfo(null);
         }
+      } catch (error) {
+        console.error('Error al cargar información del usuario:', error);
+        setPatientInfo(null);
       }
-      setIsModalOpen(true);
+    } else {
+      // Si no hay `userId`, no buscamos información del paciente
+      setPatientInfo(null);
+    }
+    setIsModalOpen(true);
+  };
+
+  // Mostrar modal para marcar como no disponible al hacer clic en un slot vacío
+  const handleDateClick = (info) => {
+    if (info && info.date) {
+      setSelectedSlot(info);
+      setIsUnavailableModalOpen(true);
+    } else {
+      console.error('No se pudo seleccionar el horario.');
     }
   };
 
-  const handleDateClick = (info) => {
-    setSelectedSlot(info);
-    setIsUnavailableModalOpen(true);
-  };
-
+  // Marcar un horario como "No Disponible"
   const markAsUnavailable = async () => {
-    if (selectedSlot) {
-      const { start, allDay } = selectedSlot;
+    if (selectedSlot && selectedSlot.date) {
+      const start = new Date(selectedSlot.date); // Fecha de inicio del slot seleccionado
+      let end = new Date(start);
+
+      // Determinar la duración del evento "No Disponible"
+      end.setHours(start.getHours() + 1);
+
       const newUnavailableEvent = {
         title: 'No Disponible',
         start: start,
-        end: allDay ? new Date(start).setHours(23, 59, 59) : new Date(start).setHours(start.getHours() + 1),
+        end: end,
+        type: 'NoDisponible', // Añadimos el tipo de evento
         color: '#d9534f', // Rojo para indicar no disponible
-        allDay: allDay,
       };
 
       try {
         await setDoc(doc(collection(db, 'citas')), {
-          startTime: new Date(newUnavailableEvent.start),
-          endTime: new Date(newUnavailableEvent.end),
-          userId: null,
+          startTime: newUnavailableEvent.start,
+          endTime: newUnavailableEvent.end,
+          type: 'NoDisponible', // Guardamos el tipo de evento en la base de datos
+          userId: null, // Sin `userId` ya que es un horario no disponible
         });
         setEvents((prevEvents) => [...prevEvents, newUnavailableEvent]);
+        console.log('Horario marcado como no disponible correctamente.');
       } catch (error) {
         console.error('Error al marcar como no disponible:', error);
       }
+    } else {
+      console.error('No hay un horario seleccionado para marcar como no disponible o el horario no es válido.');
     }
     setIsUnavailableModalOpen(false);
   };
 
+  // Cerrar modal de detalles de la cita
   const closeModal = () => {
     setIsModalOpen(false);
     setSelectedEvent(null);
     setPatientInfo(null);
   };
 
+  // Cerrar modal de marcar como no disponible
   const closeUnavailableModal = () => {
     setIsUnavailableModalOpen(false);
     setSelectedSlot(null);
