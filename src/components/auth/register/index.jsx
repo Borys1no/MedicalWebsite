@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { Navigate, Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../contexts/authContext';
 import { doCreateUserWithEmailAndPassword } from '../../../Firebase/auth';
+import { db } from '../../../Firebase/firebase';
+import { doc, setDoc } from 'firebase/firestore';
 import './register.css'; // Importa los estilos
 
 const Register = () => {
@@ -37,8 +39,28 @@ const Register = () => {
         if (!isRegistering) {
             setIsRegistering(true);
             try {
-                await doCreateUserWithEmailAndPassword(email, password);
-                console.log("Registro exitoso");
+                // Crear el usuario con Firebase Authentication
+                const userCredential = await doCreateUserWithEmailAndPassword(email, password);
+                const user = userCredential.user;
+
+                // Crear el documento del usuario en Firestore
+                await setDoc(doc(db, "users", user.uid), {
+                    identificationNumber,
+                    documentType,
+                    firstName,
+                    lastName,
+                    country,
+                    province,
+                    city,
+                    address,
+                    postalCode,
+                    birthDate,
+                    email,
+                    phoneNumber,
+                    createdAt: new Date(),
+                });
+
+                console.log("Registro exitoso y documento de usuario creado en Firestore");
                 navigate('/home'); // Redirigir a la página de inicio después del registro exitoso
             } catch (error) {
                 console.error("Error al registrar usuario: ", error);
