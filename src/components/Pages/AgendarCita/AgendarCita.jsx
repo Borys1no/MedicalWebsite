@@ -19,13 +19,16 @@ const AgendarCita = () => {
     const fetchAppointments = async () => {
       const q = query(collection(db, 'citas'));
       const querySnapshot = await getDocs(q);
-      const appointments = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        title: 'Reservado',
-        start: doc.data().startTime.toDate(),
-        end: doc.data().endTime.toDate(),
-        color: '#d9534f', // Rojo para indicar que está reservado
-      }));
+      const appointments = querySnapshot.docs.map((doc) => {
+        const data = doc.data();
+        return {
+          id: doc.id,
+          title: data.type === 'NoDisponible' ? 'No Disponible' : 'Reservado',
+          start: data.startTime.toDate(),
+          end: data.endTime.toDate(),
+          color: data.type === 'NoDisponible' ? '#740938' : '#AF1740', // Rojo para no disponible, verde para reservado
+        };
+      });
       setEvents(appointments);
     };
     fetchAppointments();
@@ -46,7 +49,7 @@ const AgendarCita = () => {
     );
     const querySnapshot = await getDocs(q);
     if (!querySnapshot.empty) {
-      alert('Este horario ya está reservado. Por favor, elige otro.');
+      alert('Este horario ya está reservado o no disponible. Por favor, elige otro.');
       return;
     }
 
@@ -63,6 +66,7 @@ const AgendarCita = () => {
           userId: currentUser.uid,
           startTime: selectedTimeSlot.start,
           endTime: selectedTimeSlot.end,
+          type: 'Cita', // Tipo de evento como "Cita"
         });
         alert('Cita confirmada');
         setShowConfirmation(false);
@@ -73,7 +77,7 @@ const AgendarCita = () => {
             title: 'Reservado',
             start: selectedTimeSlot.start,
             end: selectedTimeSlot.end,
-            color: '#d9534f', // Rojo para indicar que está reservado
+            color: '#5cb85c', // Verde para indicar que está reservado
           },
         ]);
       } catch (error) {
@@ -91,19 +95,21 @@ const AgendarCita = () => {
   return (
     <div className="agendar-cita-container">
       <h1>Agendar tu Cita Médica</h1>
-      <FullCalendar
-        plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-        initialView="timeGridWeek"
-        slotDuration="01:00:00"
-        slotMinTime="08:00:00"
-        slotMaxTime="17:00:00"
-        weekends={false}
-        selectable={true}
-        height="auto"
-        allDaySlot={false}
-        select={handleSelect}
-        events={events}
-      />
+      <div className="calendar-container">
+        <FullCalendar
+          plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+          initialView="timeGridWeek"
+          slotDuration="01:00:00"
+          slotMinTime="08:00:00"
+          slotMaxTime="17:00:00"
+          weekends={false}
+          selectable={true}
+          height="auto"
+          allDaySlot={false}
+          select={handleSelect}
+          events={events}
+        />
+      </div>
       {showConfirmation && (
         <div className="confirmation-popup">
           <p>

@@ -1,41 +1,46 @@
 /* AgendarCita.css */
 .agendar-cita-container {
-    padding: 20px;
-    max-width: 800px;
-    margin: 0 auto;
-  }
-  
-  h1 {
-    text-align: center;
-    margin-bottom: 20px;
-    color: #2874a6;
-  }
-  
-  .confirmation-popup {
-    background: white;
-    border: 1px solid #2874a6;
-    padding: 20px;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-    z-index: 1000;
-    text-align: center;
-  }
-  
-  .confirmation-popup button {
-    margin: 10px;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    background-color: #2874a6;
-    color: white;
-    transition: background 0.3s ease;
-  }
-  
-  .confirmation-popup button:hover {
-    background-color: #1b5e86;
-  }
-  
+  padding: 20px;
+  max-width: 1200px; /* Aumentado para que ocupe más espacio */
+  margin: 0 auto;
+}
+
+.calendar-container {
+  max-width: 100%;
+  margin: 0 auto;
+  margin-bottom: 110px; /* Añadido margen inferior para más espacio entre calendario y footer */
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #2874a6;
+}
+
+.confirmation-popup {
+  background: white;
+  border: 1px solid #2874a6;
+  padding: 20px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  text-align: center;
+}
+
+.confirmation-popup button {
+  margin: 10px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  background-color: #2874a6;
+  color: white;
+  transition: background 0.3s ease;
+}
+
+.confirmation-popup button:hover {
+  background-color: #1b5e86;
+}
