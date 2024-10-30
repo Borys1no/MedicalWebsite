@@ -1,13 +1,19 @@
 import React from 'react';
-import { useLocation } from 'react-router-dom'; // Importar para obtener los datos de la cita
+import { useLocation, useNavigate } from 'react-router-dom'; // Importar para obtener los datos de la cita y navegar
 import './checkout.css';
 
 const Checkout = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const { state } = location;
 
   // Extraer información de la cita desde el estado
   const { appointmentId, startTime, endTime } = state || {};
+
+  const handleConfirmClick = () => {
+    // Redirigir a la pasarela de pago
+    navigate('/cn');
+  };
 
   return (
     <div className="checkout-container">
@@ -25,7 +31,7 @@ const Checkout = () => {
         )}
       </div>
       <div className="checkout-actions">
-        <button className="checkout-confirm-btn">Confirmar Cita</button>
+        <button className="checkout-confirm-btn" onClick={handleConfirmClick}>Confirmar Cita</button>
         <button className="checkout-cancel-btn">Cancelar</button>
       </div>
     </div>

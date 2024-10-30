@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Navigate, Link, useNavigate } from 'react-router-dom';
-import { doSignInWithEmailAndPassword, doSignInWithGoogle } from '../../../Firebase/auth';
+import { doSignInWithEmailAndPassword } from '../../../Firebase/auth';
 import { useAuth } from '../../../contexts/authContext';
 import { db } from '../../../Firebase/firebase';
 import { doc, getDoc } from 'firebase/firestore';
@@ -81,21 +81,6 @@ const Login = () => {
         }
     };
 
-    const onGoogleSignIn = async (e) => {
-        e.preventDefault();
-        setErrorMessage('');
-
-        if (!isSigningIn) {
-            setIsSigningIn(true);
-            try {
-                await doSignInWithGoogle();
-            } catch (error) {
-                setErrorMessage(error.message);
-                setIsSigningIn(false);
-            }
-        }
-    };
-
     if (loading) {
         return <div>Cargando...</div>;
     }
@@ -149,18 +134,6 @@ const Login = () => {
                     <div className="L-textCenter L-textSm">
                         ¿No tienes una cuenta? <Link to="/register" className="L-link">Regístrate</Link>
                     </div>
-
-                    <div className="L-orDivider">
-                        <span>O</span>
-                    </div>
-
-                    <button
-                        disabled={isSigningIn}
-                        onClick={onGoogleSignIn}
-                        className={`L-googleBtn ${isSigningIn ? 'L-googleBtnDisabled' : ''}`}
-                    >
-                        Continuar con Google
-                    </button>
                 </div>
             </main>
         </div>
