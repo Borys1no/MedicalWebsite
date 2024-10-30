@@ -1,0 +1,49 @@
+.pasarela-pago-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    background: #ffffff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+  }
+  
+  h1 {
+    text-align: center;
+    color: #2874a6;
+  }
+  
+  .input-group {
+    margin-bottom: 15px;
+  }
+  
+  .input-group label {
+    display: block;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 5px;
+  }
+  
+  .input-group input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #dcdfe6;
+    border-radius: 5px;
+  }
+  
+  .pay-button {
+    width: 100%;
+    padding: 15px;
+    background-color: #2874a6;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  
+  .pay-button:hover {
+    background-color: #1b5e86;
+  }
+  

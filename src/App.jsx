@@ -11,10 +11,12 @@ import Home from "./components/Pages/Home/Home";
 import { AuthProvider } from "./contexts/authContext";
 import LoginMenu from "./components/auth/login/index";
 import Register from "./components/auth/register/index";
-import AdminHome from "./components/Pages/Admin/AdminHome/HomeAdmin";
+import AdminHome from "./components/pages/Admin/AdminHome/HomeAdmin";
 import ProtectedRoute from "./components/ProtectedRoutes/ProtectedRoutes";
 import ProtectedRouteGeneral from "./components/ProtectedRoutes/ProtectedRouteGeneral";
-import AgendarCita from "./components/Pages/AgendarCita/AgendarCita";
+import AgendarCita from "./components/pages/AgendarCita/AgendarCita";
+import Checkout from "./components/pages/CheckOut/checkout";
+import PasarelaPago from './components/pages/PasarelaPago/PasarelaPago'
 
 const App = () => {
   return (
@@ -28,6 +30,8 @@ const App = () => {
             <Route path="/login" element={<LoginMenu />} />
             <Route path="/register" element={<Register />} />
             <Route path="/footer" element={<Footer />} />
+            <Route path="/checkout" element={<Checkout />} />
+            <Route path="/cn" element={<PasarelaPago />} />
 
             {/* Ruta protegida para agendar cita, requiere login */}
             <Route

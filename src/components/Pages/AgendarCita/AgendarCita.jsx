@@ -3,32 +3,30 @@ import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
-import { db } from '../../../Firebase/firebase'; // Importa tu configuración de Firebase
+import { db } from '../../../Firebase/firebase';
 import { collection, addDoc, getDocs, query, where } from 'firebase/firestore';
-import { useAuth } from '../../../contexts/authContext'; // Importa el contexto de autenticación si es necesario
+import { useAuth } from '../../../contexts/authContext';
+import { useNavigate } from 'react-router-dom'; // Importamos useNavigate para redirigir al usuario
 import './AgendarCita.css';
 
 const AgendarCita = () => {
-  const { currentUser } = useAuth(); // Para obtener el usuario actual
+  const { currentUser } = useAuth();
+  const navigate = useNavigate(); // Creamos el hook para navegar entre rutas
   const [selectedTimeSlot, setSelectedTimeSlot] = useState(null);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [events, setEvents] = useState([]);
 
   useEffect(() => {
-    // Cargar las citas desde Firestore cuando el componente se monta
     const fetchAppointments = async () => {
       const q = query(collection(db, 'citas'));
       const querySnapshot = await getDocs(q);
-      const appointments = querySnapshot.docs.map((doc) => {
-        const data = doc.data();
-        return {
-          id: doc.id,
-          title: data.type === 'NoDisponible' ? 'No Disponible' : 'Reservado',
-          start: data.startTime.toDate(),
-          end: data.endTime.toDate(),
-          color: data.type === 'NoDisponible' ? '#740938' : '#AF1740', // Rojo para no disponible, verde para reservado
-        };
-      });
+      const appointments = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        title: doc.data().isUnavailable ? 'No Disponible' : 'Reservado',
+        start: doc.data().startTime.toDate(),
+        end: doc.data().endTime.toDate(),
+        color: doc.data().isUnavailable ? '#dc3545' : '#d9534f', // Rojo oscuro para no disponible, rojo claro para reservado
+      }));
       setEvents(appointments);
     };
     fetchAppointments();
@@ -36,24 +34,18 @@ const AgendarCita = () => {
 
   const handleSelect = async (info) => {
     const { start, end } = info;
-    // Validar que no sea la hora de almuerzo (13:00 - 14:00)
     if (start.getHours() === 13) {
       alert('No se pueden reservar citas durante la hora del almuerzo (13:00 - 14:00)');
       return;
     }
 
-    // Verificar si la cita ya está reservada
-    const q = query(
-      collection(db, 'citas'),
-      where('startTime', '==', start)
-    );
+    const q = query(collection(db, 'citas'), where('startTime', '==', start));
     const querySnapshot = await getDocs(q);
     if (!querySnapshot.empty) {
-      alert('Este horario ya está reservado o no disponible. Por favor, elige otro.');
+      alert('Este horario ya está reservado. Por favor, elige otro.');
       return;
     }
 
-    // Si está disponible, mostrar confirmación
     setSelectedTimeSlot({ start, end });
     setShowConfirmation(true);
   };
@@ -61,25 +53,23 @@ const AgendarCita = () => {
   const handleConfirm = async () => {
     if (currentUser && selectedTimeSlot) {
       try {
-        // Almacenar la cita en Firestore
-        await addDoc(collection(db, 'citas'), {
+        // Guardamos la cita en Firestore
+        const newDoc = await addDoc(collection(db, 'citas'), {
           userId: currentUser.uid,
           startTime: selectedTimeSlot.start,
           endTime: selectedTimeSlot.end,
-          type: 'Cita', // Tipo de evento como "Cita"
         });
-        alert('Cita confirmada');
-        setShowConfirmation(false);
-        // Actualizar eventos
-        setEvents((prevEvents) => [
-          ...prevEvents,
-          {
-            title: 'Reservado',
-            start: selectedTimeSlot.start,
-            end: selectedTimeSlot.end,
-            color: '#5cb85c', // Verde para indicar que está reservado
+
+        // Redirigimos al componente Checkout después de confirmar la cita
+        navigate('/checkout', {
+          state: {
+            appointmentId: newDoc.id,
+            startTime: selectedTimeSlot.start,
+            endTime: selectedTimeSlot.end,
           },
-        ]);
+        });
+
+        setShowConfirmation(false);
       } catch (error) {
         console.error('Error al agendar la cita: ', error);
       }
@@ -95,21 +85,19 @@ const AgendarCita = () => {
   return (
     <div className="agendar-cita-container">
       <h1>Agendar tu Cita Médica</h1>
-      <div className="calendar-container">
-        <FullCalendar
-          plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-          initialView="timeGridWeek"
-          slotDuration="01:00:00"
-          slotMinTime="08:00:00"
-          slotMaxTime="17:00:00"
-          weekends={false}
-          selectable={true}
-          height="auto"
-          allDaySlot={false}
-          select={handleSelect}
-          events={events}
-        />
-      </div>
+      <FullCalendar
+        plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+        initialView="timeGridWeek"
+        slotDuration="01:00:00"
+        slotMinTime="08:00:00"
+        slotMaxTime="17:00:00"
+        weekends={false}
+        selectable={true}
+        height="auto"
+        allDaySlot={false}
+        select={handleSelect}
+        events={events}
+      />
       {showConfirmation && (
         <div className="confirmation-popup">
           <p>
