@@ -1,10 +1,15 @@
 .footer-container {
     background-color: #2874a6;
     color: #ffffff;
-    padding: 20px;
     font-family: "Lato", sans-serif;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    position: relative;
+    min-height: 10vh;
+    margin-top: 100px;
   }
   
+
   .footer-content {
     display: flex;
     flex-direction: column;
@@ -14,8 +19,10 @@
   }
   
   .footer-contact p {
-    margin: 5px 0;
-  }
+    margin: 7px 0;
+    margin-left: 30px; /* Agregado: Espacio a la izquierda */
+}
+
   
   .footer-social {
     display: flex;
