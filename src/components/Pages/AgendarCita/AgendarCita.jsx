@@ -7,12 +7,12 @@ import esLocale from '@fullcalendar/core/locales/es';
 import { db } from '../../../Firebase/firebase';
 import { collection, addDoc, getDocs, query, where } from 'firebase/firestore';
 import { useAuth } from '../../../contexts/authContext';
-import { useNavigate } from 'react-router-dom'; // Importamos useNavigate para redirigir al usuario
+import { useNavigate } from 'react-router-dom';
 import './AgendarCita.css';
 
 const AgendarCita = () => {
   const { currentUser } = useAuth();
-  const navigate = useNavigate(); // Creamos el hook para navegar entre rutas
+  const navigate = useNavigate();
   const [selectedTimeSlot, setSelectedTimeSlot] = useState(null);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [events, setEvents] = useState([]);
@@ -26,16 +26,23 @@ const AgendarCita = () => {
         title: doc.data().type === 'NoDisponible' ? 'No Disponible' : 'Reservado',
         start: doc.data().startTime.toDate(),
         end: doc.data().endTime.toDate(),
-        color: doc.data().type === 'NoDisponible' ? '#740938' : '#CC2B52', // Rojo oscuro para no disponible, rojo claro para reservado
+        color: doc.data().type === 'NoDisponible' ? '#740938' : '#CC2B52',
       }));
       setEvents(appointments);
     };
     fetchAppointments();
   }, []);
-  
 
   const handleSelect = async (info) => {
     const { start, end } = info;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    if (start < today) {
+      alert('No se pueden reservar citas en fechas anteriores al día actual.');
+      return;
+    }
+
     if (start.getHours() === 13) {
       alert('No se pueden reservar citas durante la hora del almuerzo (13:00 - 14:00)');
       return;
@@ -55,14 +62,12 @@ const AgendarCita = () => {
   const handleConfirm = async () => {
     if (currentUser && selectedTimeSlot) {
       try {
-        // Guardamos la cita en Firestore
         const newDoc = await addDoc(collection(db, 'citas'), {
           userId: currentUser.uid,
           startTime: selectedTimeSlot.start,
           endTime: selectedTimeSlot.end,
         });
 
-        // Redirigimos al componente Checkout después de confirmar la cita
         navigate('/checkout', {
           state: {
             appointmentId: newDoc.id,
@@ -100,6 +105,7 @@ const AgendarCita = () => {
         select={handleSelect}
         events={events}
         locale={esLocale}
+        slotLabelFormat={{ hour: 'numeric', minute: '2-digit' }}
       />
       {showConfirmation && (
         <div className="confirmation-popup">
