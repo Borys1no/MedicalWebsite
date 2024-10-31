@@ -3,6 +3,7 @@ import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
+import esLocale from '@fullcalendar/core/locales/es';
 import { db } from '../../../Firebase/firebase';
 import { collection, addDoc, getDocs, query, where } from 'firebase/firestore';
 import { useAuth } from '../../../contexts/authContext';
@@ -22,15 +23,16 @@ const AgendarCita = () => {
       const querySnapshot = await getDocs(q);
       const appointments = querySnapshot.docs.map((doc) => ({
         id: doc.id,
-        title: doc.data().isUnavailable ? 'No Disponible' : 'Reservado',
+        title: doc.data().type === 'NoDisponible' ? 'No Disponible' : 'Reservado',
         start: doc.data().startTime.toDate(),
         end: doc.data().endTime.toDate(),
-        color: doc.data().isUnavailable ? '#dc3545' : '#d9534f', // Rojo oscuro para no disponible, rojo claro para reservado
+        color: doc.data().type === 'NoDisponible' ? '#740938' : '#CC2B52', // Rojo oscuro para no disponible, rojo claro para reservado
       }));
       setEvents(appointments);
     };
     fetchAppointments();
   }, []);
+  
 
   const handleSelect = async (info) => {
     const { start, end } = info;
@@ -97,6 +99,7 @@ const AgendarCita = () => {
         allDaySlot={false}
         select={handleSelect}
         events={events}
+        locale={esLocale}
       />
       {showConfirmation && (
         <div className="confirmation-popup">
