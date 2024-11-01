@@ -64,18 +64,20 @@ const AgendarCita = () => {
       try {
         const newDoc = await addDoc(collection(db, 'citas'), {
           userId: currentUser.uid,
+          email: currentUser.email, // Añadir el correo del usuario
           startTime: selectedTimeSlot.start,
           endTime: selectedTimeSlot.end,
         });
-
+  
         navigate('/checkout', {
           state: {
             appointmentId: newDoc.id,
             startTime: selectedTimeSlot.start,
             endTime: selectedTimeSlot.end,
+            email: currentUser.email, // Pasar el correo también si es necesario para la siguiente página
           },
         });
-
+  
         setShowConfirmation(false);
       } catch (error) {
         console.error('Error al agendar la cita: ', error);
@@ -84,6 +86,7 @@ const AgendarCita = () => {
       alert('Debes iniciar sesión para agendar una cita.');
     }
   };
+  
 
   const handleCancel = () => {
     setShowConfirmation(false);

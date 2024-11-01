@@ -12,6 +12,9 @@ import lightbulb from './imagenesPrueba/lightbulb.svg'
 import instagramIcon from './imagenesPrueba/instagramIcon.svg'
 import facebookIcon from './imagenesPrueba/facebookIcon.svg'
 import profileIcon from './imagenesPrueba/profileIcon.svg'
+import facebook from './icons/facebook.png'
+import instagram from './icons/instagram.png'
+import user from './icons/user.png'
 
 export const assets ={
     Banner,
