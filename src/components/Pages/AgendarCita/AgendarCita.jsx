@@ -9,6 +9,7 @@ import { collection, addDoc, getDocs, query, where } from 'firebase/firestore';
 import { useAuth } from '../../../contexts/authContext';
 import { useNavigate } from 'react-router-dom';
 import './AgendarCita.css';
+import axios from 'axios';
 
 const AgendarCita = () => {
   const { currentUser } = useAuth();
@@ -68,7 +69,21 @@ const AgendarCita = () => {
           startTime: selectedTimeSlot.start,
           endTime: selectedTimeSlot.end,
         });
-  
+
+        // Llamada al microservicio para crear la reunión de Zoom
+        try {
+          const response = await axios.post('https://zoommicroservice-production.up.railway.app/create-appointment', {
+            userEmail: currentUser.email,
+            startTime: selectedTimeSlot.start.toISOString(),
+          });
+
+          console.log('Reunión de Zoom creada exitosamente:', response.data);
+
+        } catch (error) {
+          console.error('Error al crear la reunión de Zoom:', error);
+          alert('La cita fue agendada, pero ocurrió un problema al crear la reunión de Zoom.');
+        }
+
         navigate('/checkout', {
           state: {
             appointmentId: newDoc.id,
@@ -77,7 +92,7 @@ const AgendarCita = () => {
             email: currentUser.email, // Pasar el correo también si es necesario para la siguiente página
           },
         });
-  
+
         setShowConfirmation(false);
       } catch (error) {
         console.error('Error al agendar la cita: ', error);
@@ -86,7 +101,6 @@ const AgendarCita = () => {
       alert('Debes iniciar sesión para agendar una cita.');
     }
   };
-  
 
   const handleCancel = () => {
     setShowConfirmation(false);
