@@ -29,5 +29,8 @@ export const assets ={
     lightbulb,
     instagramIcon,
     facebookIcon,
-    profileIcon
+    profileIcon,
+    facebook,
+    instagram,
+    user
 }
