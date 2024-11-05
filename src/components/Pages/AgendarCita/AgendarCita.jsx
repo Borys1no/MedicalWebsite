@@ -5,11 +5,10 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import esLocale from '@fullcalendar/core/locales/es';
 import { db } from '../../../Firebase/firebase';
-import { collection, addDoc, getDocs, query, where } from 'firebase/firestore';
+import { collection, getDocs, query, where } from 'firebase/firestore';
 import { useAuth } from '../../../contexts/authContext';
 import { useNavigate } from 'react-router-dom';
 import './AgendarCita.css';
-import axios from 'axios';
 
 const AgendarCita = () => {
   const { currentUser } = useAuth();
@@ -60,43 +59,16 @@ const AgendarCita = () => {
     setShowConfirmation(true);
   };
 
-  const handleConfirm = async () => {
+  const handleConfirm = () => {
     if (currentUser && selectedTimeSlot) {
-      try {
-        const newDoc = await addDoc(collection(db, 'citas'), {
-          userId: currentUser.uid,
-          email: currentUser.email, // Añadir el correo del usuario
+      navigate('/checkout', {
+        state: {
           startTime: selectedTimeSlot.start,
           endTime: selectedTimeSlot.end,
-        });
-
-        // Llamada al microservicio para crear la reunión de Zoom
-        try {
-          const response = await axios.post('https://zoommicroservice-production.up.railway.app/create-appointment', {
-            userEmail: currentUser.email,
-            startTime: selectedTimeSlot.start.toISOString(),
-          });
-
-          console.log('Reunión de Zoom creada exitosamente:', response.data);
-
-        } catch (error) {
-          console.error('Error al crear la reunión de Zoom:', error);
-          alert('La cita fue agendada, pero ocurrió un problema al crear la reunión de Zoom.');
-        }
-
-        navigate('/checkout', {
-          state: {
-            appointmentId: newDoc.id,
-            startTime: selectedTimeSlot.start,
-            endTime: selectedTimeSlot.end,
-            email: currentUser.email, // Pasar el correo también si es necesario para la siguiente página
-          },
-        });
-
-        setShowConfirmation(false);
-      } catch (error) {
-        console.error('Error al agendar la cita: ', error);
-      }
+          email: currentUser.email,
+        },
+      });
+      setShowConfirmation(false);
     } else {
       alert('Debes iniciar sesión para agendar una cita.');
     }
