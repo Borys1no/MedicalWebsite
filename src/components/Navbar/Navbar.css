@@ -1,20 +1,49 @@
-.navbar {
-    padding: 8px;
-    background-color: #7FB3D5 !important;
-    font-weight: 500;
-  }
+/* Estilo general para el navbar */
+.custom-navbar {
+  background-color: #e1f5fe !important;
+  font-weight: 500;
+  padding: 8px;
+}
 
-  .btn{
-    background-color: #2874A6;
-    color: white;
+.custom-navbar .navbar-brand {
+  font-size: 1.25rem;
+  color: #2874A6  !important;
+  text-align: center;
+}
+.custom-navbar .nav-link {
+  color: #2874A6 !important; 
+}
 
-  }
-  .btn:hover{
-    background-color: #7FB3D5;
-    border: 1px solid #2874A6 !important;
-  }
-  
-  .nav-item .nav-link.active {
-    color: white; /* Cambia el color cuando esté activa */
-  }
-  
+.custom-navbar .nav-link.active {
+  color: #2874A6 !important; 
+}
+
+
+/* Estilos para los botones y dropdown */
+.btn {
+  background-color: #2874A6;
+  color: #0000;
+}
+
+.btn:hover {
+  background-color: #0288d1 !important;
+  border: 1px solid #2874A6 !important;
+}
+
+.nav-item .nav-link.active {
+  color: white;
+}
+
+.dropdown-menu {
+  background-color: #7FB3D5;
+  color: white;
+}
+
+.dropdown-menu .dropdown-item {
+  color: #2874A6;
+}
+
+.dropdown-menu .dropdown-item:hover {
+  background-color: #2874A6;
+  color: white;
+}
