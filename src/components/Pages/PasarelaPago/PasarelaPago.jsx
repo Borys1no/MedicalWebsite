@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import './PasarelaPago.css';
 
 const PasarelaPago = () => {
@@ -10,65 +9,17 @@ const PasarelaPago = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
 
-  const handlePayment = async () => {
+  const handlePayment = () => {
     setIsProcessing(true);
     setErrorMessage('');
 
-    // Validaciones previas al envío
-    if (cardNumber.length !== 16 || isNaN(cardNumber)) {
-      setErrorMessage('Número de tarjeta inválido');
-      setIsProcessing(false);
-      return;
-    }
-    if (cvv.length < 3 || cvv.length > 4 || isNaN(cvv)) {
-      setErrorMessage('CVV inválido');
-      setIsProcessing(false);
-      return;
-    }
-    if (!/^(0[1-9]|1[0-2])\/?([0-9]{2})$/.test(expiryDate)) {
-      setErrorMessage('Fecha de expiración inválida');
-      setIsProcessing(false);
-      return;
-    }
+    // Aquí se integrará PagoPlux en lugar de Datafast.
 
-    try {
-      const paymentData = {
-        card_number: cardNumber,
-        card_expiry: expiryDate,
-        cvv,
-        card_holder: cardHolder,
-        amount: 50.00,
-        currency: 'USD',
-      };
-
-      const response = await axios.post('https://sandbox.datafast.com.ec/api/pagos', paymentData, {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer TU_TOKEN_DE_API_AQUÍ',
-        },
-      });
-
-      if (response.status === 200) {
-        alert('Pago exitoso. Gracias por tu compra.');
-      } else {
-        setErrorMessage('Error al procesar el pago. Intenta de nuevo más tarde.');
-      }
-    } catch (error) {
-      console.error('Error al procesar el pago: ', error);
+    // Simulación de un error temporal mientras se realiza la integración
+    setTimeout(() => {
       setErrorMessage('Ocurrió un problema al procesar tu pago. Verifica los datos e intenta nuevamente.');
-    } finally {
       setIsProcessing(false);
-    }
-  };
-
-  const handleExpiryDateChange = (e) => {
-    let value = e.target.value.replace(/\D/g, '');
-
-    if (value.length > 2) {
-      value = value.slice(0, 2) + '/' + value.slice(2, 4);
-    }
-
-    setExpiryDate(value);
+    }, 2000);
   };
 
   return (
@@ -84,8 +35,7 @@ const PasarelaPago = () => {
             type="text"
             id="cardNumber"
             value={cardNumber}
-            maxLength="16"
-            onChange={(e) => setCardNumber(e.target.value.replace(/\D/g, ''))} // Solo dígitos
+            onChange={(e) => setCardNumber(e.target.value)}
             required
           />
         </div>
@@ -96,9 +46,8 @@ const PasarelaPago = () => {
             type="text"
             id="expiryDate"
             value={expiryDate}
-            onChange={handleExpiryDateChange}
+            onChange={(e) => setExpiryDate(e.target.value)}
             placeholder="MM/AA"
-            maxLength="5"
             required
           />
         </div>
@@ -109,8 +58,7 @@ const PasarelaPago = () => {
             type="text"
             id="cvv"
             value={cvv}
-            maxLength="4"
-            onChange={(e) => setCvv(e.target.value.replace(/\D/g, ''))} // Solo dígitos
+            onChange={(e) => setCvv(e.target.value)}
             required
           />
         </div>
