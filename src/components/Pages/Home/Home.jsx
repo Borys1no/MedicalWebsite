@@ -17,16 +17,26 @@ const Home = () => {
 
   return (
     <div className="home-container">
-      <header className="home-header">
-        <div className="banner">
-          <img src={assets.Banner} alt="Banner" />
-          <div className="banner-content">
-            <h1 className="banner-title">Cuida tu salud a cualquier hora</h1>
-            <p className="banner-subtitle" style={{ marginBottom: '60px' }}>Alivio tu dolor, Mejoro tu calidad de vida.</p>
-            <a href="/AgendarCita" className="btn-primary">Agenda tu Cita Médica</a>
+      <div className="home-header">
+        <img src={assets.Banner} alt="Banner image" className="banner-image" />
+
+        <header className="home-content">
+          <div className="logo">
+            <span>REUMA<span class="sur">SUR</span></span>
           </div>
-        </div>
-      </header>
+
+
+        </header>
+
+        <main className="main-content">
+          <h1 className="banner-title">Cuida tu salud a cualquier hora</h1>
+          <p className="banner-subtitle" style={{ marginBottom: '60px' }}>Alivio tu dolor, Mejoro tu calidad de vida.</p>
+          <a href="/AgendarCita" className="btn-primary">Agenda tu Cita Médica</a>
+        </main>
+
+      </div>
+
+
       <section className="info-buttons-section">
         <div className="info-background-image">
           <img src={assets.ConsultoriaIA} alt="Doctor Sonriendo" className="background-image" />
