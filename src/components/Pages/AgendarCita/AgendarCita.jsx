@@ -59,22 +59,18 @@ const AgendarCita = () => {
     setShowConfirmation(true);
   };
 
-  const handleConfirm = () => {
-    if (currentUser && selectedTimeSlot) {
-      navigate('/checkout', {
-        state: {
-          startTime: selectedTimeSlot.start,
-          endTime: selectedTimeSlot.end,
-          email: currentUser.email,
-        },
-      });
-      setShowConfirmation(false);
-    } else {
-      alert('Debes iniciar sesión para agendar una cita.');
-    }
+  const handleCancel = () => {
+    setShowConfirmation(false);
   };
 
-  const handleCancel = () => {
+  const handleProceedToCheckout = () => {
+    navigate('/checkout', {
+      state: {
+        startTime: selectedTimeSlot.start,
+        endTime: selectedTimeSlot.end,
+        email: currentUser.email,
+      },
+    });
     setShowConfirmation(false);
   };
 
@@ -102,7 +98,7 @@ const AgendarCita = () => {
             ¿Seguro que quieres agendar la cita el{' '}
             {selectedTimeSlot.start.toLocaleString()}?
           </p>
-          <button onClick={handleConfirm}>Sí</button>
+          <button onClick={handleProceedToCheckout}>Sí</button>
           <button onClick={handleCancel}>No</button>
         </div>
       )}
