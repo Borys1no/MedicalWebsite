@@ -15,6 +15,7 @@ import profileIcon from './imagenesPrueba/profileIcon.svg'
 import facebook from './icons/facebook.png'
 import instagram from './icons/instagram.png'
 import user from './icons/user.png'
+import iDoctor from './icons/icondoctor.png'
 
 export const assets ={
     Banner,
@@ -32,5 +33,6 @@ export const assets ={
     profileIcon,
     facebook,
     instagram,
-    user
+    user,
+    iDoctor
 }

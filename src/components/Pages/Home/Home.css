@@ -2,7 +2,7 @@
   padding: 16px;
   font-family: "Lato", sans-serif;
 }
-
+/*Header*/
 .home-header {
   position: relative;
   display: flex;
@@ -42,7 +42,7 @@
   color: #aece57;
 }
 .home-content .sur{
-  color: #2874a6;
+  color: #2a43d2;
 }
 .main-content{
  display: flex;
@@ -89,11 +89,20 @@
 a {
   text-decoration: none !important;
 }
+/*END HEADER*/
 
 .info-buttons-section {
   margin-top: 32px;
   position: relative;
   overflow: hidden;
+}
+.info-buttons-section h2{
+  position: relative;
+  color: #2874a6;
+  font-size: 3rem;
+  z-index: 1;
+  
+  
 }
 
 .info-buttons-container {
@@ -218,6 +227,62 @@ a {
   color: #2874a6;
   margin-bottom: 32px;
   text-align: center;
+}
+.specialties-section .parent{
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  width: 60%;
+  margin: 0 auto;
+  margin-top: 20px;
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+.specialties-section .div1{
+  grid-column: span 2 / span 2;
+  grid-row:  span 5 / span 5;
+}
+
+.specialties-section .div2{
+  grid-row: span 5 / span 5;
+  grid-column-start: 3;
+}
+.specialties-section .services-section{
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  padding: 40px;
+}
+.service-card{
+  background-color: #f9f9f9;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: left;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s;
+
+}
+.service-card:hover{
+  transform: translateY(-10px);
+}
+.services-section h3 {
+  font-size: 1.5em;
+  color: #333;
+  margin: 0;
+}
+
+.services-section h4 {
+  font-size: 1.2em;
+  color: #666;
+  margin: 0;
+}
+
+.services-section p {
+  color: #666;
+  line-height: 1.6;
+  margin-top: 10px;
 }
 
 .specialties-grid {
