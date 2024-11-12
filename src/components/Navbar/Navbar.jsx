@@ -36,34 +36,44 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="navbar navbar-expand-lg bg-body-tertiary ">
+    <nav className="navbar navbar-expand-lg custom-navbar"> {/* Agregar clase personalizada */}
       <div className="container-fluid">
-        <p className="navbar-brand">Dr. Emilio Aroca Briones</p>
-        <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
-          <span className="navbar-toggler-icon"></span>
-        </button>
-        <div className="collapse navbar-collapse" id="navbarTogglerDemo02">
-          <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-            <li className="nav-item">
-              <a className="nav-link active" href="/Home">Inicio</a>
-            </li>
-            <li className="nav-item">
-              <a className="nav-link active" href="#">Nosotros</a>
-            </li>
-          </ul>
+        <ul className="navbar-nav me-auto mb-2 mb-lg-0">
+          <li className="nav-item">
+            <a className="nav-link active" href="/Home">Inicio</a>
+          </li>
+          <li className="nav-item">
+            <a className="nav-link active" href="#">Nosotros</a>
+          </li>
+        </ul>
 
-          <div className="d-flex" role="search">
-            {userLoggedIn ? (  // Verificar si el usuario está logueado
-              <div className="user-logged-in">
-                <span>{currentUser?.email}</span> {/* Muestra el email del usuario autenticado */}
-                <button onClick={handleLogout} className="btn btn-outline-danger">Cerrar sesión</button>
-              </div>
-            ) : (
-              <button onClick={() => navigate('/login')} className="btn btn-outline-primary">
-                Iniciar sesión
+        <div className="text-center flex-grow-1"> {/* Ajuste de centrado total */}
+          <p className="navbar-brand m-0">Dr. Emilio Aroca Briones</p>
+        </div>
+
+        <div className="d-flex align-items-center">
+          {userLoggedIn ? (  // Verificar si el usuario está logueado
+            <div className="dropdown">
+              <button
+                className="btn btn-outline-primary dropdown-toggle"
+                type="button"
+                id="userDropdown"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                {currentUser?.email}
               </button>
-            )}
-          </div>
+              <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                <li><a className="dropdown-item" href="/ProfileC">Perfil</a></li>
+                <li><a className="dropdown-item" href="/settings">Configurar</a></li>
+                <li><button onClick={handleLogout} className="dropdown-item">Cerrar sesión</button></li>
+              </ul>
+            </div>
+          ) : (
+            <button onClick={() => navigate('/login')} className="btn btn-outline-primary">
+              Iniciar sesión
+            </button>
+          )}
         </div>
       </div>
     </nav>

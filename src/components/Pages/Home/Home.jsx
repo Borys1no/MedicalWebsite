@@ -14,22 +14,48 @@ const Home = () => {
   const handleClosePopup = () => {
     setShowPopup(false);
   };
+  const services = [
+    { icon: <img src={assets.iDoctor} alt='Icono doctor' />, title:"Atencion de punta", subtitle: "Recibe la mejor atencion de parte de nuestros profesionales", description:"En REUMASUR nos preocupamos por brindarte una atencion de calidad, nos preocupamos por tu bienestar y salud"},
+    { icon: <img src={assets.iDoctor} alt='Icono doctor' />, title:"Atencion de punta", subtitle: "Recibe la mejor atencion de parte de nuestros profesionales", description:"En REUMASUR nos preocupamos por brindarte una atencion de calidad, nos preocupamos por tu bienestar y salud"},
+    { icon: <img src={assets.iDoctor} alt='Icono doctor' />, title:"Atencion de punta", subtitle: "Recibe la mejor atencion de parte de nuestros profesionales", description:"En REUMASUR nos preocupamos por brindarte una atencion de calidad, nos preocupamos por tu bienestar y salud"},
+    { icon: <img src={assets.iDoctor} alt='Icono doctor' />, title:"Atencion de punta", subtitle: "Recibe la mejor atencion de parte de nuestros profesionales", description:"En REUMASUR nos preocupamos por brindarte una atencion de calidad, nos preocupamos por tu bienestar y salud"},
+    { icon: <img src={assets.iDoctor} alt='Icono doctor' />, title:"Atencion de punta", subtitle: "Recibe la mejor atencion de parte de nuestros profesionales", description:"En REUMASUR nos preocupamos por brindarte una atencion de calidad, nos preocupamos por tu bienestar y salud"},
+
+  ];
 
   return (
     <div className="home-container">
-      <header className="home-header">
-        <div className="banner">
-          <img src={assets.Banner} alt="Banner" />
-          <div className="banner-content">
-            <h1 className="banner-title">Cuida tu salud a cualquier hora</h1>
-            <p className="banner-subtitle" style={{ marginBottom: '60px' }}>Alivio tu dolor, Mejoro tu calidad de vida.</p>
-            <a href="/AgendarCita" className="btn-primary">Agenda tu Cita Médica</a>
+      <div className="home-header">
+        <img src={assets.Banner} alt="Banner image" className="banner-image" />
+
+        <header className="home-content">
+          <div className="logo">
+            <span>REUMA<span className="sur">SUR</span></span>
           </div>
-        </div>
-      </header>
+
+
+        </header>
+
+        <main className="main-content">
+          <h1 className="banner-title">Cuida tu salud a cualquier hora</h1>
+          <p className="banner-subtitle" style={{ marginBottom: '60px' }}>Alivio tu dolor, Mejoro tu calidad de vida.</p>
+          <a href="/AgendarCita" className="btn-primary">Agenda tu Cita Médica</a>
+        </main>
+
+      </div>
+
+
       <section className="info-buttons-section">
+        
+        
         <div className="info-background-image">
           <img src={assets.ConsultoriaIA} alt="Doctor Sonriendo" className="background-image" />
+        </div>
+        <div className="espe">
+        <h2 className="subTitle" style={{marginBottom: '50px'}}>
+          Nuestras especializaciones
+        </h2>
+
         </div>
         <div className="info-buttons-container">
           <div className="info-buttons-list">
@@ -85,7 +111,20 @@ const Home = () => {
         </div>
       )}
       <section className="specialties-section">
+
         <h2 className="section-title" style={{ marginBottom: '50px' }}>Lo mejor para tu salud</h2>
+        <div className="services-section">
+          {services.map((service, index) => (
+          <div key={index} className="service-card">
+            <div className="icon">{service.icon}</div>
+            <h3>{service.title}</h3>
+            <h4>{service.subtitle}</h4>
+            <p>{service.description}</p>
+          </div>
+
+          ))}
+        </div>
+
         <div className="specialties-grid">
           <div className="specialty-card">
             <div className="icon-placeholder">
@@ -107,6 +146,19 @@ const Home = () => {
             </div>
             <h3>Médico Biorregulador y Funcional</h3>
             <p className="specialty-description">Profesional que busca equilibrar y restaurar las funciones naturales del cuerpo usando tratamientos integrativos y personalizados.</p>
+          </div>
+        </div>
+        <div className="parent">
+          <div className="div1">
+            <img src={assets.Doctor} alt="Foto del medico" />
+          </div>
+          <div className="div2">
+            <h2>Dr. Emilio Aroca Briones</h2>
+            <span>Terapista Neural, Médico Funcional
+            26 años de experiencia a tu servicio
+            Especializado en el Hospital Britanico de Buenos Aires Argentina, 
+            y Hospital Universitario Reina Sofia. Cordoba - Espania
+            </span>
           </div>
         </div>
       </section>
