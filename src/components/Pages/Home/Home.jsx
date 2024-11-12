@@ -16,10 +16,10 @@ const Home = () => {
   };
   const services = [
     { icon: <img src={assets.iDoctor} alt='Icono doctor' />, title:"Atencion de punta", subtitle: "Recibe la mejor atencion de parte de nuestros profesionales", description:"En REUMASUR nos preocupamos por brindarte una atencion de calidad, nos preocupamos por tu bienestar y salud"},
-    { icon: <img src={assets.iDoctor} alt='Icono doctor' />, title:"Atencion de punta", subtitle: "Recibe la mejor atencion de parte de nuestros profesionales", description:"En REUMASUR nos preocupamos por brindarte una atencion de calidad, nos preocupamos por tu bienestar y salud"},
-    { icon: <img src={assets.iDoctor} alt='Icono doctor' />, title:"Atencion de punta", subtitle: "Recibe la mejor atencion de parte de nuestros profesionales", description:"En REUMASUR nos preocupamos por brindarte una atencion de calidad, nos preocupamos por tu bienestar y salud"},
-    { icon: <img src={assets.iDoctor} alt='Icono doctor' />, title:"Atencion de punta", subtitle: "Recibe la mejor atencion de parte de nuestros profesionales", description:"En REUMASUR nos preocupamos por brindarte una atencion de calidad, nos preocupamos por tu bienestar y salud"},
-    { icon: <img src={assets.iDoctor} alt='Icono doctor' />, title:"Atencion de punta", subtitle: "Recibe la mejor atencion de parte de nuestros profesionales", description:"En REUMASUR nos preocupamos por brindarte una atencion de calidad, nos preocupamos por tu bienestar y salud"},
+    { icon: <img src={assets.Stethoscope} alt='Icono doctor' />, title:"Cuidados Personalizados", subtitle: "Recibe una atencion personalizada y dedicada, ajustada a tus necesidades", description:"En REUMASUR nos enfocamos en ti,ofreciendo cuidados integrales que priorizan tu salud y comodidad en cada paso del proceso"},
+    { icon: <img src={assets.iDoctor} alt='Icono doctor' />, title:"Compromiso con tu Bienestar", subtitle: "Nuestro equipo de expertos está aquí para acompañarte en tu camino hacia una mejor salud.", description:"En REUMASUR, tu bienestar es nuestra misión. Nos comprometemos a brindarte el apoyo y la atención que necesitas para una vida más saludable."},
+    { icon: <img src={assets.iDoctor} alt='Icono doctor' />, title:"Profesionales Dedicados a Ti", subtitle: "Ponemos a tu disposición un equipo comprometido y calificado.", description:"En REUMASUR, nuestro objetivo es ofrecerte una experiencia médica de calidad, respaldada por profesionales que valoran tu salud y bienestar."},
+    { icon: <img src={assets.iDoctor} alt='Icono doctor' />, title:"Tratamiendo de Alta Calidad", subtitle: "Recibe tratamientos efectivos y personalizados, pensados para tu salud.", description:"En REUMASUR, buscamos ofrecerte soluciones avanzadas y personalizadas, con un enfoque que cuida cada aspecto de tu bienestar."},
 
   ];
 
