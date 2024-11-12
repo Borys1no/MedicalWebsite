@@ -1,0 +1,40 @@
+.profile-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #E1F5FE; /* Color de fondo claro */
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-top: 40px;
+}
+
+.profile-container h1 {
+    text-align: center;
+    color: #0288D1; /* Color principal */
+    font-size: 2rem;
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+
+.profile-details {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.profile-details p {
+    font-size: 1rem;
+    color: #000000; /* Color para los textos */
+    padding: 10px;
+    border-radius: 5px;
+    background-color: #B3E5FC; /* Fondo de cada sección de datos */
+}
+
+.profile-details p strong {
+    color: #0288D1; /* Color destacado para los títulos */
+}
+
+.profile-details p:nth-child(even) {
+    background-color: #E1F5FE; /* Alterna colores para mejorar la visualización */
+}
+
