@@ -16,6 +16,9 @@ import facebook from './icons/facebook.png'
 import instagram from './icons/instagram.png'
 import user from './icons/user.png'
 import iDoctor from './icons/icondoctor.png'
+import listIcon from './icons/listIcon.png'
+import Stethoscope from './icons/stethoscope_icon.png'
+
 
 export const assets ={
     Banner,
@@ -34,5 +37,7 @@ export const assets ={
     facebook,
     instagram,
     user,
-    iDoctor
+    iDoctor,
+    listIcon,
+    Stethoscope
 }
