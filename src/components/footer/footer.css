@@ -1,59 +1,91 @@
 .footer-container {
-    background-color: #2874a6;
-    color: #ffffff;
-    font-family: "Lato", sans-serif;
-    padding-top: 20px;
-    padding-bottom: 20px;
-    position: relative;
-    min-height: 10vh;
-    margin-top: 100px;
-  }
-  
-
-  .footer-content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    gap: 20px;
-  }
-  
-  .footer-contact p {
-    margin: 7px 0;
-    margin-left: 30px; /* Agregado: Espacio a la izquierda */
+  background: linear-gradient(90deg, #2874a6, #1b4f72);
+  color: #ffffff;
+  font-family: "Lato", sans-serif;
+  padding: 20px 10px;
+  position: relative;
 }
 
-  
-  .footer-social {
-    display: flex;
-    align-items: center;
-    gap: 0%;
+.footer-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 20px;
+}
+
+.footer-company {
+  font-size: 2rem;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.footer-company span {
+  color: #aece57;
+}
+
+.footer-company .sur {
+  color: #2a43d2;
+}
+.footer-tagline{
+  font-size: 1.2rem;
+  color: #ffff;
+  margin-top: 5px;
+  font-style: italic;
+}
+
+.footer-contact {
+  font-size: 1rem;
+}
+
+.footer-contact p {
+  margin: 5px 0;
+}
+
+.footer-contact a {
+  color: #d4e6f1;
+  text-decoration: none;
+}
+
+.footer-contact a:hover {
+  text-decoration: underline;
+}
+
+.footer-social {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  text-align: center;
+}
+.footer-social-title{
+  font-size: 1.2rem;
+  color: #ffffff;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.social-icon {
+  width: 40px;
+  height: 40px;
+  transition: transform 0.3s ease, filter 0.3s ease;
+}
+
+.social-icon:hover {
+  transform: scale(1.2);
+  filter: brightness(1.5);
+}
+
+.footer-bottom {
+  margin-top: 20px;
+  font-size: 0.85rem;
+  color: #d4e6f1;
+  text-align: center;
+}
+
+@media (min-width: 768px) {
+  .footer-content {
+    flex-direction: row;
+    justify-content: space-between;
   }
-  
-  .social-icon {
-    width: 50px;
-    height: 50px;
-    transition: transform 0.2s ease-in-out;
-    margin-right: 70px; /* Ajusta este valor para mover el ícono hacia la izquierda */
-  }
-  
-  .social-icon:hover {
-    transform: scale(1.1);
-  }
-  
-  .footer-bottom {
-    border-top: 1px solid #7fb3d5;
-    padding-top: 10px;
-    margin-top: 20px;
-    font-size: 0.85rem;
-    color: #d4e6f1;
-    text-align: center;
-  }
-  
-  @media (min-width: 768px) {
-    .footer-content {
-      flex-direction: row;
-      justify-content: space-between;
-    }
-  }
-  
+}

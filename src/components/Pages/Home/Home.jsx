@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './Home.css';
 import { assets } from '../../../assets/assets';
-
 const Home = () => {
   const [showPopup, setShowPopup] = useState(false);
   const [popupContent, setPopupContent] = useState('');
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [activeIndex, setActiveIndex] = useState(0);
+
 
   const handleCardClick = (content) => {
     setPopupContent(content);
@@ -15,13 +17,49 @@ const Home = () => {
     setShowPopup(false);
   };
   const services = [
-    { icon: <img src={assets.iDoctor} alt='Icono doctor' />, title:"Atencion de punta", subtitle: "Recibe la mejor atencion de parte de nuestros profesionales", description:"En REUMASUR nos preocupamos por brindarte una atencion de calidad, nos preocupamos por tu bienestar y salud"},
-    { icon: <img src={assets.Stethoscope} alt='Icono doctor' />, title:"Cuidados Personalizados", subtitle: "Recibe una atencion personalizada y dedicada, ajustada a tus necesidades", description:"En REUMASUR nos enfocamos en ti,ofreciendo cuidados integrales que priorizan tu salud y comodidad en cada paso del proceso"},
-    { icon: <img src={assets.iDoctor} alt='Icono doctor' />, title:"Compromiso con tu Bienestar", subtitle: "Nuestro equipo de expertos está aquí para acompañarte en tu camino hacia una mejor salud.", description:"En REUMASUR, tu bienestar es nuestra misión. Nos comprometemos a brindarte el apoyo y la atención que necesitas para una vida más saludable."},
-    { icon: <img src={assets.iDoctor} alt='Icono doctor' />, title:"Profesionales Dedicados a Ti", subtitle: "Ponemos a tu disposición un equipo comprometido y calificado.", description:"En REUMASUR, nuestro objetivo es ofrecerte una experiencia médica de calidad, respaldada por profesionales que valoran tu salud y bienestar."},
-    { icon: <img src={assets.iDoctor} alt='Icono doctor' />, title:"Tratamiendo de Alta Calidad", subtitle: "Recibe tratamientos efectivos y personalizados, pensados para tu salud.", description:"En REUMASUR, buscamos ofrecerte soluciones avanzadas y personalizadas, con un enfoque que cuida cada aspecto de tu bienestar."},
+    { icon: <img src={assets.iDoctor} alt='Icono doctor' />, title: "Atencion de punta", subtitle: "Recibe la mejor atencion de parte de nuestros profesionales", description: "En REUMASUR nos preocupamos por brindarte una atencion de calidad, nos preocupamos por tu bienestar y salud" },
+    { icon: <img src={assets.esteto} alt='Icono doctor' />, title: "Cuidados Personalizados", subtitle: "Recibe una atencion personalizada y dedicada, ajustada a tus necesidades", description: "En REUMASUR nos enfocamos en ti,ofreciendo cuidados integrales que priorizan tu salud y comodidad en cada paso del proceso" },
+    { icon: <img src={assets.medico} alt='Icono doctor' />, title: "Compromiso con tu Bienestar", subtitle: "Nuestro equipo de expertos está aquí para acompañarte en tu camino hacia una mejor salud.", description: "En REUMASUR, tu bienestar es nuestra misión. Nos comprometemos a brindarte el apoyo y la atención que necesitas para una vida más saludable." },
 
   ];
+
+  const imagesCarousel =
+    [assets.medicoBanner,
+    assets.imgCarousel1,
+    assets.imgCarousel2];
+
+
+
+
+  /*
+  const carouselItems = [
+    {
+      
+      title: 'Reumatólogo-Internista',
+      description: 'Médico especializado en diagnosticar y tratar enfermedades articulares y del sistema inmune, con enfoque integral en la salud general del paciente.'
+    },
+    {
+      
+      title: 'Terapista Neural',
+      description: 'Especialista que utiliza terapia neural para tratar el dolor y otros problemas de salud mediante la estimulación del sistema nervioso.'
+    },
+    {
+      
+      title: 'Médico Biorregulador y Funcional',
+      description: 'Profesional que busca equilibrar y restaurar las funciones naturales del cuerpo usando tratamientos integrativos y personalizados.'
+    }
+  ];
+*/
+
+
+useEffect(() => {
+  const interval = setInterval(() => {
+    setCurrentImageIndex((prevIndex) => (prevIndex + 1) % imagesCarousel.length);
+  }, 3000);
+  return () => clearInterval(interval);
+}, []);
+
+
 
   return (
     <div className="home-container">
@@ -46,15 +84,15 @@ const Home = () => {
 
 
       <section className="info-buttons-section">
-        
-        
+
+
         <div className="info-background-image">
           <img src={assets.ConsultoriaIA} alt="Doctor Sonriendo" className="background-image" />
         </div>
         <div className="espe">
-        <h2 className="subTitle" style={{marginBottom: '50px'}}>
-          Nuestras especializaciones
-        </h2>
+          <h2 className="subTitle" style={{ marginBottom: '50px' }}>
+            Nuestras especializaciones
+          </h2>
 
         </div>
         <div className="info-buttons-container">
@@ -115,39 +153,32 @@ const Home = () => {
         <h2 className="section-title" style={{ marginBottom: '50px' }}>Lo mejor para tu salud</h2>
         <div className="services-section">
           {services.map((service, index) => (
-          <div key={index} className="service-card">
-            <div className="icon">{service.icon}</div>
-            <h3>{service.title}</h3>
-            <h4>{service.subtitle}</h4>
-            <p>{service.description}</p>
-          </div>
+            <div key={index} className="service-card">
+              <div className="icon">{service.icon}</div>
+              <h3>{service.title}</h3>
+              <h4>{service.subtitle}</h4>
+              <p>{service.description}</p>
+            </div>
 
           ))}
         </div>
+        <section className="carousel-section">
+         
+            <div className="carousel">
+              <img src={imagesCarousel[currentImageIndex]} alt={`Slide ${currentImageIndex + 1}`}
+              className="carousel-image"
+              />
+             
+              {/* 
+              <div className="carousel-content">
+                <h2>{carouselItems[currentIndex].title}</h2>
+                <p>{carouselItems[currentIndex].description}</p>
+              </div>
+              */}
+            </div>
+          
+        </section>
 
-        <div className="specialties-grid">
-          <div className="specialty-card">
-            <div className="icon-placeholder">
-              <img src={assets.Cardiologia} alt="Especialidad Cardiologia" />
-            </div>
-            <h3>Reumatólogo-Internista</h3>
-            <p className="specialty-description">Médico especializado en diagnosticar y tratar enfermedades articulares y del sistema inmune, con enfoque integral en la salud general del paciente.</p>
-          </div>
-          <div className="specialty-card">
-            <div className="icon-placeholder">
-              <img src={assets.Nutricion} alt="Nutricion" />
-            </div>
-            <h3>Terapista Neural</h3>
-            <p className="specialty-description">Especialista que utiliza terapia neural para tratar el dolor y otros problemas de salud mediante la estimulación del sistema nervioso.</p>
-          </div>
-          <div className="specialty-card">
-            <div className="icon-placeholder">
-              <img src={assets.Doctor} alt="Pediatra" />
-            </div>
-            <h3>Médico Biorregulador y Funcional</h3>
-            <p className="specialty-description">Profesional que busca equilibrar y restaurar las funciones naturales del cuerpo usando tratamientos integrativos y personalizados.</p>
-          </div>
-        </div>
         <div className="parent">
           <div className="div1">
             <img src={assets.Doctor} alt="Foto del medico" />
@@ -155,59 +186,14 @@ const Home = () => {
           <div className="div2">
             <h2>Dr. Emilio Aroca Briones</h2>
             <span>Terapista Neural, Médico Funcional
-            26 años de experiencia a tu servicio
-            Especializado en el Hospital Britanico de Buenos Aires Argentina, 
-            y Hospital Universitario Reina Sofia. Cordoba - Espania
+              26 años de experiencia a tu servicio
+              Especializado en el Hospital Britanico de Buenos Aires Argentina,
+              y Hospital Universitario Reina Sofia. Cordoba - Espania
             </span>
           </div>
         </div>
       </section>
-      <section className="testimonial-section">
-        <div className="container-testimonial">
-          <div className="panel-info">
-            <h2 className="section-title">Testimonios de Pacientes</h2>
-          </div>
-          <div className="panel-body">
-            <textarea className='form-control' name="" id="#txtArea" rows="3"></textarea>
-            <br />
-            <button className="btn-post">Publicar</button>
-            <hr />
-
-            <ul className="media-list">
-              <li className="media-body">
-                <span className="txt-muted">
-                  <small className="txt-mtd">hace 30 min</small>
-                </span>
-                <strong className="txt-succes"> @BorysCode</strong>
-                <p>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                </p>
-              </li>
-              <li className="media-body">
-                <span className="txt-muted">
-                  <small className="txt-mtd">hace 1 dias</small>
-                </span>
-                <strong className="txt-succes"> @MarioBruzzone</strong>
-                <p>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                </p>
-              </li>
-              <li className="media-body">
-                <span className="txt-muted">
-                  <small className="txt-mtd">hace 2 dias</small>
-                </span>
-                <strong className="txt-succes"> @BorysCode</strong>
-                <p>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                </p>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </section>
+      
     </div>
   );
 };

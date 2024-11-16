@@ -18,6 +18,14 @@ import user from './icons/user.png'
 import iDoctor from './icons/icondoctor.png'
 import listIcon from './icons/listIcon.png'
 import Stethoscope from './icons/stethoscope_icon.png'
+import esteto from './icons/esteto.png'
+import medico from './icons/medico.png'
+import medicoBanner from './imagenesPrueba/DoctorBanner.png'
+import imgCarousel1 from './imagenesPrueba/imgCarousel1.jpg'
+import imgCarousel2 from './imagenesPrueba/imgCarousel2.jpg'
+import FacebookIcon2 from './icons/facebook logo_icon.png'
+import InstagramIcon2 from './icons/instagram_icon.png'
+import X from './icons/x_icon.png'
 
 
 export const assets ={
@@ -39,5 +47,13 @@ export const assets ={
     user,
     iDoctor,
     listIcon,
-    Stethoscope
+    Stethoscope,
+    esteto,
+    medico,
+    medicoBanner,
+    imgCarousel1,
+    imgCarousel2,
+    FacebookIcon2,
+    InstagramIcon2,
+    X
 }
