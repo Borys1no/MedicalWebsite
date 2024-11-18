@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/authContext'; // Importar el contexto de autenticación
 import './Navbar.css';
@@ -41,9 +41,6 @@ const Navbar = () => {
         <ul className="navbar-nav me-auto mb-2 mb-lg-0">
           <li className="nav-item">
             <a className="nav-link active" href="/Home">Inicio</a>
-          </li>
-          <li className="nav-item">
-            <a className="nav-link active" href="#">Nosotros</a>
           </li>
         </ul>
 

@@ -26,6 +26,8 @@ import imgCarousel2 from './imagenesPrueba/imgCarousel2.jpg'
 import FacebookIcon2 from './icons/facebook logo_icon.png'
 import InstagramIcon2 from './icons/instagram_icon.png'
 import X from './icons/x_icon.png'
+import Whatsapp from './icons/whatsappIcon.png'
+import WhatAppIcon from './icons/wsappIcon.png'
 
 
 export const assets ={
@@ -55,5 +57,7 @@ export const assets ={
     imgCarousel2,
     FacebookIcon2,
     InstagramIcon2,
-    X
+    X,
+    Whatsapp,
+    WhatAppIcon
 }

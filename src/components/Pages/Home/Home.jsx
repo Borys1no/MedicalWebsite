@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import  { useState, useEffect } from 'react';
 import './Home.css';
 import { assets } from '../../../assets/assets';
 const Home = () => {
   const [showPopup, setShowPopup] = useState(false);
   const [popupContent, setPopupContent] = useState('');
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [activeIndex, setActiveIndex] = useState(0);
+
 
 
   const handleCardClick = (content) => {
@@ -27,6 +27,17 @@ const Home = () => {
     [assets.medicoBanner,
     assets.imgCarousel1,
     assets.imgCarousel2];
+
+  const whatsapp =[
+    {
+      phoneNumber: '593985340336',
+      message: '¡Hola! Me gustaría obtener más información.'
+
+    },
+  ];
+
+  const {phoneNumber, message}= whatsapp[0];
+
 
 
 
@@ -63,6 +74,16 @@ useEffect(() => {
 
   return (
     <div className="home-container">
+      <div className="whatsapp-button">
+        <a 
+        href={`https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        >
+          <img src={assets.WhatAppIcon} alt="WhatsApp"/>
+        </a>
+
+      </div>
       <div className="home-header">
         <img src={assets.Banner} alt="Banner image" className="banner-image" />
 
