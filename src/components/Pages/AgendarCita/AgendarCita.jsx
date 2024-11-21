@@ -81,8 +81,8 @@ const AgendarCita = () => {
         plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
         initialView="timeGridWeek"
         slotDuration="01:00:00"
-        slotMinTime="08:00:00"
-        slotMaxTime="17:00:00"
+        slotMinTime="06:00:00"
+        slotMaxTime="20:00:00"
         weekends={false}
         selectable={true}
         height="auto"
