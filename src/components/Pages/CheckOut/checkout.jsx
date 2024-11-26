@@ -20,24 +20,26 @@ const Checkout = () => {
   };
 
   return (
-    <div className="checkout-container">
-      <h1>Confirmación de Cita</h1>
-      <div className="checkout-details">
-        {startTime ? (
-          <>
-            <p><strong>Fecha y Hora de Inicio:</strong> {new Date(startTime).toLocaleString()}</p>
-            <p><strong>Fecha y Hora de Fin:</strong> {new Date(endTime).toLocaleString()}</p>
-            <p><strong>Precio:</strong> $50.00</p>
-          </>
-        ) : (
-          <p>No se encontró información sobre la cita. Por favor, intenta nuevamente.</p>
-        )}
+    <>
+      <div className="checkout-container">
+        <h1>Confirmación de Cita</h1>
+        <div className="checkout-details">
+          {startTime ? (
+            <>
+              <p><strong>Fecha y Hora de Inicio:</strong> {new Date(startTime).toLocaleString()}</p>
+              <p><strong>Fecha y Hora de Fin:</strong> {new Date(endTime).toLocaleString()}</p>
+              <p><strong>Precio:</strong> $50.00</p>
+            </>
+          ) : (
+            <p>No se encontró información sobre la cita. Por favor, intenta nuevamente.</p>
+          )}
+        </div>
+        <div className="checkout-actions">
+          <button className="checkout-confirm-btn" onClick={handleConfirmClick}>Confirmar Cita</button>
+          <button className="checkout-cancel-btn" onClick={() => navigate('/home')}>Cancelar</button>
+        </div>
       </div>
-      <div className="checkout-actions">
-        <button className="checkout-confirm-btn" onClick={handleConfirmClick}>Confirmar Cita</button>
-        <button className="checkout-cancel-btn" onClick={() => navigate('/home')}>Cancelar</button>
-      </div>
-    </div>
+    </>
   );
 };
 
