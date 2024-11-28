@@ -1,63 +1,85 @@
+/* Ajustar el flujo global */
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+/* Contenedor principal */
 .T-transferPage-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
-  }
-  
-  .T-uploadSection {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-    max-width: 500px;
-    padding: 20px;
-    background-color: #f9f9f9;
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
-  
-  .T-fileInput {
-    margin-bottom: 20px;
-  }
-  
-  .T-preview {
-    margin-bottom: 20px;
-    font-size: 1rem;
-    color: #555;
-  }
-  
-  .T-buttons {
-    display: flex;
-    gap: 10px;
-  }
-  
-  .T-confirmButton {
-    background-color: #4caf50;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  .T-confirmButton:hover {
-    background-color: #45a049;
-  }
-  
-  .T-resetButton {
-    background-color: #f44336;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  .T-resetButton:hover {
-    background-color: #d32f2f;
-  }
-  
+  flex: 1; /* Ocupa todo el espacio entre el encabezado y el footer */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  max-width: 700px;
+  margin: 0 auto;
+  margin-top: 80px;
+  margin-bottom: 100px; /* Espacio para el footer */
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Sección de carga */
+.T-uploadSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 500px;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Entrada de archivo */
+.T-fileInput {
+  margin-bottom: 20px;
+}
+
+/* Vista previa del archivo */
+.T-preview {
+  margin-bottom: 20px;
+  font-size: 1rem;
+  color: #555;
+}
+
+/* Botones */
+.T-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.T-confirmButton {
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.T-confirmButton:hover {
+  background-color: #45a049;
+}
+
+.T-resetButton {
+  background-color: #f44336;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.T-resetButton:hover {
+  background-color: #d32f2f;
+}

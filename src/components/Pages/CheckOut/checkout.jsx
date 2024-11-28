@@ -19,6 +19,17 @@ const Checkout = () => {
     });
   };
 
+  const handleConfirmClicktransfer = () => {
+    // Redirigir a la pasarela de pago con los detalles necesarios
+    navigate('/transfer', {
+      state: {
+        startTime,
+        endTime,
+        email,
+      },
+    });
+  };
+
   return (
     <>
       <div className="checkout-container">
@@ -35,7 +46,8 @@ const Checkout = () => {
           )}
         </div>
         <div className="checkout-actions">
-          <button className="checkout-confirm-btn" onClick={handleConfirmClick}>Confirmar Cita</button>
+          <button className="checkout-confirm-btn" onClick={handleConfirmClick}>Débito/Credito</button>
+          <button className="checkout-confirm-btn" onClick={handleConfirmClicktransfer}>Transferencia</button>
           <button className="checkout-cancel-btn" onClick={() => navigate('/home')}>Cancelar</button>
         </div>
       </div>

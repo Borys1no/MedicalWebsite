@@ -1,4 +1,7 @@
 import React, { useState } from 'react';
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage"; // Importar funciones de Firebase Storage
+import { storage, db } from '../../../Firebase/firebase'; // Tu configuración de Firebase
+import { collection, addDoc } from 'firebase/firestore'; // Importar funciones de Firestore
 import './TransferPayment.css';
 
 const TransferPayment = () => {
@@ -8,10 +11,32 @@ const TransferPayment = () => {
     setSelectedFile(e.target.files[0]);
   };
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
     if (selectedFile) {
-      alert('Comprobante subido correctamente. Pago en revisión.');
-      // Aquí puedes manejar la subida del archivo a Firebase o tu servidor
+      try {
+        // Generar un nombre único para el archivo
+        const uniqueFileName = `${Date.now()}_${selectedFile.name}`;
+        const fileRef = ref(storage, `comprobantes/${uniqueFileName}`);
+        
+        // Subir el archivo a Firebase Storage
+        await uploadBytes(fileRef, selectedFile);
+
+        // Obtener la URL del archivo subido
+        const downloadURL = await getDownloadURL(fileRef);
+
+        // Guardar la URL y otros detalles en Firestore
+        const docRef = await addDoc(collection(db, 'appointments'), {
+          fileName: uniqueFileName,
+          fileURL: downloadURL,
+          timestamp: new Date(),
+        });
+
+        console.log("Comprobante guardado en Firestore con ID:", docRef.id);
+        alert('Comprobante subido correctamente. Pago en revisión.');
+      } catch (error) {
+        console.error("Error al subir el comprobante:", error);
+        alert('Hubo un error al subir el comprobante. Inténtalo de nuevo.');
+      }
     } else {
       alert('Por favor, selecciona un archivo antes de confirmar.');
     }
