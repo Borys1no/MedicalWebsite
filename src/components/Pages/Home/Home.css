@@ -58,10 +58,19 @@
   font-weight: bold;
   line-height: 1.2;
   margin-bottom: 10px;
+
+  font-family: "Poppins", serif;
+  font-weight: 500;
+  font-style: normal;
 }
 .main-content p{
   font-size: 1.2rem;
   margin-bottom: 20px;
+
+  font-family: "Nunito", serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
 }
 
 
@@ -79,6 +88,12 @@
   border-radius: 4px;
   cursor: pointer;
   transition: transform 0.2s ease-in-out;
+
+
+  font-family: "Nunito", serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
 }
 .btn-primary:hover {
   transform: scale(1.05);
@@ -96,14 +111,22 @@ a {
   margin-top: 32px;
   position: relative;
   overflow: hidden;
+
+  font-family: "Nunito", serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
 }
 .info-buttons-section h2{
+  margin-left: 15px;
   position: relative;
   color: #2874a6;
   font-size: 3rem;
   z-index: 1;
   
-  
+  font-family: "Poppins", serif;
+  font-weight: 500;
+  font-style: normal;
 }
 
 .info-buttons-container {
@@ -230,12 +253,16 @@ a {
   color: #2874a6;
   margin-bottom: 32px;
   text-align: center;
+
+  font-family: "Poppins", serif;
+  font-weight: 500;
+  font-style: normal;
 }
 .specialties-section .parent{
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: 2fr 3fr;
   gap: 8px;
-  width: 60%;
+  width: 80%;
   margin: 0 auto;
   margin-top: 20px;
   padding: 20px;
@@ -248,10 +275,36 @@ a {
   grid-row:  span 5 / span 5;
 }
 
-.specialties-section .div2{
+.specialties-section .div1 img {
+  width: 300px; /* Cambia el valor según el tamaño deseado */
+  height: auto; /* Mantiene la proporción de la imagen */
+}
+
+
+.specialties-section .div2 {
   grid-row: span 5 / span 5;
   grid-column-start: 3;
+  width: 100%; /* Asegura que el ancho se ajuste al contenedor */
+  padding: 20px; /* Agrega un poco de espacio interno */
+  font-size: 2rem; /* Ajusta el tamaño del texto si es necesario */
+  max-width: 600px; /* Define un ancho máximo para evitar que se extienda demasiado */
+  margin-right: 60px;
+  font-family: "Nunito", serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
 }
+
+.specialties-section .div2 h2 {
+  font-size: 2.5rem; /* Ajusta el tamaño */
+  font-weight: bold; /* Si quieres resaltar más el texto */
+
+  font-family: "Poppins", serif;
+  font-weight: 500;
+  font-style: normal;
+}
+
+
 .specialties-section .services-section{
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -273,19 +326,34 @@ a {
 .services-section h3 {
   font-size: 1.5em;
   color: #333;
-  margin: 0;
+  margin-top: 15px;
+  margin-bottom: 15px;
+
+  font-family: "Poppins", serif;
+  font-weight: 500;
+  font-style: normal;
 }
 
 .services-section h4 {
   font-size: 1.2em;
   color: #666;
-  margin: 0;
+  margin-bottom: 15px;
+
+  font-family: "Nunito", serif;
+  font-optical-sizing: auto;
+  font-weight: 600;
+  font-style: normal;
 }
 
 .services-section p {
   color: #666;
   line-height: 1.6;
   margin-top: 10px;
+
+  font-family: "Nunito", serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
 }
 
 /*end*/
@@ -296,7 +364,6 @@ a {
   display: flex;
   flex-direction: column;
   align-items: center;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 
 }
 .carousel{
@@ -307,21 +374,6 @@ a {
   margin-bottom: 20px;
   
 }
-
-
-.carousel-section {
-  display: flex;
-  transition: transform 0.5s ease-in-out;
-}
-
-
-.carousel-image {
-  width: 100%;
-  height: auto;
-  border-radius: 10px;
-}
-
-
 
 .testimonial-section {
   margin-top: 32px;

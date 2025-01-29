@@ -9,13 +9,25 @@
   font-size: 1.25rem;
   color: #2874A6  !important;
   text-align: center;
+
+  font-family: "Poppins", serif;
+  font-weight: 500;
+  font-style: normal;
 }
 .custom-navbar .nav-link {
   color: #2874A6 !important; 
+
+  font-family: "Poppins", serif;
+  font-weight: 500;
+  font-style: normal;
 }
 
 .custom-navbar .nav-link.active {
   color: #2874A6 !important; 
+
+  font-family: "Poppins", serif;
+  font-weight: 500;
+  font-style: normal;
 }
 
 

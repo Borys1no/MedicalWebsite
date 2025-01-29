@@ -18,6 +18,7 @@ import AgendarCita from "./components/Pages/AgendarCita/AgendarCita";
 import Checkout from "./components/Pages/CheckOut/checkout";
 import PasarelaPago from './components/Pages/PasarelaPago/PasarelaPago';
 import ProfileC from "./components/Pages/ProfileC/ProfileC";
+import TransferPayment from "./components/Pages/TransferPayment/TransferPayment"
 
 const App = () => {
   return (
@@ -34,6 +35,7 @@ const App = () => {
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/cn" element={<PasarelaPago />} />
             <Route path="/ProfileC" element={<ProfileC/>} />
+            <Route path="/transfer" element={<TransferPayment/>} />
 
             {/* Ruta protegida para agendar cita, requiere login */}
             <Route

@@ -1,0 +1,73 @@
+.carousel {
+  position: relative;
+  width: 100%;
+  max-width: 1200px;
+  height: 600px;
+  overflow: hidden;
+  margin: 0 auto;
+  background-color: #f9f9f9;
+}
+
+.carousel-inner {
+  display: flex;
+  width: 100%; /* Asegura que tome todo el ancho */
+  height: 100%;
+  position: relative;
+}
+
+.carousel-item {
+  flex: 0 0 100%; /* Cada slide ocupa todo el ancho */
+  display: flex; /* Flexbox para alinear contenido */
+  align-items: center; /* Centrar verticalmente */
+  justify-content: space-between; /* Espacio entre imagen y texto */
+  height: 100%;
+  opacity: 0; /* Ocultar slide inactivo */
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.carousel-item.active {
+  opacity: 1; /* Mostrar slide activo */
+  position: relative;
+}
+
+.carousel-left {
+  width: 60%; /* Ajustar ancho al 30% */
+  float: left;
+  height: 100%;
+}
+
+.carousel-left img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.carousel-right {
+  width: 40%; /* Ajustar ancho al 70% */
+  float: left;
+  height: 100%;
+  padding: 20px;
+  display: flex; /* Usar Flexbox para alinear texto */
+  align-items: center; /* Centrar verticalmente */
+  justify-content: center; /* Centrar horizontalmente */
+  text-align: left; /* Alinear texto a la izquierda */
+}
+
+
+
+/* Estilos personalizados para el texto del carrusel */
+.carousel-text {
+  font-size: 1.7rem;
+  color: #333;
+  line-height: 1.5;
+  font-family: "Nunito", serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.carousel-text p {
+  margin: 0;
+}
