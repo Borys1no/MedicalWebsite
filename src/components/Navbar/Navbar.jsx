@@ -40,7 +40,7 @@ const Navbar = () => {
       <div className="container-fluid">
         <ul className="navbar-nav me-auto mb-2 mb-lg-0">
           <li className="nav-item">
-            <a className="nav-link active" href="/Home">Inicio</a>
+            <a className="nav-link active" href="/Home">INICIO</a>
           </li>
         </ul>
 
@@ -68,7 +68,7 @@ const Navbar = () => {
             </div>
           ) : (
             <button onClick={() => navigate('/login')} className="btn btn-outline-primary">
-              Iniciar sesión
+              INICIAR SESIÓN
             </button>
           )}
         </div>

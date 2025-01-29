@@ -1,6 +1,8 @@
 import  { useState, useEffect } from 'react';
 import './Home.css';
 import { assets } from '../../../assets/assets';
+import Carousel from './Carousel';
+
 const Home = () => {
   const [showPopup, setShowPopup] = useState(false);
   const [popupContent, setPopupContent] = useState('');
@@ -23,10 +25,11 @@ const Home = () => {
 
   ];
 
-  const imagesCarousel =
-    [assets.medicoBanner,
-    assets.imgCarousel1,
-    assets.imgCarousel2];
+  const items = [
+    { image: assets.oficial1, text: 'Médico especializado en diagnosticar y tratar enfermedades articulares y del sistema inmune, con enfoque integral en la salud general del paciente.' },
+    { image: assets.oficial2, text: 'Especialista que utiliza terapia neural para tratar el dolor y otros problemas de salud mediante la estimulación del sistema nervioso.' },
+    { image: assets.oficial3, text: 'Profesional que busca equilibrar y restaurar las funciones naturales del cuerpo usando tratamientos integrativos y personalizados.' },
+  ];
 
   const whatsapp =[
     {
@@ -37,10 +40,6 @@ const Home = () => {
   ];
 
   const {phoneNumber, message}= whatsapp[0];
-
-
-
-
 
   /*
   const carouselItems = [
@@ -61,15 +60,6 @@ const Home = () => {
     }
   ];
 */
-
-
-useEffect(() => {
-  const interval = setInterval(() => {
-    setCurrentImageIndex((prevIndex) => (prevIndex + 1) % imagesCarousel.length);
-  }, 3000);
-  return () => clearInterval(interval);
-}, []);
-
 
 
   return (
@@ -184,25 +174,18 @@ useEffect(() => {
           ))}
         </div>
         <section className="carousel-section">
-         
-            <div className="carousel">
-              <img src={imagesCarousel[currentImageIndex]} alt={`Slide ${currentImageIndex + 1}`}
-              className="carousel-image"
-              />
-             
+          <Carousel items={items} />
               {/* 
               <div className="carousel-content">
                 <h2>{carouselItems[currentIndex].title}</h2>
                 <p>{carouselItems[currentIndex].description}</p>
               </div>
               */}
-            </div>
-          
         </section>
 
         <div className="parent">
           <div className="div1">
-            <img src={assets.Doctor} alt="Foto del medico" />
+            <img src={assets.oficial4} alt="Foto del medico" />
           </div>
           <div className="div2">
             <h2>Dr. Emilio Aroca Briones</h2>

@@ -29,6 +29,13 @@ import X from './icons/x_icon.png'
 import Whatsapp from './icons/whatsappIcon.png'
 import WhatAppIcon from './icons/wsappIcon.png'
 
+import oficial1 from './imagenesOficiales/20230815_090724.jpg'
+import oficial2 from './imagenesOficiales/DSC_0175.jpg'
+import oficial3 from './imagenesOficiales/DSC_0513.jpg'
+import oficial4 from './imagenesOficiales/DSC_0586.jpg'
+import oficial5 from './imagenesOficiales/DSC_0735.jpg'
+import oficial6 from './imagenesOficiales/DSC00460.jpg'
+import oficial1R from './imagenesOficiales/Recortada1.jpg'
 
 export const assets ={
     Banner,
@@ -59,5 +66,12 @@ export const assets ={
     InstagramIcon2,
     X,
     Whatsapp,
-    WhatAppIcon
+    WhatAppIcon,
+    oficial1,
+    oficial2,
+    oficial3,
+    oficial4,
+    oficial5,
+    oficial6,
+    oficial1R
 }

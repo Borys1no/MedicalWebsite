@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage"; // Importar funciones de Firebase Storage
-import { storage, db } from '../../../Firebase/firebase'; // Tu configuración de Firebase
-import { collection, addDoc } from 'firebase/firestore'; // Importar funciones de Firestore
+import { ref, uploadBytes } from "firebase/storage";
+import { getAuth } from 'firebase/auth'; // Importa la autenticación de Firebase
+import { storage } from '../../../Firebase/firebase';
 import './TransferPayment.css';
 
 const TransferPayment = () => {
@@ -12,26 +12,21 @@ const TransferPayment = () => {
   };
 
   const handleConfirm = async () => {
+    const auth = getAuth(); // Obtén la instancia de autenticación
+    if (!auth.currentUser) {
+      console.error('El usuario no está autenticado.');
+      alert('Por favor, inicia sesión para subir el archivo.');
+      return;
+    }
+
     if (selectedFile) {
       try {
-        // Generar un nombre único para el archivo
-        const uniqueFileName = `${Date.now()}_${selectedFile.name}`;
-        const fileRef = ref(storage, `comprobantes/${uniqueFileName}`);
-        
-        // Subir el archivo a Firebase Storage
+        const fileName = `${Date.now()}_${selectedFile.name}`; // Genera un nombre único
+        const fileRef = ref(storage, `comprobantes/${fileName}`);
+
+        // Subir archivo
         await uploadBytes(fileRef, selectedFile);
 
-        // Obtener la URL del archivo subido
-        const downloadURL = await getDownloadURL(fileRef);
-
-        // Guardar la URL y otros detalles en Firestore
-        const docRef = await addDoc(collection(db, 'appointments'), {
-          fileName: uniqueFileName,
-          fileURL: downloadURL,
-          timestamp: new Date(),
-        });
-
-        console.log("Comprobante guardado en Firestore con ID:", docRef.id);
         alert('Comprobante subido correctamente. Pago en revisión.');
       } catch (error) {
         console.error("Error al subir el comprobante:", error);
