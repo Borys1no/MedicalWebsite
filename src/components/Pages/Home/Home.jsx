@@ -11,7 +11,7 @@ const Home = () => {
 
 
   const handleCardClick = (content) => {
-    setPopupContent(content);
+    setPopupContent(content);0
     setShowPopup(true);
   };
 
