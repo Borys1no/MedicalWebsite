@@ -16,7 +16,7 @@ import ProtectedRoute from "./components/ProtectedRoutes/ProtectedRoutes";
 import ProtectedRouteGeneral from "./components/ProtectedRoutes/ProtectedRouteGeneral";
 import AgendarCita from "./components/Pages/AgendarCita/AgendarCita";
 import Checkout from "./components/Pages/CheckOut/checkout";
-import PasarelaPago from './components/Pages/PasarelaPago/PasarelaPago';
+import PasarelaPago from './components/pages/PasarelaPago/PasarelaPago';
 import ProfileC from "./components/Pages/ProfileC/ProfileC";
 import TransferPayment from "./components/Pages/TransferPayment/TransferPayment"
 
