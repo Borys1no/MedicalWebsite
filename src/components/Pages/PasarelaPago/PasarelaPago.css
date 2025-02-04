@@ -16,15 +16,23 @@
   text-align: center;
 }
 
-/* Botón de pago */
 #pay {
   display: inline-block;
   background-color: #FAFAFA;
   background: url('https://sandbox-paybox.pagoplux.com/img/pagar.png?v1') no-repeat center center;
-  height: 96px;
-  width: 215px;
-  border: none;
+  height: 8rem;
+  width: 17rem;
+  border: 1px solid #ccc; /* Borde sutil de 1px */
+  border-radius: 12px; /* Bordes redondeados */
   cursor: pointer;
   background-size: contain;
   outline: 0;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+  box-shadow: 0px 4px 8px rgba(1, 54, 134, 0.2); /* Sombra inicial */
 }
+
+#pay:hover {
+  background-color: #e0e0e0; /* Color más oscuro al pasar el mouse */
+  box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.3); /* Sombra más pronunciada en hover */
+}
+

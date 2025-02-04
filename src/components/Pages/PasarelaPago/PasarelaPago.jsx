@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { db } from '../../../Firebase/firebase'; // Importar Firebase
 import { collection, addDoc } from 'firebase/firestore';
 import axios from 'axios'; // Para llamar al microservicio de Zoom
-import './PasarelaPago.css';
+import './PasarelaPago.css'; // Importar el CSS personalizado
 
 const PasarelaPago = () => {
   const location = useLocation();
@@ -22,13 +22,15 @@ const PasarelaPago = () => {
     PayboxProduction: false,
     PayboxEnvironment: 'sandbox',
     PayboxLanguage: 'es',
-    PayboxPagoPlux: true,
+    PayboxPagoPlux: true, // Usar un botón personalizado
     PayboxDirection: 'Boyaca entre Colón y Tarqui - Machala-Ecuador',
     PayBoxClientPhone: '1234567890',
   });
 
   const [scriptLoaded, setScriptLoaded] = useState(false); // Estado para controlar si el script ya se cargó
   const [onAuthorizeDefined, setOnAuthorizeDefined] = useState(false); // Estado para controlar si onAuthorize ya se definió
+  const [isReady, setIsReady] = useState(false); // Estado para controlar si todo está listo
+  const payButtonRef = useRef(null); // Referencia al botón de pago
 
   // Cargar el script de PagoPlux dinámicamente
   useEffect(() => {
@@ -97,9 +99,23 @@ const PasarelaPago = () => {
     }
   }, [scriptLoaded, onAuthorizeDefined, email, startTime, endTime, navigate]);
 
+  // Verificar si todo está listo
+  useEffect(() => {
+    if (scriptLoaded && onAuthorizeDefined) {
+      setIsReady(true);
+    }
+  }, [scriptLoaded, onAuthorizeDefined]);
+
+  // Simular un clic automático cuando todo esté listo
+  useEffect(() => {
+    if (isReady && payButtonRef.current) {
+      payButtonRef.current.click(); // Simular un clic en el botón de pago
+    }
+  }, [isReady]);
+
   const handlePayment = () => {
     if (window.Data) {
-      window.Data.init(data);
+      window.Data.init(data); // Iniciar el proceso de pago
     } else {
       console.error("Data no está definido.");
     }
@@ -110,12 +126,12 @@ const PasarelaPago = () => {
       <h1>Pago con Tarjeta</h1>
       <div id="modalPaybox"></div>
       <button
-        className='buttonpay'
         id="pay"
-        type="button"
+        className="buttonpay"
         onClick={handlePayment}
+        disabled={!isReady}
+        ref={payButtonRef}
       >
-        Pagar
       </button>
     </div>
   );
