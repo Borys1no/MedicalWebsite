@@ -192,7 +192,7 @@ const Home = () => {
             <span>Terapista Neural, Médico Funcional
               26 años de experiencia a tu servicio
               Especializado en el Hospital Britanico de Buenos Aires Argentina,
-              y Hospital Universitario Reina Sofia. Cordoba - Espania
+              y Hospital Universitario Reina Sofia. Cordoba - España
             </span>
           </div>
         </div>

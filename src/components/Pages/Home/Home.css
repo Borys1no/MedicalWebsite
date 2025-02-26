@@ -468,3 +468,147 @@ hr {
   transform: scale(1.1);
   transition: transform 0.3s ease;
 }
+
+
+/* Media Queries */
+@media (max-width: 1200px) {
+  .home-header {
+    height: 600px;
+  }
+
+  .home-content, .main-content {
+    max-width: 600px;
+  }
+
+  .info-buttons-container {
+    gap: 24px;
+  }
+
+  .info-button-card {
+    width: 45%;
+  }
+
+  .specialties-section .parent {
+    grid-template-columns: 1fr 2fr;
+  }
+
+  .specialties-section .div2 {
+    grid-column-start: 3;
+    align-items: right;
+  }
+}
+
+@media (max-width: 992px) {
+  .home-header {
+    height: 500px;
+  }
+
+  .home-content, .main-content {
+    max-width: 500px;
+  }
+
+  .info-buttons-container {
+    gap: 16px;
+  }
+
+  .info-button-card {
+    width: 100%;
+  }
+
+  .specialties-section .parent {
+    grid-template-columns: 1fr;
+  }
+
+  .specialties-section .div2 {
+    grid-column-start: 1;
+  }
+
+  .specialties-section .services-section {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .home-header {
+    height: 400px;
+  }
+
+  .home-content, .main-content {
+    max-width: 400px;
+  }
+
+  .info-buttons-container {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .info-buttons-list {
+    flex-direction: column;
+  }
+
+  .specialties-section .services-section {
+    grid-template-columns: 1fr;
+  }
+
+  .carousel {
+    height: 400px;
+  }
+}
+
+@media (max-width: 576px) {
+  .home-header {
+    height: 300px;
+  }
+
+  .home-content, .main-content {
+    max-width: 300px;
+  }
+
+  .home-content .logo {
+    font-size: 1.8rem;
+  }
+
+  .main-content h1 {
+    font-size: 2rem;
+  }
+
+  .main-content p {
+    font-size: 1rem;
+  }
+
+  .info-buttons-section h2 {
+    font-size: 2rem;
+  }
+
+  .info-button-text h3 {
+    font-size: 1.2rem;
+  }
+
+  .info-button-text p {
+    font-size: 0.9rem;
+  }
+
+  .specialties-section .div2 {
+    font-size: 1.5rem;
+  }
+
+  .specialties-section .div2 h2 {
+    font-size: 2rem;
+  }
+
+  .services-section h3 {
+    font-size: 1.2em;
+  }
+
+  .services-section h4 {
+    font-size: 1em;
+  }
+
+  .services-section p {
+    font-size: 0.9em;
+  }
+
+  .carousel {
+    height: 300px;
+  }
+}
