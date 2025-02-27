@@ -2,6 +2,7 @@
   padding: 16px;
   font-family: "Lato", sans-serif;
 }
+
 /*Header*/
 .home-header {
   position: relative;
@@ -23,7 +24,8 @@
   object-fit: cover;
 
 }
-.home-content{
+
+.home-content {
   position: absolute;
   top: 20px;
   display: flex;
@@ -34,25 +36,30 @@
   z-index: 1;
   background: none;
 }
-.home-content .logo{
+
+.home-content .logo {
   font-size: 2.3rem;
   text-shadow: 2px 2px 5px black;
 }
-.home-content span{
+
+.home-content span {
   color: #aece57;
 }
-.home-content .sur{
+
+.home-content .sur {
   color: #2a43d2;
 }
-.main-content{
- display: flex;
- flex-direction: column;
- align-items: flex-end;
- padding: 20px;
- max-width: 700px;
- z-index: 1;
- background: none;
+
+.main-content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  padding: 20px;
+  max-width: 700px;
+  z-index: 1;
+  background: none;
 }
+
 .main-content h1 {
   font-size: 2.5rem;
   font-weight: bold;
@@ -63,7 +70,8 @@
   font-weight: 500;
   font-style: normal;
 }
-.main-content p{
+
+.main-content p {
   font-size: 1.2rem;
   margin-bottom: 20px;
 
@@ -95,15 +103,18 @@
   font-weight: 400;
   font-style: normal;
 }
+
 .btn-primary:hover {
   transform: scale(1.05);
   background-color: #7fb3d5;
   font-weight: 500;
   border: 1px solid #2874a6;
 }
+
 a {
   text-decoration: none !important;
 }
+
 /*END HEADER*/
 
 /*Especialidades*/
@@ -117,13 +128,14 @@ a {
   font-weight: 400;
   font-style: normal;
 }
-.info-buttons-section h2{
+
+.info-buttons-section h2 {
   margin-left: 15px;
   position: relative;
   color: #2874a6;
   font-size: 3rem;
   z-index: 1;
-  
+
   font-family: "Poppins", serif;
   font-weight: 500;
   font-style: normal;
@@ -175,6 +187,7 @@ a {
   transition: transform 0.2s ease-in-out;
   width: 35%;
 }
+
 .info-button-card:hover {
   transform: scale(1.05);
 }
@@ -241,6 +254,7 @@ a {
   font-size: 1.5rem;
   cursor: pointer;
 }
+
 /*END ESPECIALIZACIONES*/
 
 /*"LO MEJOR PARA TU SALUD"*/
@@ -258,7 +272,8 @@ a {
   font-weight: 500;
   font-style: normal;
 }
-.specialties-section .parent{
+
+.specialties-section .parent {
   display: grid;
   grid-template-columns: 2fr 3fr;
   gap: 8px;
@@ -270,25 +285,32 @@ a {
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
-.specialties-section .div1{
+
+.specialties-section .div1 {
   grid-column: span 2 / span 2;
-  grid-row:  span 5 / span 5;
+  grid-row: span 5 / span 5;
 }
 
 .specialties-section .div1 img {
-  width: 300px; /* Cambia el valor según el tamaño deseado */
-  height: auto; /* Mantiene la proporción de la imagen */
+  width: 300px;
+  /* Cambia el valor según el tamaño deseado */
+  height: auto;
+  /* Mantiene la proporción de la imagen */
 }
 
 
 .specialties-section .div2 {
   grid-row: span 5 / span 5;
   grid-column-start: 3;
-  width: 100%; /* Asegura que el ancho se ajuste al contenedor */
-  padding: 20px; /* Agrega un poco de espacio interno */
-  font-size: 2rem; /* Ajusta el tamaño del texto si es necesario */
-  max-width: 600px; /* Define un ancho máximo para evitar que se extienda demasiado */
-  margin-right: 60px;
+  width: 100%;
+  /* Asegura que el ancho se ajuste al contenedor */
+  padding: 20px;
+  /* Agrega un poco de espacio interno */
+  font-size: 1.5rem;
+  /* Ajusta el tamaño del texto si es necesario */
+  max-width: 600px;
+  /* Define un ancho máximo para evitar que se extienda demasiado */
+  margin-right: 20px;
   font-family: "Nunito", serif;
   font-optical-sizing: auto;
   font-weight: 400;
@@ -296,8 +318,10 @@ a {
 }
 
 .specialties-section .div2 h2 {
-  font-size: 2.5rem; /* Ajusta el tamaño */
-  font-weight: bold; /* Si quieres resaltar más el texto */
+  font-size: 2rem;
+  /* Ajusta el tamaño */
+  font-weight: bold;
+  /* Si quieres resaltar más el texto */
 
   font-family: "Poppins", serif;
   font-weight: 500;
@@ -305,13 +329,14 @@ a {
 }
 
 
-.specialties-section .services-section{
+.specialties-section .services-section {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 20px;
   padding: 40px;
 }
-.service-card{
+
+.service-card {
   background-color: #f9f9f9;
   padding: 20px;
   border-radius: 8px;
@@ -320,9 +345,11 @@ a {
   transition: transform 0.2s;
 
 }
-.service-card:hover{
+
+.service-card:hover {
   transform: translateY(-10px);
 }
+
 .services-section h3 {
   font-size: 1.5em;
   color: #333;
@@ -359,20 +386,21 @@ a {
 /*end*/
 
 /*Carousel*/
-.carousel-section{
+.carousel-section {
   padding: 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
 
 }
-.carousel{
+
+.carousel {
   width: 100%;
   height: 600px;
   display: flex;
   justify-content: center;
   margin-bottom: 20px;
-  
+
 }
 
 .testimonial-section {
@@ -380,15 +408,18 @@ a {
   padding: 16px;
   text-align: center;
 }
+
 .container-testimonial {
   background-color: #e3f2fd;
   padding: 20px;
   border-radius: 8px;
   margin: 0 auto;
 }
+
 .panel-info {
   padding: 10px;
 }
+
 .panel-body {
   padding: 10px;
 }
@@ -400,6 +431,7 @@ textarea.form-control {
   resize: none;
   border: 1px solid #ddd;
 }
+
 .btn-post {
   background-color: #2874a6;
   color: white;
@@ -409,43 +441,54 @@ textarea.form-control {
   cursor: pointer;
   float: right;
 }
-.btn-post:hover{
+
+.btn-post:hover {
   background-color: #0288d1;
 }
-.media-list{
+
+.media-list {
   list-style-type: none;
   padding-left: 0;
 }
+
 .media-body {
   border-bottom: 1px solid #ddd;
   padding: 10px 0;
   display: flex;
   align-items: flex-start;
 }
+
 .media-body:last-child {
   border-bottom: none;
 }
+
 .txt-muted {
   color: #999;
 }
+
 .txt-mtd {
   font-size: 0.85rem;
 }
+
 .txt-succes {
   color: #388e3c;
   margin-left: 10px;
 }
+
 p {
   margin: 0;
 }
+
 strong {
   margin-left: 10px;
 }
+
 hr {
   border: none;
   border-top: 1px solid #ddd;
 }
-.whatsapp-button{
+
+.whatsapp-button {
   position: fixed;
   bottom: 20px;
   right: 20px;
@@ -460,10 +503,12 @@ hr {
   z-index: 1000;
   text-decoration: none;
 }
-.whatsapp-button img{
+
+.whatsapp-button img {
   width: 70px;
   height: 70px;
 }
+
 .whatsapp-button:hover {
   transform: scale(1.1);
   transition: transform 0.3s ease;
@@ -476,7 +521,8 @@ hr {
     height: 600px;
   }
 
-  .home-content, .main-content {
+  .home-content,
+  .main-content {
     max-width: 600px;
   }
 
@@ -494,7 +540,10 @@ hr {
 
   .specialties-section .div2 {
     grid-column-start: 3;
-    align-items: right;
+    align-items: center;
+    margin-left: 300px;
+    max-width: 500px;
+
   }
 }
 
@@ -503,7 +552,8 @@ hr {
     height: 500px;
   }
 
-  .home-content, .main-content {
+  .home-content,
+  .main-content {
     max-width: 500px;
   }
 
@@ -515,16 +565,38 @@ hr {
     width: 100%;
   }
 
-  .specialties-section .parent {
-    grid-template-columns: 1fr;
+ .specialties-section .parent {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
+    width: 90% !important;
+    margin: auto !important;
+  }
+
+  .specialties-section .div1 {
+    width: 100% !important;
+    display: flex !important;
+    justify-content: center !important;
+  }
+
+  .specialties-section .div1 img {
+    width: 100% !important; /* Ocupará todo el ancho disponible */
+    max-width: 400px !important; /* Tamaño máximo */
+    height: auto !important;
+    border-radius: 8px !important;
   }
 
   .specialties-section .div2 {
-    grid-column-start: 1;
+    width: 100% !important;
+    padding: 20px !important;
+    font-size: 1.3rem !important;
+    max-width: 600px !important;
   }
 
-  .specialties-section .services-section {
-    grid-template-columns: repeat(2, 1fr);
+  .specialties-section .div2 h2 {
+    font-size: 1.8rem !important;
+    font-weight: bold !important;
   }
 }
 
@@ -533,9 +605,20 @@ hr {
     height: 400px;
   }
 
-  .home-content, .main-content {
+  .home-content,
+  .main-content {
     max-width: 400px;
   }
+
+  .home-content .logo {
+    margin-right: 15px;
+  }
+
+  .main-content {
+    margin-top: 60px;
+  }
+
+
 
   .info-buttons-container {
     flex-direction: column;
@@ -550,6 +633,33 @@ hr {
     grid-template-columns: 1fr;
   }
 
+  .specialties-section .parent {
+    grid-template-columns: 1fr;
+    /* Apilar imagen y texto */
+    width: 90%;
+    /* Ajustar ancho */
+    padding: 10px;
+  }
+
+  .specialties-section .div1 {
+    text-align: center;
+    /* Centrar imagen */
+
+  }
+
+  .specialties-section .div1 img {
+    max-width: 200px;
+    /* Reducir tamaño de imagen */
+  }
+
+  .specialties-section .div2 {
+    text-align: center;
+    padding: 10px;
+    max-width: 400px;
+    margin: 0 auto;
+  }
+
+
   .carousel {
     height: 400px;
   }
@@ -560,7 +670,8 @@ hr {
     height: 300px;
   }
 
-  .home-content, .main-content {
+  .home-content,
+  .main-content {
     max-width: 300px;
   }
 
@@ -611,4 +722,59 @@ hr {
   .carousel {
     height: 300px;
   }
+}
+
+@media screen and (max-width: 480px) {
+  .home-header {
+    height: 400px;
+  }
+
+  .home-content .logo {
+    font-size: 1.5rem;
+  }
+
+  .main-content h1 {
+    font-size: 1rem;
+    margin-top: 30px;
+  }
+
+  .main-content .banner-subtitle {
+    padding: 15px;
+    font-size: 1.5rem;
+    text-align: center;
+  }
+
+  .info-button-card {
+    width: 100%;
+  }
+
+  .specialties-section .services-section {
+    grid-template-columns: 1fr;
+  }
+
+  .main-content .btn-primary {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  .specialties-section .parent {
+    width: 95% !important;
+  }
+
+  .specialties-section .div1 img {
+    width: 90% !important;
+    max-width: 350px !important;
+  }
+
+  .specialties-section .div2 {
+    font-size: 1.1rem !important;
+    padding: 15px !important;
+  }
+
+  .specialties-section .div2 h2 {
+    font-size: 1.5rem !important;
+  }
+
+ 
+
+
 }

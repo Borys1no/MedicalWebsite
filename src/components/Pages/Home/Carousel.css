@@ -10,31 +10,29 @@
 
 .carousel-inner {
   display: flex;
-  width: 100%; /* Asegura que tome todo el ancho */
+  width: 100%;
   height: 100%;
   position: relative;
 }
 
 .carousel-item {
-  flex: 0 0 100%; /* Cada slide ocupa todo el ancho */
-  display: flex; /* Flexbox para alinear contenido */
-  align-items: center; /* Centrar verticalmente */
-  justify-content: space-between; /* Espacio entre imagen y texto */
+  flex: 0 0 100%;
+  display: none; /* 🔹 Oculta por completo los slides inactivos */
+  align-items: center;
+  justify-content: center;
   height: 100%;
-  opacity: 0; /* Ocultar slide inactivo */
-  position: absolute;
-  top: 0;
-  left: 0;
+  transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out;
 }
 
 .carousel-item.active {
-  opacity: 1; /* Mostrar slide activo */
-  position: relative;
+  display: flex; /* 🔥 Muestra solo el slide activo */
+  opacity: 1;
+  transform: translateX(0);
 }
 
+
 .carousel-left {
-  width: 60%; /* Ajustar ancho al 30% */
-  float: left;
+  width: 60%;
   height: 100%;
 }
 
@@ -46,19 +44,15 @@
 }
 
 .carousel-right {
-  width: 40%; /* Ajustar ancho al 70% */
-  float: left;
+  width: 40%;
   height: 100%;
   padding: 20px;
-  display: flex; /* Usar Flexbox para alinear texto */
-  align-items: center; /* Centrar verticalmente */
-  justify-content: center; /* Centrar horizontalmente */
-  text-align: left; /* Alinear texto a la izquierda */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: left;
 }
 
-
-
-/* Estilos personalizados para el texto del carrusel */
 .carousel-text {
   font-size: 1.7rem;
   color: #333;
@@ -70,4 +64,61 @@
 
 .carousel-text p {
   margin: 0;
+}
+
+/* 📱 ESTILOS RESPONSIVE PARA PANTALLAS PEQUEÑAS 📱 */
+@media screen and (max-width: 768px) {
+  .carousel-item {
+    flex-direction: column; /* Poner elementos en columna */
+    align-items: center;
+    justify-content: center;
+    text-align: center; /* Centrar texto */
+  }
+
+  .carousel-left {
+    width: 50%;
+    height: auto;
+  }
+
+  .carousel-left img {
+    width: 100%;
+    height: auto;
+    border-radius: 0;
+  }
+
+  .carousel-right {
+    width: 100%;
+    height: auto;
+    padding: 20px;
+    display: block;
+  }
+
+  .carousel-text {
+    font-size: 1rem;
+  }
+}
+
+/* 📱 ESTILOS PARA PANTALLAS EXTRA PEQUEÑAS (320px - 480px) 📱 */
+@media screen and (max-width: 480px) {
+  .carousel {
+    height: auto; /* Ajusta la altura automáticamente */
+  }
+
+  .carousel-item {
+    flex-direction: column;
+    padding: 10px;
+  }
+
+  .carousel-left img {
+    border-radius: 0;
+  }
+
+  .carousel-right {
+    padding: 15px;
+  }
+
+  .carousel-text {
+    font-size: 1.2rem;
+    padding: 10px;
+  }
 }
