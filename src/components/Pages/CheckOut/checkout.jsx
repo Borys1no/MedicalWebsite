@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import PasarelaPago from '../PasarelaPago/PasarelaPago';
 import './checkout.css';
 
 const Checkout = () => {
@@ -8,16 +9,8 @@ const Checkout = () => {
   const { state } = location;
   const { startTime, endTime, email } = state || {};
 
-  const handleConfirmClick = () => {
-    // Redirigir a la pasarela de pago con los detalles de la cita
-    navigate('/cn', {
-      state: {
-        startTime,
-        endTime,
-        email,
-      },
-    });
-  };
+  // Estado para controlar la visibilidad de la pasarela de pago
+  const [showPasarela, setShowPasarela] = useState(false);
 
   const handleConfirmClicktransfer = () => {
     // Redirigir a la pasarela de transferencia con los detalles de la cita
@@ -28,6 +21,11 @@ const Checkout = () => {
         email,
       },
     });
+  };
+
+  // Función para mostrar la pasarela de pago
+  const handleDebitCreditClick = () => {
+    setShowPasarela(true); // Mostrar la pasarela de pago
   };
 
   return (
@@ -45,10 +43,16 @@ const Checkout = () => {
         )}
       </div>
       <div className="checkout-actions">
-        <button className="checkout-confirm-btn" onClick={handleConfirmClick}>Débito/Crédito</button>
+        <button className="checkout-confirm-btn" onClick={handleDebitCreditClick}>Débito/Crédito</button>
         <button className="checkout-confirm-btn" onClick={handleConfirmClicktransfer}>Transferencia</button>
         <button className="checkout-cancel-btn" onClick={() => navigate('/home')}>Cancelar</button>
       </div>
+      {/* Contenedor para la pasarela de pago */}
+      {showPasarela && (
+        <div className="pasarela-container">
+          <PasarelaPago location={{ state }} />
+        </div>
+      )}
     </div>
   );
 };
