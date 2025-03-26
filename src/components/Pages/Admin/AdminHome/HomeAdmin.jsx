@@ -38,6 +38,7 @@ const AdminHome = () => {
           start: data.startTime.toDate(),
           end: data.endTime.toDate(),
           userId: data.userId,
+          zoomLink: data.zoomLink, // Incluir el enlace de Zoom
           color: data.type === 'NoDisponible' ? '#d9534f' : '#5cb85c', // Rojo para no disponible, verde para citas
         };
       });
@@ -58,23 +59,33 @@ const AdminHome = () => {
   // Mostrar modal al hacer clic en un evento
   const handleEventClick = async (clickInfo) => {
     setSelectedEvent(clickInfo.event);
-    const userId = clickInfo.event.extendedProps.userId;
+    const citaId = clickInfo.event.id; // Obtener el ID de la cita
 
-    if (userId) {
+    if (citaId) {
       try {
-        const userDoc = await getDoc(doc(db, 'users', userId));
-        if (userDoc.exists()) {
-          setPatientInfo(userDoc.data());
+        // Obtener la información de la cita desde la colección `citas`
+        const citaDoc = await getDoc(doc(db, 'citas', citaId));
+        if (citaDoc.exists()) {
+          const citaData = citaDoc.data();
+          setPatientInfo({
+            firstName: citaData.firstName, // Nombre
+            lastName: citaData.lastName, // Apellido
+            phoneNumber: citaData.phoneNumber, // Teléfono
+            identificationNumber: citaData.identificationNumber, // Número de identificación
+            email: citaData.email, // Email
+            country: citaData.country, // País
+            city: citaData.city, // Ciudad
+          });
         } else {
-          console.error('No se encontró información del usuario');
+          console.error('No se encontró información de la cita');
           setPatientInfo(null);
         }
       } catch (error) {
-        console.error('Error al cargar información del usuario:', error);
+        console.error('Error al cargar información de la cita:', error);
         setPatientInfo(null);
       }
     } else {
-      // Si no hay `userId`, no buscamos información del paciente
+      // Si no hay `citaId`, no buscamos información del paciente
       setPatientInfo(null);
     }
     setIsModalOpen(true);
@@ -182,6 +193,15 @@ const AdminHome = () => {
                 </>
               ) : (
                 <p>Cargando información del paciente...</p>
+              )}
+              {/* Mostrar el enlace de Zoom */}
+              {selectedEvent.extendedProps.zoomLink && (
+                <p>
+                  <strong>Enlace de Zoom:</strong>{' '}
+                  <a href={selectedEvent.extendedProps.zoomLink} target="_blank" rel="noopener noreferrer">
+                    Unirse a la reunión
+                  </a>
+                </p>
               )}
               <button onClick={closeModal} className="close-modal-btn">Cerrar</button>
             </>
