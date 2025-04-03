@@ -26,20 +26,23 @@ const AdminHome = () => {
     try {
       const q = query(
         collection(db, 'citas'),
-        where('startTime', '>=', startDate),
-        where('startTime', '<=', endDate)
+        where('fechaCita', '>=', startDate),
+        where('fechaCita', '<=', endDate)
       );
       const querySnapshot = await getDocs(q);
       const appointments = querySnapshot.docs.map((doc) => {
         const data = doc.data();
         return {
           id: doc.id,
-          title: data.type === 'NoDisponible' ? 'No Disponible' : 'Cita Agendada',
-          start: data.startTime.toDate(),
+          title: data.estado === 'confirmada' ? 'Cita Agendada' : 'No Disponible',
+          start: data.fechaCita.toDate(), // Usar fechaCita en lugar de startTime
           end: data.endTime.toDate(),
-          userId: data.userId,
-          zoomLink: data.zoomLink, // Incluir el enlace de Zoom
-          color: data.type === 'NoDisponible' ? '#d9534f' : '#5cb85c', // Rojo para no disponible, verde para citas
+          userId: data.paciente?.identificationNumber || '', // Acceder al submapa paciente
+          zoomLink: data.zoomLink || '',
+          color: data.estado === 'confirmada' ? '#5cb85c' : '#d9534f',
+          extendedProps: {
+            paciente: data.paciente || {} // Guardar toda la info del paciente
+          }
         };
       });
       setEvents(appointments);
@@ -59,35 +62,24 @@ const AdminHome = () => {
   // Mostrar modal al hacer clic en un evento
   const handleEventClick = async (clickInfo) => {
     setSelectedEvent(clickInfo.event);
-    const citaId = clickInfo.event.id; // Obtener el ID de la cita
-
-    if (citaId) {
-      try {
-        // Obtener la información de la cita desde la colección `citas`
-        const citaDoc = await getDoc(doc(db, 'citas', citaId));
-        if (citaDoc.exists()) {
-          const citaData = citaDoc.data();
-          setPatientInfo({
-            firstName: citaData.firstName, // Nombre
-            lastName: citaData.lastName, // Apellido
-            phoneNumber: citaData.phoneNumber, // Teléfono
-            identificationNumber: citaData.identificationNumber, // Número de identificación
-            email: citaData.email, // Email
-            country: citaData.country, // País
-            city: citaData.city, // Ciudad
-          });
-        } else {
-          console.error('No se encontró información de la cita');
-          setPatientInfo(null);
-        }
-      } catch (error) {
-        console.error('Error al cargar información de la cita:', error);
-        setPatientInfo(null);
-      }
+    
+    // La información del paciente ya está en extendedProps
+    const pacienteInfo = clickInfo.event.extendedProps.paciente;
+    
+    if (pacienteInfo) {
+      setPatientInfo({
+        firstName: pacienteInfo.firstName,
+        lastName: pacienteInfo.lastName,
+        phoneNumber: pacienteInfo.phoneNumber,
+        identificationNumber: pacienteInfo.identificationNumber,
+        email: pacienteInfo.email,
+        country: pacienteInfo.country,
+        city: pacienteInfo.city
+      });
     } else {
-      // Si no hay `citaId`, no buscamos información del paciente
       setPatientInfo(null);
     }
+    
     setIsModalOpen(true);
   };
 
@@ -186,10 +178,7 @@ const AdminHome = () => {
                 <>
                   <p><strong>Nombre:</strong> {patientInfo.firstName} {patientInfo.lastName}</p>
                   <p><strong>Teléfono:</strong> {patientInfo.phoneNumber}</p>
-                  <p><strong>Número de Identificación:</strong> {patientInfo.identificationNumber}</p>
                   <p><strong>Email:</strong> {patientInfo.email}</p>
-                  <p><strong>País:</strong> {patientInfo.country}</p>
-                  <p><strong>Ciudad:</strong> {patientInfo.city}</p>
                 </>
               ) : (
                 <p>Cargando información del paciente...</p>

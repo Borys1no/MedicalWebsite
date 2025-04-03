@@ -19,6 +19,7 @@ import Checkout from "./components/Pages/CheckOut/checkout";
 import PasarelaPago from './components/Pages/PasarelaPago/PasarelaPago';
 import ProfileC from "./components/Pages/ProfileC/ProfileC";
 import TransferPayment from "./components/Pages/TransferPayment/TransferPayment"
+import Citas from "./components/Pages/Admin/Citas/Citas";
 
 const App = () => {
   return (
@@ -56,6 +57,15 @@ const App = () => {
                 <AdminHome />
               </ProtectedRoute>
             }
+          />
+          <Route
+            path="/Admin/Citas/Citas"
+            element={
+              <ProtectedRoute role="admin">
+                <Citas/>
+                </ProtectedRoute>
+            }
+          
           />
         </Routes>
       </Router>

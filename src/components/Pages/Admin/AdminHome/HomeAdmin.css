@@ -12,12 +12,21 @@ body {
   height: 100vh;
 }
 
+.sidebar {
+  width: 250px;
+  position: fixed;
+  height: 100vh;
+  background-color: #f4f4f4;
+  padding: 20px;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+}
+
 /* Contenido */
 .content {
-  flex: 1;
+  margin-left: 50px;
+  flex-grow: 1;
   padding: 20px;
-  overflow: auto;
-  margin-left: 300px; /* Considerando el ancho del sidebar */
+  /* Considerando el ancho del sidebar */
 }
 
 /* Título */
@@ -40,7 +49,8 @@ body {
   max-width: 500px;
   width: 90%;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  z-index: 1000; /* Asegurar que el modal esté al frente */
+  z-index: 1000;
+  /* Asegurar que el modal esté al frente */
 }
 
 /* Overlay */
@@ -51,7 +61,8 @@ body {
   right: 0;
   bottom: 0;
   background-color: rgba(0, 0, 0, 0.5);
-  z-index: 999; /* Debe estar debajo del modal pero encima del calendario */
+  z-index: 999;
+  /* Debe estar debajo del modal pero encima del calendario */
 }
 
 /* Botón de Cerrar */

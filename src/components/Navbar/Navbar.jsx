@@ -45,7 +45,9 @@ const Navbar = () => {
         </ul>
 
         <div className="text-center flex-grow-1"> {/* Ajuste de centrado total */}
-          <p className="navbar-brand m-0">Dr. Emilio Aroca Briones</p>
+        <div className="logo">
+            <span>REUMA<span className="sur">SUR</span></span>
+          </div>
         </div>
 
         <div className="d-flex align-items-center">

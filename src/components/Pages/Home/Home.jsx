@@ -2,6 +2,8 @@ import  { useState, useEffect } from 'react';
 import './Home.css';
 import { assets } from '../../../assets/assets';
 import Carousel from './Carousel';
+import HeroSection from './HeroSection';
+import { ArrowRight, Calendar, CheckCircle, Clock, MapPin, Phone, Video } from "lucide-react";
 
 const Home = () => {
   const [showPopup, setShowPopup] = useState(false);
@@ -64,6 +66,7 @@ const Home = () => {
 
   return (
     <div className="home-container">
+      
       <div className="whatsapp-button">
         <a 
         href={`https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`}
@@ -77,21 +80,110 @@ const Home = () => {
       <div className="home-header">
         <img src={assets.Banner} alt="Banner image" className="banner-image" />
 
-        <header className="home-content">
-          <div className="logo">
-            <span>REUMA<span className="sur">SUR</span></span>
-          </div>
-
-
-        </header>
-
         <main className="main-content">
           <h1 className="banner-title">Cuida tu salud a cualquier hora</h1>
-          <p className="banner-subtitle" style={{ marginBottom: '60px' }}>Alivio tu dolor, Mejoro tu calidad de vida.</p>
-          <a href="/AgendarCita" className="btn-primary">Agenda tu Cita Médica</a>
+          <p className="banner-subtitle" style={{ marginBottom: '60px' }}>Brindamos atención médica especializada en reumatología a través
+              de consultas virtuales, permitiéndole recibir diagnóstico y
+              tratamiento desde la comodidad de su hogar.</p>
+          <a href="/AgendarCita" className="btn-primary">Agenda tu Cita Médica <ArrowRight className="icon" /></a> 
         </main>
 
       </div>
+
+      <section className="doctor-section">
+        <div className="container">
+          <div className="doctor-grid">
+            <div className="doctor-info">
+              <h2>Dr. Emilio Aroca Briones</h2>
+              <p className="doctor-description">
+              Terapista Neural, Médico Funcion con amplia experiencia en el diagnóstico y tratamiento de enfermedades reumáticas. Comprometido con brindar atención médica de calidad a través de consultas virtuales.
+              
+              
+              </p>
+              <div className="doctor-features">
+                <div className="feature-item">
+                  <CheckCircle className="feature-icon" />
+                  <span>26 años de experiencia a tu servicio</span>
+                </div>
+                <div className="feature-item">
+                  <CheckCircle className="feature-icon" />
+                  <span>Especializado en el Hospital Britanico de Buenos Aires Argentina,
+                  y Hospital Universitario Reina Sofia. Cordoba - España</span>
+                </div>
+                <div className="feature-item">
+                  <CheckCircle className="feature-icon" />
+                  <span>Atención personalizada</span>
+                </div>
+                {/* otros features */}
+              </div>
+              <button className=" btn-primary">
+                Conocer más
+                <ArrowRight className="icon" />
+              </button>
+            </div>
+            <div className="doctor-image">
+            <img src={assets.oficial4} alt="Foto del medico" />
+            </div>
+          </div>
+        </div>
+      </section>
+      
+      <section className="zoom-consultations">
+      <div className="zoom-container">
+        <h2>Consultas médicas vía Zoom</h2>
+        <p className="zoom-description">
+          En ReumaSur nos adaptamos a las necesidades de nuestros pacientes ofreciendo consultas virtuales a través de
+          Zoom, brindando atención médica de calidad desde la comodidad de su hogar.
+        </p>
+        <div className="zoom-cards">
+          <div className="zoom-card">
+            <div className="zoom-card-header">
+              <h3>Fácil acceso</h3>
+            </div>
+            <div className="zoom-card-content">
+              <div className="zoom-icon-container">
+                <Video className="zoom-icon" />
+              </div>
+              <p>
+                Acceda a su consulta desde cualquier dispositivo con conexión a internet, sin necesidad de
+                desplazarse.
+              </p>
+            </div>
+          </div>
+          
+          <div className="zoom-card">
+            <div className="zoom-card-header">
+              <h3>Ahorro de tiempo</h3>
+            </div>
+            <div className="zoom-card-content">
+              <div className="zoom-icon-container">
+                <Clock className="zoom-icon" />
+              </div>
+              <p>
+                Evite tiempos de espera y desplazamientos, optimizando su tiempo y recibiendo la misma atención de
+                calidad.
+              </p>
+            </div>
+          </div>
+          
+          <div className="zoom-card">
+            <div className="zoom-card-header">
+              <h3>Atención personalizada</h3>
+            </div>
+            <div className="zoom-card-content">
+              <div className="zoom-icon-container">
+                <Calendar className="zoom-icon" />
+              </div>
+              <p>
+                Reciba la misma atención personalizada que en una consulta presencial, con seguimiento continuo de su
+                caso.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
 
 
       <section className="info-buttons-section">
@@ -182,20 +274,6 @@ const Home = () => {
               </div>
               */}
         </section>
-
-        <div className="parent">
-          <div className="div1">
-            <img src={assets.oficial4} alt="Foto del medico" />
-          </div>
-          <div className="div2">
-            <h2>Dr. Emilio Aroca Briones</h2>
-            <span>Terapista Neural, Médico Funcional
-              26 años de experiencia a tu servicio
-              Especializado en el Hospital Britanico de Buenos Aires Argentina,
-              y Hospital Universitario Reina Sofia. Cordoba - España
-            </span>
-          </div>
-        </div>
       </section>
       
     </div>

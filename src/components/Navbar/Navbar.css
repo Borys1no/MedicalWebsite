@@ -29,6 +29,20 @@
   font-weight: 500;
   font-style: normal;
 }
+.logo span {
+  color: #aece57;
+}
+
+.logo .sur {
+  color: #2a43d2;
+}
+.logo{
+  font-size: 1.5rem;
+  font-weight: 700;
+  text-shadow: 2px 2px 5px rgb(73, 72, 72);
+  -webkit-text-stroke-width: 0.5px;
+  -webkit-text-stroke-color: black;
+}
 
 
 /* Estilos para los botones y dropdown */
