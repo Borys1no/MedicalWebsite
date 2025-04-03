@@ -265,16 +265,112 @@ const Home = () => {
 
           ))}
         </div>
-        <section className="carousel-section">
-          <Carousel items={items} />
-              {/* 
-              <div className="carousel-content">
-                <h2>{carouselItems[currentIndex].title}</h2>
-                <p>{carouselItems[currentIndex].description}</p>
-              </div>
-              */}
-        </section>
+        
       </section>
+      
+      <section className="appointment-section">
+      <div className="appointment-container">
+        <div className="appointment-grid">
+          <div className="appointment-info">
+            <h2>Agende su consulta virtual</h2>
+            <p className="appointment-description">
+              Complete el formulario de registro para solicitar una cita con el Dr. Emilio Aroca Briones. Todas nuestras consultas se
+              realizan a través de Zoom, brindándole la comodidad de recibir atención médica especializada desde su hogar.
+            </p>
+            
+            <div className="feature-box">
+              <div className="feature-icon-container">
+                <Video className="feature-icon" />
+              </div>
+              <div className="feature-text">
+                <h3>Consultas vía Zoom</h3>
+                <p>Recibirá un enlace de Zoom después de confirmar su cita</p>
+              </div>
+            </div>
+            
+            <div className="feature-box">
+              <div className="feature-icon-container">
+                <Calendar className="feature-icon" />
+              </div>
+              <div className="feature-text">
+                <h3>Horarios flexibles</h3>
+                <p>Ofrecemos horarios adaptados a sus necesidades</p>
+              </div>
+            </div>
+            
+            <div className="appointment-image">
+              <img
+                alt="Consulta médica virtual"
+                src={assets.AgendaMedica}
+              />
+            </div>
+          </div>
+          
+          <div className="appointment-form-container">
+            <div className="appointment-form">
+              <div className="form-header">
+                <h3>Solicitar cita</h3>
+                <p>Complete sus datos y nos pondremos en contacto para confirmar su cita virtual</p>
+              </div>
+              
+              <form className="form-content">
+                <div className="form-row">
+                  <div className="form-group">
+                    <label htmlFor="first-name">Nombre</label>
+                    <input id="first-name" type="text" placeholder="Ingrese su nombre" />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="last-name">Apellido</label>
+                    <input id="last-name" type="text" placeholder="Ingrese su apellido" />
+                  </div>
+                </div>
+                
+                <div className="form-group">
+                  <label htmlFor="email">Correo electrónico</label>
+                  <input id="email" type="email" placeholder="correo@ejemplo.com" />
+                </div>
+                
+                <div className="form-group">
+                  <label htmlFor="phone">Teléfono</label>
+                  <input id="phone" type="tel" placeholder="+56 9 1234 5678" />
+                </div>
+                
+                <div className="form-group">
+                  <label htmlFor="service">Motivo de consulta</label>
+                  <select id="service">
+                    <option value="">Seleccione un motivo</option>
+                    <option value="artritis">Artritis</option>
+                    <option value="artrosis">Artrosis</option>
+                    <option value="lupus">Lupus</option>
+                    <option value="osteoporosis">Osteoporosis</option>
+                    <option value="dolores">Dolores articulares</option>
+                    <option value="pediatrica">Reumatología pediátrica</option>
+                    <option value="otro">Otro</option>
+                  </select>
+                </div>
+                
+                <div className="form-group">
+                  <label htmlFor="message">Mensaje adicional (opcional)</label>
+                  <textarea 
+                    id="message" 
+                    rows={4} 
+                    placeholder="Proporcione detalles adicionales sobre su consulta"
+                  ></textarea>
+                </div>
+                
+                <button type="submit" className="submit-button">
+                  Solicitar cita
+                </button>
+                
+                <p className="form-footer">
+                  Al enviar este formulario, acepta ser contactado para coordinar su cita virtual
+                </p>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
       
     </div>
   );
