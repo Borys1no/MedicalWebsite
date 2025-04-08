@@ -4,245 +4,454 @@ import { useAuth } from '../../../contexts/authContext';
 import { doCreateUserWithEmailAndPassword } from '../../../Firebase/auth';
 import { db } from '../../../Firebase/firebase';
 import { doc, setDoc } from 'firebase/firestore';
-import './register.css';
 
-const Register = () => {
-    const navigate = useNavigate();
-    const [documentType, setDocumentType] = useState('cedula');
-    const [identificationNumber, setIdentificationNumber] = useState('');
-    const [firstName, setFirstName] = useState('');
-    const [lastName, setLastName] = useState('');
-    const [country, setCountry] = useState('');
-    const [province, setProvince] = useState('');
-    const [city, setCity] = useState('');
-    const [address, setAddress] = useState('');
-    const [postalCode, setPostalCode] = useState('');
-    const [birthDate, setBirthDate] = useState('');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
-    const [phoneNumber, setPhoneNumber] = useState('');
-    const [isRegistering, setIsRegistering] = useState(false);
-    const [errorMessage, setErrorMessage] = useState('');
+// Material UI Components
+import {
+  Container,
+  Box,
+  Typography,
+  Grid,
+  TextField,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Button,
+  Link as MuiLink,
+  Paper,
+  Divider,
+  CircularProgress,
+  Alert,
+  useMediaQuery,
+  useTheme
+} from '@mui/material';
 
-    const { userLoggedIn } = useAuth();
+const Register = ({
+  redirectPath = '/home',
+  loginPath = '/login',
+  title = 'Crea una Nueva Cuenta',
+  showLoginLink = true,
+  onSuccess = null,
+  onError = null,
+  customFields = [],
+  initialValues = {}
+}) => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const navigate = useNavigate();
+  
+  // Estados del formulario
+  const [formData, setFormData] = useState({
+    documentType: initialValues.documentType || 'cedula',
+    identificationNumber: initialValues.identificationNumber || '',
+    firstName: initialValues.firstName || '',
+    lastName: initialValues.lastName || '',
+    country: initialValues.country || '',
+    province: initialValues.province || '',
+    city: initialValues.city || '',
+    address: initialValues.address || '',
+    postalCode: initialValues.postalCode || '',
+    birthDate: initialValues.birthDate || null,
+    email: initialValues.email || '',
+    password: '',
+    confirmPassword: '',
+    phoneNumber: initialValues.phoneNumber || '',
+    ...initialValues
+  });
 
-    const onSubmit = async (e) => {
-        e.preventDefault();
+  const [isRegistering, setIsRegistering] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+  const [errors, setErrors] = useState({});
 
-        if (password !== confirmPassword) {
-            setErrorMessage('Las contraseñas no coinciden.');
-            return;
+  const { userLoggedIn } = useAuth();
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+    
+    // Clear error when typing
+    if (errors[name]) {
+      setErrors(prev => ({
+        ...prev,
+        [name]: null
+      }));
+    }
+  };
+
+  const handleDateChange = (date) => {
+    setFormData(prev => ({
+      ...prev,
+      birthDate: date
+    }));
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+    
+    if (!formData.identificationNumber) newErrors.identificationNumber = 'Número de identificación requerido';
+    if (!formData.firstName) newErrors.firstName = 'Nombres requeridos';
+    if (!formData.lastName) newErrors.lastName = 'Apellidos requeridos';
+    if (!formData.birthDate) newErrors.birthDate = 'Fecha de nacimiento requerida';
+    if (!formData.email) {
+      newErrors.email = 'Correo electrónico requerido';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = 'Correo electrónico inválido';
+    }
+    if (!formData.phoneNumber) newErrors.phoneNumber = 'Teléfono requerido';
+    if (!formData.password) {
+      newErrors.password = 'Contraseña requerida';
+    } else if (formData.password.length < 6) {
+      newErrors.password = 'La contraseña debe tener al menos 6 caracteres';
+    }
+    if (formData.password !== formData.confirmPassword) {
+      newErrors.confirmPassword = 'Las contraseñas no coinciden';
+    }
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const onSubmit = async (e) => {
+    e.preventDefault();
+    
+    if (!validateForm()) return;
+    
+    if (formData.password !== formData.confirmPassword) {
+      setErrorMessage('Las contraseñas no coinciden.');
+      return;
+    }
+
+    setErrorMessage('');
+    if (!isRegistering) {
+      setIsRegistering(true);
+      try {
+        const userCredential = await doCreateUserWithEmailAndPassword(formData.email, formData.password);
+        const user = userCredential.user;
+
+        const userData = {
+          identificationNumber: formData.identificationNumber,
+          documentType: formData.documentType,
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          country: formData.country,
+          province: formData.province,
+          city: formData.city,
+          address: formData.address,
+          postalCode: formData.postalCode,
+          birthDate: formData.birthDate,
+          email: formData.email,
+          phoneNumber: formData.phoneNumber,
+          createdAt: new Date(),
+          ...initialValues
+        };
+
+        customFields.forEach(field => {
+          if (formData[field.name]) {
+            userData[field.name] = formData[field.name];
+          }
+        });
+
+        await setDoc(doc(db, "users", user.uid), userData);
+
+        if (onSuccess) {
+          onSuccess(user);
+        } else {
+          navigate(redirectPath);
         }
-
-        setErrorMessage(''); // Limpia el mensaje de error antes de intentar registrar
-        if (!isRegistering) {
-            setIsRegistering(true);
-            try {
-                // Crear el usuario con Firebase Authentication
-                const userCredential = await doCreateUserWithEmailAndPassword(email, password);
-                const user = userCredential.user;
-
-                // Crear el documento del usuario en Firestore
-                await setDoc(doc(db, "users", user.uid), {
-                    identificationNumber,
-                    documentType,
-                    firstName,
-                    lastName,
-                    country,
-                    province,
-                    city,
-                    address,
-                    postalCode,
-                    birthDate,
-                    email,
-                    phoneNumber,
-                    createdAt: new Date(),
-                });
-
-                console.log("Registro exitoso y documento de usuario creado en Firestore");
-                navigate('/home'); // Redirigir a la página de inicio después del registro exitoso
-            } catch (error) {
-                console.error("Error al registrar usuario: ", error);
-                setErrorMessage("Hubo un problema al registrar el usuario. Por favor, intente de nuevo.");
-            }
-            setIsRegistering(false);
+      } catch (error) {
+        let errorMsg = "Hubo un problema al registrar el usuario. Por favor, intente de nuevo.";
+        
+        if (error.code === 'auth/email-already-in-use') {
+          errorMsg = "El correo electrónico ya está en uso.";
+        } else if (error.code === 'auth/weak-password') {
+          errorMsg = "La contraseña es demasiado débil.";
         }
-    };
+        
+        setErrorMessage(errorMsg);
+        if (onError) {
+          onError(error);
+        }
+        console.error("Error al registrar usuario: ", error);
+      }
+      setIsRegistering(false);
+    }
+  };
 
-    return (
-        <>
-            {userLoggedIn && (<Navigate to={'/home'} replace={true} />)}
+  const renderCustomFields = () => {
+    return customFields.map((field, index) => (
+      <Grid item xs={12} sm={field.gridSize || 6} key={index}>
+        {field.type === 'select' ? (
+          <FormControl fullWidth>
+            <InputLabel>{field.label}</InputLabel>
+            <Select
+              name={field.name}
+              value={formData[field.name] || ''}
+              onChange={handleChange}
+              label={field.label}
+              error={!!errors[field.name]}
+            >
+              {field.options.map((option, i) => (
+                <MenuItem key={i} value={option.value}>
+                  {option.label}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        ) : (
+          <TextField
+            fullWidth
+            name={field.name}
+            label={field.label}
+            type={field.type || 'text'}
+            value={formData[field.name] || ''}
+            onChange={handleChange}
+            error={!!errors[field.name]}
+            helperText={errors[field.name]}
+          />
+        )}
+      </Grid>
+    ));
+  };
 
-            <main className="R-main">
-                <div className="R-container">
-                    <div className="R-header">
-                        <h3 className="R-title">Crea una Nueva Cuenta</h3>
-                    </div>
-                    <form onSubmit={onSubmit} className="R-form R-form-grid">
-                        <div>
-                            <label className="R-label">Tipo de Documento</label>
-                            <select
-                                value={documentType}
-                                onChange={(e) => setDocumentType(e.target.value)}
-                                className="R-input"
-                                required
-                            >
-                                <option value="cedula">Cédula</option>
-                                <option value="ruc">RUC</option>
-                                <option value="pasaporte">Pasaporte</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label className="R-label">Número de Identificación</label>
-                            <input
-                                type="text"
-                                value={identificationNumber}
-                                onChange={(e) => setIdentificationNumber(e.target.value)}
-                                className="R-input"
-                                required
-                            />
-                        </div>
-                        <div>
-                            <label className="R-label">Nombres</label>
-                            <input
-                                type="text"
-                                value={firstName}
-                                onChange={(e) => setFirstName(e.target.value)}
-                                className="R-input"
-                                required
-                            />
-                        </div>
-                        <div>
-                            <label className="R-label">Apellidos</label>
-                            <input
-                                type="text"
-                                value={lastName}
-                                onChange={(e) => setLastName(e.target.value)}
-                                className="R-input"
-                                required
-                            />
-                        </div>
-                        <div>
-                            <label className="R-label">Fecha de Nacimiento</label>
-                            <input
-                                type="date"
-                                value={birthDate}
-                                onChange={(e) => setBirthDate(e.target.value)}
-                                className="R-input"
-                                required
-                            />
-                        </div>
-                        <div>
-                            <label className="R-label">País</label>
-                            <input
-                                type="text"
-                                value={country}
-                                onChange={(e) => setCountry(e.target.value)}
-                                className="R-input"
-                                required
-                            />
-                        </div>
-                        <div>
-                            <label className="R-label">Provincia</label>
-                            <input
-                                type="text"
-                                value={province}
-                                onChange={(e) => setProvince(e.target.value)}
-                                className="R-input"
-                                required
-                            />
-                        </div>
-                        <div>
-                            <label className="R-label">Ciudad</label>
-                            <input
-                                type="text"
-                                value={city}
-                                onChange={(e) => setCity(e.target.value)}
-                                className="R-input"
-                                required
-                            />
-                        </div>
-                        <div>
-                            <label className="R-label">Dirección</label>
-                            <input
-                                type="text"
-                                value={address}
-                                onChange={(e) => setAddress(e.target.value)}
-                                className="R-input"
-                                required
-                            />
-                        </div>
-                        <div>
-                            <label className="R-label">Código Postal</label>
-                            <input
-                                type="text"
-                                value={postalCode}
-                                onChange={(e) => setPostalCode(e.target.value)}
-                                className="R-input"
-                                required
-                            />
-                        </div>
-                        <div>
-                            <label className="R-label">Correo electrónico</label>
-                            <input
-                                type="email"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                className="R-input"
-                                required
-                            />
-                        </div>
-                        <div>
-                            <label className="R-label">Teléfono</label>
-                            <input
-                                type="tel"
-                                pattern="[0-9]{10}"
-                                value={phoneNumber}
-                                onChange={(e) => setPhoneNumber(e.target.value)}
-                                className="R-input"
-                                required
-                            />
-                        </div>
-                        <div>
-                            <label className="R-label">Contraseña</label>
-                            <input
-                                type="password"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                className="R-input"
-                                required
-                            />
-                        </div>
-                        <div>
-                            <label className="R-label">Confirmar Contraseña</label>
-                            <input
-                                type="password"
-                                value={confirmPassword}
-                                onChange={(e) => setConfirmPassword(e.target.value)}
-                                className="R-input"
-                                required
-                            />
-                        </div>
+  if (userLoggedIn) {
+    return <Navigate to={redirectPath} replace={true} />;
+  }
 
-                        {errorMessage && <span className="R-errorMessage">{errorMessage}</span>}
+  return (
+      <Container maxWidth="md" sx={{ py: 4 }}>
+        <Paper elevation={isMobile ? 0 : 3} sx={{ p: 4 }}>
+          <Box sx={{ mb: 4, textAlign: 'center' }}>
+            <Typography 
+            variant="h4" 
+            component="h1" 
+            gutterBottom
+            sx={{
+              fontFamily: '"Lato", sans-serif',
+              fontWeight: 700,
+              color: '#0288D1'
+            }}
+            >
+              {title}
+            </Typography>
+            <Typography variant="body1" color="text.secondary">
+              Completa el formulario para crear tu cuenta
+            </Typography>
+          </Box>
 
-                        <button
-                            type="submit"
-                            disabled={isRegistering}
-                            className={`R-button ${isRegistering ? 'R-buttonDisabled' : ''}`}
-                        >
-                            {isRegistering ? 'Registrando...' : 'Registrar'}
-                        </button>
-                        <div className="R-textCenter">
-                            ¿Ya tienes una cuenta? {' '}
-                            <Link to="/login" className="R-link">Continuar</Link>
-                        </div>
-                    </form>
-                </div>
-            </main>
-        </>
-    );
+          {errorMessage && (
+            <Alert severity="error" sx={{ mb: 3 }}>
+              {errorMessage}
+            </Alert>
+          )}
+
+          <Box component="form" onSubmit={onSubmit} noValidate>
+            <Grid container spacing={3}>
+              <Grid item xs={12} sm={6}>
+                <FormControl fullWidth>
+                  <InputLabel>Tipo de Documento</InputLabel>
+                  <Select
+                    name="documentType"
+                    value={formData.documentType}
+                    onChange={handleChange}
+                    label="Tipo de Documento"
+                  >
+                    <MenuItem value="cedula">Cédula</MenuItem>
+                    <MenuItem value="ruc">RUC</MenuItem>
+                    <MenuItem value="pasaporte">Pasaporte</MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  fullWidth
+                  name="identificationNumber"
+                  label="Número de Identificación"
+                  value={formData.identificationNumber}
+                  onChange={handleChange}
+                  error={!!errors.identificationNumber}
+                  helperText={errors.identificationNumber}
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  fullWidth
+                  name="firstName"
+                  label="Nombres"
+                  value={formData.firstName}
+                  onChange={handleChange}
+                  error={!!errors.firstName}
+                  helperText={errors.firstName}
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  fullWidth
+                  name="lastName"
+                  label="Apellidos"
+                  value={formData.lastName}
+                  onChange={handleChange}
+                  error={!!errors.lastName}
+                  helperText={errors.lastName}
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  fullWidth
+                  name="country"
+                  label="País"
+                  value={formData.country}
+                  onChange={handleChange}
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  fullWidth
+                  name="province"
+                  label="Provincia"
+                  value={formData.province}
+                  onChange={handleChange}
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  fullWidth
+                  name="city"
+                  label="Ciudad"
+                  value={formData.city}
+                  onChange={handleChange}
+                />
+              </Grid>
+
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  name="address"
+                  label="Dirección"
+                  value={formData.address}
+                  onChange={handleChange}
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  fullWidth
+                  name="postalCode"
+                  label="Código Postal"
+                  value={formData.postalCode}
+                  onChange={handleChange}
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  fullWidth
+                  name="email"
+                  label="Correo electrónico"
+                  type="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  error={!!errors.email}
+                  helperText={errors.email}
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  fullWidth
+                  name="phoneNumber"
+                  label="Teléfono"
+                  type="tel"
+                  value={formData.phoneNumber}
+                  onChange={handleChange}
+                  error={!!errors.phoneNumber}
+                  helperText={errors.phoneNumber}
+                  inputProps={{
+                    pattern: "[0-9]{10}"
+                  }}
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  fullWidth
+                  name="password"
+                  label="Contraseña"
+                  type="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  error={!!errors.password}
+                  helperText={errors.password}
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  fullWidth
+                  name="confirmPassword"
+                  label="Confirmar Contraseña"
+                  type="password"
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                  error={!!errors.confirmPassword}
+                  helperText={errors.confirmPassword}
+                />
+              </Grid>
+
+              {/* Campos personalizados */}
+              {customFields && renderCustomFields()}
+
+              <Grid item xs={12}>
+              <Button
+  type="submit"
+  fullWidth
+  variant="contained"
+  size="large"
+  disabled={isRegistering}
+  sx={{ 
+    py: 1.5,
+    backgroundColor: '#0288D1',
+    '&:hover': {
+      backgroundColor: '#0277BD', // Un tono un poco más oscuro para el hover
+    }
+  }}
+>
+  {isRegistering ? (
+    <CircularProgress size={24} color="inherit" />
+  ) : (
+    'Registrar'
+  )}
+</Button>
+              </Grid>
+
+              {showLoginLink && (
+                <Grid item xs={12}>
+                  <Divider sx={{ my: 2 }} />
+                  <Typography variant="body2" align="center">
+                    ¿Ya tienes una cuenta?{' '}
+                    <MuiLink component={Link} to={loginPath} underline="hover">
+                      Inicia sesión
+                    </MuiLink>
+                  </Typography>
+                </Grid>
+              )}
+            </Grid>
+          </Box>
+        </Paper>
+      </Container>
+    
+  );
 };
 
 export default Register;

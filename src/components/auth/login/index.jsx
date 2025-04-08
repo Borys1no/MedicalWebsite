@@ -132,7 +132,7 @@ const Login = () => {
                     </form>
 
                     <div className="L-textCenter L-textSm">
-                        ¿No tienes una cuenta? <Link to="/register" className="L-link">Regístrate</Link>
+                        ¿No tienes una cuenta? <Link to="/Resgister" className="L-link">Regístrate</Link>
                     </div>
                 </div>
             </main>

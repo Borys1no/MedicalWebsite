@@ -1,14 +1,43 @@
 import  { useState, useEffect } from 'react';
+import { useAuth } from '../../../contexts/authContext';
+import Swal from 'sweetalert2';
 import './Home.css';
 import { assets } from '../../../assets/assets';
-import Carousel from './Carousel';
-import HeroSection from './HeroSection';
 import { ArrowRight, Calendar, CheckCircle, Clock, MapPin, Phone, Video } from "lucide-react";
+import Register from '../../auth/register';
 
 const Home = () => {
   const [showPopup, setShowPopup] = useState(false);
   const [popupContent, setPopupContent] = useState('');
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const {currentUser} = useAuth();
+
+
+  const handleAgendarCita = (e) => {
+    e.preventDefault();
+    
+    if (!currentUser) {
+      Swal.fire({
+        title: 'Acceso requerido',
+        text: 'Para agendar una cita, por favor inicie sesión o regístrese',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Iniciar Sesión',
+        cancelButtonText: 'Registrarse',
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#28a745',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          window.location.href = '/login';
+        } else if (result.dismiss === Swal.DismissReason.cancel) {
+          window.location.href = '/Resgister';
+        }
+      });
+    } else {
+      window.location.href = '/AgendarCita';
+    }
+  };
+
 
 
 
@@ -43,25 +72,6 @@ const Home = () => {
 
   const {phoneNumber, message}= whatsapp[0];
 
-  /*
-  const carouselItems = [
-    {
-      
-      title: 'Reumatólogo-Internista',
-      description: 'Médico especializado en diagnosticar y tratar enfermedades articulares y del sistema inmune, con enfoque integral en la salud general del paciente.'
-    },
-    {
-      
-      title: 'Terapista Neural',
-      description: 'Especialista que utiliza terapia neural para tratar el dolor y otros problemas de salud mediante la estimulación del sistema nervioso.'
-    },
-    {
-      
-      title: 'Médico Biorregulador y Funcional',
-      description: 'Profesional que busca equilibrar y restaurar las funciones naturales del cuerpo usando tratamientos integrativos y personalizados.'
-    }
-  ];
-*/
 
 
   return (
@@ -85,7 +95,9 @@ const Home = () => {
           <p className="banner-subtitle" style={{ marginBottom: '60px' }}>Brindamos atención médica especializada en reumatología a través
               de consultas virtuales, permitiéndole recibir diagnóstico y
               tratamiento desde la comodidad de su hogar.</p>
-          <a href="/AgendarCita" className="btn-primary">Agenda tu Cita Médica <ArrowRight className="icon" /></a> 
+              <button onClick={handleAgendarCita} className="btn-primary">
+            Agenda tu Cita Médica <ArrowRight className="icon" />
+          </button> 
         </main>
 
       </div>
@@ -307,66 +319,7 @@ const Home = () => {
           </div>
           
           <div className="appointment-form-container">
-            <div className="appointment-form">
-              <div className="form-header">
-                <h3>Solicitar cita</h3>
-                <p>Complete sus datos y nos pondremos en contacto para confirmar su cita virtual</p>
-              </div>
-              
-              <form className="form-content">
-                <div className="form-row">
-                  <div className="form-group">
-                    <label htmlFor="first-name">Nombre</label>
-                    <input id="first-name" type="text" placeholder="Ingrese su nombre" />
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="last-name">Apellido</label>
-                    <input id="last-name" type="text" placeholder="Ingrese su apellido" />
-                  </div>
-                </div>
-                
-                <div className="form-group">
-                  <label htmlFor="email">Correo electrónico</label>
-                  <input id="email" type="email" placeholder="correo@ejemplo.com" />
-                </div>
-                
-                <div className="form-group">
-                  <label htmlFor="phone">Teléfono</label>
-                  <input id="phone" type="tel" placeholder="+56 9 1234 5678" />
-                </div>
-                
-                <div className="form-group">
-                  <label htmlFor="service">Motivo de consulta</label>
-                  <select id="service">
-                    <option value="">Seleccione un motivo</option>
-                    <option value="artritis">Artritis</option>
-                    <option value="artrosis">Artrosis</option>
-                    <option value="lupus">Lupus</option>
-                    <option value="osteoporosis">Osteoporosis</option>
-                    <option value="dolores">Dolores articulares</option>
-                    <option value="pediatrica">Reumatología pediátrica</option>
-                    <option value="otro">Otro</option>
-                  </select>
-                </div>
-                
-                <div className="form-group">
-                  <label htmlFor="message">Mensaje adicional (opcional)</label>
-                  <textarea 
-                    id="message" 
-                    rows={4} 
-                    placeholder="Proporcione detalles adicionales sobre su consulta"
-                  ></textarea>
-                </div>
-                
-                <button type="submit" className="submit-button">
-                  Solicitar cita
-                </button>
-                
-                <p className="form-footer">
-                  Al enviar este formulario, acepta ser contactado para coordinar su cita virtual
-                </p>
-              </form>
-            </div>
+            <Register />
           </div>
         </div>
       </div>

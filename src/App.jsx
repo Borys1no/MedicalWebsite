@@ -20,6 +20,7 @@ import PasarelaPago from './components/Pages/PasarelaPago/PasarelaPago';
 import ProfileC from "./components/Pages/ProfileC/ProfileC";
 import TransferPayment from "./components/Pages/TransferPayment/TransferPayment"
 import Citas from "./components/Pages/Admin/Citas/Citas";
+import Resgister from "./components/auth/register/Resgister";
 
 const App = () => {
   return (
@@ -31,7 +32,7 @@ const App = () => {
             <Route path="/" element={<Navigate to="/Home" />} />
             <Route path="/Home" element={<Home />} />
             <Route path="/login" element={<LoginMenu />} />
-            <Route path="/register" element={<Register />} />
+            <Route path="/Resgister" element={<Register />} />
             <Route path="/footer" element={<Footer />} />
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/cn" element={<PasarelaPago />} />
