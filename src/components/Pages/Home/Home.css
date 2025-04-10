@@ -985,14 +985,14 @@ a {
   }
 
   .home-header {
-    transform: translateY(-150px);
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding: 2rem 0.5rem;
-    height: auto;
+    padding: 2rem 1rem;
+    height: 400px;
     text-align: center;
+    margin-bottom: 150px;
   }
 
   .main-content {
@@ -1026,6 +1026,10 @@ a {
 
   .specialties-section .services-section {
     grid-template-columns: 1fr;
+  }
+  .specialties-section .section-title{
+    font-size: 2rem;
+    
   }
 
   .main-content .btn-primary {

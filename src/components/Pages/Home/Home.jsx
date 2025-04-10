@@ -128,10 +128,6 @@ const Home = () => {
                 </div>
                 {/* otros features */}
               </div>
-              <button className=" btn-primary">
-                Conocer más
-                <ArrowRight className="icon" />
-              </button>
             </div>
             <div className="doctor-image">
             <img src={assets.oficial4} alt="Foto del medico" />
