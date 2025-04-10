@@ -979,24 +979,45 @@ a {
   }
 }
 
-@media screen and (max-width: 480px) {
-  .home-header {
-    height: 400px;
+@media (max-width: 480px) {
+  .banner-image {
+    display: none;
   }
 
-  .home-content .logo {
-    font-size: 1.5rem;
+  .home-header {
+    transform: translateY(-150px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem 0.5rem;
+    height: auto;
+    text-align: center;
+  }
+
+  .main-content {
+    position: static;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 100%;
   }
 
   .main-content h1 {
-    font-size: 1rem;
-    margin-top: 30px;
+    font-size: 2rem;
+    margin-bottom: 1rem;
   }
 
   .main-content .banner-subtitle {
-    padding: 15px;
-    font-size: 1.5rem;
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
     text-align: center;
+  }
+
+  .btn-primary {
+    font-size: 1rem;
+    padding: 10px 20px;
   }
 
   .info-button-card {
@@ -1030,67 +1051,6 @@ a {
   }
 
  
-
-
-}
-@media screen and (max-width: 320px){
-  .home-header {
-    height: 670px;
-    margin-top: 10px;
-    
-  }
-  .home-header img{
-    display: none;
-  }
-
-
-  .main-content h1 {
-    font-size: 1.5rem;
-    margin-top: 30px;
-  }
-
-  .main-content .banner-subtitle {
-    padding: 15px;
-    font-size: 1rem;
-    text-align: justify;
-  }
-
-  .info-button-card {
-    width: 100%;
-  }
-  .info-buttons-section .espe h2{
-    font-size: 1.5rem;
-
-  }
-
-  .specialties-section .services-section {
-    grid-template-columns: 1fr;
-  }
-
-  .main-content .btn-primary {
-    text-align: center;
-    margin-bottom: 20px;
-  }
-  .specialties-section .parent {
-    width: 95% !important;
-  }
-
-  .specialties-section .div1 img {
-    width: 90% !important;
-    max-width: 350px !important;
-  }
-  .specialties-section h2{
-    font-size: 1.5rem;
-  }
-
-  .specialties-section .div2 {
-    font-size: 1.1rem !important;
-    padding: 15px !important;
-  }
-
-  .specialties-section .div2 h2 {
-    font-size: 1.5rem !important;
-  }
 
 
 }
