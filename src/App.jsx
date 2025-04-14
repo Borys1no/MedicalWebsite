@@ -21,6 +21,8 @@ import ProfileC from "./components/Pages/ProfileC/ProfileC";
 import TransferPayment from "./components/Pages/TransferPayment/TransferPayment"
 import Citas from "./components/Pages/Admin/Citas/Citas";
 import Resgister from "./components/auth/register/Resgister";
+import PagoTransferencia from "./components/Pages/PasarelaPago/PagosTransferencia";
+
 
 const App = () => {
   return (
@@ -38,6 +40,7 @@ const App = () => {
             <Route path="/cn" element={<PasarelaPago />} />
             <Route path="/ProfileC" element={<ProfileC/>} />
             <Route path="/transfer" element={<TransferPayment/>} />
+            <Route path="/Pagotransferencia" element={<PagoTransferencia />} />
 
             {/* Ruta protegida para agendar cita, requiere login */}
             <Route

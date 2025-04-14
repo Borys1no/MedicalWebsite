@@ -14,7 +14,7 @@ const Checkout = () => {
 
   const handleConfirmClicktransfer = () => {
     // Redirigir a la pasarela de transferencia con los detalles de la cita
-    navigate('/transfer', {
+    navigate('/Pagotransferencia', {
       state: {
         startTime,
         endTime,

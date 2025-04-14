@@ -8,6 +8,7 @@ import { db } from '../../../Firebase/firebase';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import { useAuth } from '../../../contexts/authContext';
 import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
 import './AgendarCita.css';
 
 const AgendarCita = () => {
@@ -39,19 +40,19 @@ const AgendarCita = () => {
     today.setHours(0, 0, 0, 0);
 
     if (start < today) {
-      alert('No se pueden reservar citas en fechas anteriores al día actual.');
+      Swal.fire('Error', 'No se pueden reservar citas en fechas anteriores al día actual.', 'error');
       return;
     }
 
     if (start.getHours() === 13) {
-      alert('No se pueden reservar citas durante la hora del almuerzo (13:00 - 14:00)');
+      Swal.fire('Error', 'No se pueden reservar citas durante la hora del almuerzo (13:00 - 14:00)', 'error');
       return;
     }
 
     const q = query(collection(db, 'citas'), where('startTime', '==', start));
     const querySnapshot = await getDocs(q);
     if (!querySnapshot.empty) {
-      alert('Este horario ya está reservado. Por favor, elige otro.');
+      Swal.fire('Error', 'Este horario ya está reservado. Por favor, elige otro.', 'error');
       return;
     }
 
