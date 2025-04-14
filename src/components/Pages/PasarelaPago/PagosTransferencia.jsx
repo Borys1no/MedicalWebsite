@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { auth, db, storage } from "../../../Firebase/firebase";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { ref, uploadBytes, getDownloadURL, getMetadata } from "firebase/storage";
 import { collection, addDoc } from "firebase/firestore";
 import { Button, TextField, Box, CircularProgress, Typography } from '@mui/material';
 import Swal from 'sweetalert2';
@@ -32,58 +32,87 @@ const PagoTransferencia = () => {
         }
     
         const userId = auth.currentUser.uid;
+        const userEmail = auth.currentUser.email;
         const fileName = `${Date.now()}_${comprobante.name.replace(/\s+/g, '_')}`;
         
+        // 1. Referencia al archivo en Storage
         const storageRef = ref(storage, `comprobantes/${userId}/${fileName}`);
         
-        await uploadBytes(storageRef, comprobante, {
+        // 2. Subir archivo con metadatos extendidos
+        const uploadResult = await uploadBytes(storageRef, comprobante, {
           contentType: comprobante.type,
           customMetadata: {
             uploadedBy: userId,
-            originalName: comprobante.name
+            userEmail: userEmail,
+            appointmentDate: startTime.toISOString(),
+            originalFileName: comprobante.name,
+            status: 'pending_review'
           }
         });
     
+        // 3. Obtener URL y metadatos
         const comprobanteUrl = await getDownloadURL(storageRef);
+        const fileMetadata = await getMetadata(storageRef);
         
-        // Guardar la cita en Firestore
-        await addDoc(collection(db, 'citas'), {
+        // 4. Guardar en Firestore con estructura completa
+        const citaData = {
           paciente: { 
-            email: email,
-            uid: userId 
+            email: userEmail,
+            uid: userId,
+            nombre: auth.currentUser.displayName || 'Usuario no identificado'
           },
-          startTime: new Date(startTime),
-          endTime: new Date(endTime),
+          fechaCita: {
+            start: new Date(startTime),
+            end: new Date(endTime),
+            fechaString: new Date(startTime).toLocaleDateString('es-ES')
+          },
           estado: 'pendiente',
           pago: {
             metodo: 'transferencia',
-            comprobanteUrl,
-            verificacion: false,
-            fechaSubida: new Date()
+            comprobante: {
+              url: comprobanteUrl,
+              path: uploadResult.metadata.fullPath,
+              nombreArchivo: comprobante.name,
+              tipoArchivo: comprobante.type,
+              metadata: fileMetadata.customMetadata,
+              fechaSubida: new Date()
+            },
+            verificacion: {
+              estado: false,
+              revisadoPor: null,
+              fechaRevision: null
+            }
+          },
+          metadata: {
+            creadoEl: new Date(),
+            ultimaActualizacion: new Date()
           }
-        });
+        };
 
-        // Notificación de éxito con SweetAlert2
+        await addDoc(collection(db, 'citas'), citaData);
+
+        // 5. Notificación y redirección
         await Swal.fire({
           title: '¡Comprobante cargado exitosamente!',
-          text: 'En las próximas horas le confirmaremos la cita por correo electrónico.',
+          html: `
+            <div>
+              <p>En las próximas horas le confirmaremos la cita por correo electrónico.</p>
+              <p><small>Referencia: ${fileName}</small></p>
+            </div>
+          `,
           icon: 'success',
           confirmButtonText: 'Entendido',
-          timer: 5000, // Cierra automáticamente después de 5 segundos
-          timerProgressBar: true,
-          willClose: () => {
-            navigate('/home'); // Redirección al home
-          }
+          willClose: () => navigate('/home')
         });
-
-        // Redirección por si el usuario no cierra manualmente la alerta
-        setTimeout(() => {
-          navigate('/home');
-        }, 5000);
         
       } catch (error) {
         console.error('Error al subir:', error);
-        Swal.fire('Error', `No se pudo subir el comprobante: ${error.message}`, 'error');
+        Swal.fire({
+          title: 'Error',
+          text: `No se pudo subir el comprobante: ${error.message}`,
+          icon: 'error',
+          confirmButtonText: 'Reintentar'
+        });
       } finally {
         setLoading(false);
       }
@@ -103,7 +132,7 @@ const PagoTransferencia = () => {
           fullWidth
           margin="normal"
           onChange={handleFileChange}
-          inputProps={{ accept: 'image/*,.pdf' }}
+          inputProps={{ accept: 'image/*,.pdf,.doc,.docx' }}
         />
   
         <Button
@@ -113,8 +142,9 @@ const PagoTransferencia = () => {
           disabled={loading || !comprobante}
           fullWidth
           sx={{ mt: 2 }}
+          startIcon={loading ? <CircularProgress size={20} color="inherit" /> : null}
         >
-          {loading ? <CircularProgress size={24} /> : 'Enviar Comprobante'}
+          {loading ? 'Procesando...' : 'Enviar Comprobante'}
         </Button>
       </Box>
     );
