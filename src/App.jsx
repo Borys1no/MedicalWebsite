@@ -16,13 +16,13 @@ import ProtectedRoute from "./components/ProtectedRoutes/ProtectedRoutes";
 import ProtectedRouteGeneral from "./components/ProtectedRoutes/ProtectedRouteGeneral";
 import AgendarCita from "./components/Pages/AgendarCita/AgendarCita";
 import Checkout from "./components/Pages/CheckOut/checkout";
-import PasarelaPago from './components/Pages/PasarelaPago/PasarelaPago';
+import PasarelaPago from "./components/Pages/PasarelaPago/PasarelaPago";
 import ProfileC from "./components/Pages/ProfileC/ProfileC";
-import TransferPayment from "./components/Pages/TransferPayment/TransferPayment"
+import TransferPayment from "./components/Pages/TransferPayment/TransferPayment";
 import Citas from "./components/Pages/Admin/Citas/Citas";
 import Resgister from "./components/auth/register/Resgister";
 import PagoTransferencia from "./components/Pages/PasarelaPago/PagosTransferencia";
-
+import PagoAdmin from "./components/Pages/Admin/Pagos/AdminPagos";
 
 const App = () => {
   return (
@@ -38,8 +38,8 @@ const App = () => {
             <Route path="/footer" element={<Footer />} />
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/cn" element={<PasarelaPago />} />
-            <Route path="/ProfileC" element={<ProfileC/>} />
-            <Route path="/transfer" element={<TransferPayment/>} />
+            <Route path="/ProfileC" element={<ProfileC />} />
+            <Route path="/transfer" element={<TransferPayment />} />
             <Route path="/Pagotransferencia" element={<PagoTransferencia />} />
 
             {/* Ruta protegida para agendar cita, requiere login */}
@@ -66,10 +66,17 @@ const App = () => {
             path="/Admin/Citas/Citas"
             element={
               <ProtectedRoute role="admin">
-                <Citas/>
-                </ProtectedRoute>
+                <Citas />
+              </ProtectedRoute>
             }
-          
+          />
+          <Route
+            path="/Admin/Pagos"
+            element={
+              <ProtectedRoute role="admin">
+                <PagoAdmin />
+              </ProtectedRoute>
+            }
           />
         </Routes>
       </Router>
@@ -101,6 +108,5 @@ const WithNavbarAndSidebar = () => {
     </>
   );
 };
-
 
 export default App;

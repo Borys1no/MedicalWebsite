@@ -37,8 +37,9 @@ const SideBar = () => {
   };
 
   const menuItems = [
+    { text: 'Inicio', icon: <ClipboardPlus size={20} />, path: '/dashboard/AdminHome' },
     { text: 'Agenda', icon: <CalendarDays size={20} />, path: '/Admin/Citas/Citas' },
-    {text: 'Pagos', icon: <CircleDollarSign size={20} />, path: '#'},
+    {text: 'Pagos', icon: <CircleDollarSign size={20} />, path: '/Admin/Pagos'},
     { text: 'Configuración', icon: <Settings size={20} />, path: '#' }
   ];
 
