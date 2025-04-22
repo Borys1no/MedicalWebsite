@@ -1,0 +1,19 @@
+.pagos-container {
+    display: flex;
+  }
+  
+  .sidebar {
+    width: 250px; /* o el tamaño que uses */
+    flex-shrink: 0;
+    background-color: #f5f5f5;
+    border-right: 1px solid #ddd;
+    height: 100vh;
+    position: sticky;
+    top: 0;
+  }
+  
+  .pagos-content {
+    flex: 1;
+    padding: 2rem;
+  }
+  

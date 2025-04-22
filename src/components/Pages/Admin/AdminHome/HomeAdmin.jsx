@@ -20,31 +20,63 @@ const AdminHome = () => {
   const [isUnavailableModalOpen, setIsUnavailableModalOpen] = useState(false);
   const [selectedSlot, setSelectedSlot] = useState(null);
 
+   // Función para convertir timestamp de Firestore
+   const convertirFecha = (timestamp) => {
+    if (!timestamp) return null;
+    return typeof timestamp.toDate === 'function' 
+      ? timestamp.toDate() 
+      : new Date(timestamp);
+  };
+
   // Cargar las citas del calendario
   const fetchAppointments = async (startDate, endDate) => {
     setLoading(true);
     try {
-      const q = query(
-        collection(db, 'citas'),
-        where('fechaCita', '>=', startDate),
-        where('fechaCita', '<=', endDate)
-      );
+      const q = query(collection(db, 'citas'));
       const querySnapshot = await getDocs(q);
-      const appointments = querySnapshot.docs.map((doc) => {
+      
+      const appointments = [];
+      
+      querySnapshot.forEach((doc) => {
         const data = doc.data();
-        return {
-          id: doc.id,
-          title: data.estado === 'confirmada' ? 'Cita Agendada' : 'No Disponible',
-          start: data.fechaCita.toDate(), // Usar fechaCita en lugar de startTime
-          end: data.endTime.toDate(),
-          userId: data.paciente?.identificationNumber || '', // Acceder al submapa paciente
-          zoomLink: data.zoomLink || '',
-          color: data.estado === 'confirmada' ? '#5cb85c' : '#d9534f',
-          extendedProps: {
-            paciente: data.paciente || {} // Guardar toda la info del paciente
-          }
-        };
+        
+        // Manejar ambas estructuras de fecha
+        const start = convertirFecha(data.startTime || data.fechaCita?.start);
+        const end = convertirFecha(data.endTime || data.fechaCita?.end);
+        
+        if (!start || !end) {
+          console.warn("Cita con fecha inválida:", data);
+          return;
+        }
+
+        // Filtrar por rango de fechas
+        if (start >= startDate && end <= endDate) {
+          const title = data.estado === 'rechazada' ? 'Disponible' : 
+                       data.estado === 'confirmada' ? 'Cita Agendada' : 
+                       'Pendiente de pago';
+          
+          const color = data.estado === 'confirmada' ? '#5cb85c' : 
+                       data.estado === 'pendiente_verificacion' ? '#f0ad4e' : 
+                       '#d9534f';
+          
+          appointments.push({
+            id: doc.id,
+            title: title,
+            start: start,
+            end: end,
+            userId: data.paciente?.identificationNumber || '',
+            zoomLink: data.zoomLink || '',
+            color: color,
+            extendedProps: {
+              paciente: data.paciente || {},
+              estado: data.estado,
+              metodoPago: data.pago?.metodo,
+              comprobante: data.pago?.comprobante
+            }
+          });
+        }
       });
+
       setEvents(appointments);
     } catch (error) {
       console.error('Error al cargar citas:', error);
@@ -54,16 +86,12 @@ const AdminHome = () => {
 
   // Actualizar el calendario cuando cambian las fechas visibles
   const handleDatesSet = (arg) => {
-    const startDate = arg.start;
-    const endDate = arg.end;
-    fetchAppointments(startDate, endDate);
+    fetchAppointments(arg.start, arg.end);
   };
 
   // Mostrar modal al hacer clic en un evento
   const handleEventClick = async (clickInfo) => {
     setSelectedEvent(clickInfo.event);
-    
-    // La información del paciente ya está en extendedProps
     const pacienteInfo = clickInfo.event.extendedProps.paciente;
     
     if (pacienteInfo) {
@@ -76,8 +104,6 @@ const AdminHome = () => {
         country: pacienteInfo.country,
         city: pacienteInfo.city
       });
-    } else {
-      setPatientInfo(null);
     }
     
     setIsModalOpen(true);
