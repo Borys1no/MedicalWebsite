@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { db } from "../../../Firebase/firebase";
 import { collection, addDoc, doc, getDoc, query, where, getDocs  } from 'firebase/firestore';
 import axios from 'axios';
+import Swal from "sweetalert2";
 import "./PasarelaPago.css";
 
 const PasarelaPago = () => {
@@ -22,8 +23,8 @@ const PasarelaPago = () => {
     PayboxSendmail: email || 'correo_cliente@example.com',
     PayboxRename: 'Emilio Aroca Briones Briones',
     PayboxSendname: 'Nombre Cliente',
-    PayboxBase0: '1.00',
-    PayboxBase12: '2.00',
+    PayboxBase0: '25.00',
+    PayboxBase12: '25.00',
     PayboxDescription: 'Pago de Servicios Médicos',
     PayboxProduction: false,
     PayboxEnvironment: 'sandbox',
@@ -153,14 +154,33 @@ const PasarelaPago = () => {
         };
 
         await addDoc(collection(db, 'citas'), citaData);
-        alert("Pago exitoso y cita agendada correctamente");
-        navigate('/home');
+        Swal.fire({
+          title: 'Éxito',
+          text: 'Pago exitoso y cita agendada correctamente',
+          icon: 'success',
+          confirmButtonText: 'Entendido',
+          willClose: () => {
+            navigate('/home');
+          }
+
+        })
+        
       } catch (error) {
         console.error('Error al agendar la cita:', error);
-        alert("Error al completar el proceso. Por favor contacte soporte.");
+        Swal.fire({
+          title: 'Error',
+          text: `No se pudo procesar tu solicitud: ${error.message}`,
+          icon: 'error',
+          confirmButtonText: 'Entendido',
+        });
       }
     } else {
-      alert("Pago fallido. Por favor intente nuevamente.");
+      Swal.fire({
+        title: 'Error',
+        text: 'El pago no fue exitoso. Por favor, inténtalo de nuevo.',
+        icon: 'error',
+        confirmButtonText: 'Entendido',
+      })
     }
   };
 

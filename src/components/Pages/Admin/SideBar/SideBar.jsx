@@ -83,18 +83,18 @@ const SideBar = () => {
         open={isMobile ? mobileOpen : true}
         onClose={handleDrawerToggle}
         sx={{
-          width: 240,
-          flexShrink: 0,
           '& .MuiDrawer-paper': {
             width: 240,
             boxSizing: 'border-box',
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'space-between',
             bgcolor: '#0288D1',
             color: '#fff',
-            ...(isMobile && {
-              marginTop: '64px' // Ajusta según tu header
+            // Añade estas propiedades:
+            position: 'fixed',       // Fija la posición
+            top: 0,                  // Pegado al borde superior
+            height: '100vh',         // Altura completa
+            zIndex: theme.zIndex.drawer, // Asegura que esté sobre otros elementos
+            ...(!isMobile && {
+              position: 'relative' // Comportamiento normal en desktop
             })
           },
         }}
