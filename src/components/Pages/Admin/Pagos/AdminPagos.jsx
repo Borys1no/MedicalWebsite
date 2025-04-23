@@ -9,22 +9,12 @@ import {
 } from "firebase/firestore";
 import { useAuth } from "../../../../contexts/authContext";
 import {
-  Box,
-  Typography,
-  Card,
-  CardContent,
-  Button,
   CircularProgress,
-  Grid,
-  Link,
-  Drawer,
-  useMediaQuery,
-  IconButton,
+  useMediaQuery
 } from "@mui/material";
 import axios from "axios";
 import Swal from "sweetalert2";
-import { Menu, X } from "lucide-react";
-import SideBar from "../SideBar/SideBar";
+import DashboardLayout from "../DashboardLayout/DashboardLayout";
 import "./AdminPagos.css";
 
 const AdminPagos = () => {
@@ -275,159 +265,32 @@ const AdminPagos = () => {
   if (loading) return <CircularProgress />;
 
   return (
-    <Box
-      sx={{
-        p: 3,
-        maxWidth: "100%",
-        margin: "0 auto",
-      }}
-    >
-      {isMobile && (
-        <IconButton
-          onClick={handleDrawerToggle}
-          sx={{
-            mb: 2,
-            color: "primary.main", // Color del ícono
-            "&:hover": { bgcolor: "action.hover" }, // Efecto hover
-          }}
-        >
-          {mobileOpen ? <X size={24} /> : <Menu size={24} />}
-          {/* Alterna entre Menu y X */}
-        </IconButton>
-      )}
-      <Typography
-        variant="h4"
-        gutterBottom
-        sx={{
-          textAlign: "center",
-          mb: 3,
-          fontSize: { xs: "1.5rem", sm: "2rem", md: "2.4rem" },
-        }}
-      >
-        Comprobantes de Transferencia
-      </Typography>
-
-      {/* Contenedor principal con Flexbox */}
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: { xs: "column", md: "row" },
-          alignItems: { xs: "center", md: "flex-start" },
-          marginLeft: { xs: 0, md: "-200px" }, // Igual al ancho del SideBar
-          width: { xs: "100%", md: "calc(100% - 10px)" }, // Ajuste de ancho
-        }}
-      >
-        {!isMobile && (
-          <Box sx={{ width: 280, flexShrink: 0 }}>
-            <SideBar />
-          </Box>
-        )}
-        {/* SideBar para móvil (Drawer) */}
-        {isMobile && (
-          <Drawer
-            variant="temporary"
-            open={mobileOpen}
-            onClose={handleDrawerToggle}
-            ModalProps={{ keepMounted: true }}
-            sx={{
-              "& .MuiDrawer-paper": {
-                width: 280, // Ancho igual al desktop
-                boxSizing: "border-box",
-                borderRight: "1px solid", // Borde opcional
-                borderColor: "divider",
-              },
-            }}
-          >
-            <Box sx={{ p: 2 }}>
-              <SideBar /> {/* Mismo SideBar sin cambios */}
-            </Box>
-          </Drawer>
-        )}
-        {/* SideBar con ancho fijo en desktop */}
-        <Box
-          sx={{
-            width: { xs: "100%", md: "250px" },
-            flexShrink: 0,
-            position: { md: "sticky" },
-            top: { md: 20 },
-          }}
-        >
-          <SideBar />
-        </Box>
-
-        <Box sx={{ flexGrow: 1, width: "100%" }}>
-          <Grid container spacing={2}>
-            {citas.map((cita) => {
-              const verificacion = cita.pago?.verificacion || {};
-              const comprobanteURL = cita.pago?.comprobante?.url;
-
-              return (
-                <Grid item xs={12} sm={6} md={6} key={cita.id}>
-                  <Card variant="outlined" sx={{ height: "100%" }}>
-                    <CardContent>
-                      <Typography variant="h6">
-                        {cita.paciente?.firstName} {cita.paciente?.lastName}
-                      </Typography>
-                      <Typography>Email: {cita.paciente?.email}</Typography>
-                      <Typography>
-                        Fecha: {formatearFecha(cita.fechaCita?.start)}
-                      </Typography>
-                      <Typography>Estado actual: {cita.estado}</Typography>
-                      <Typography>
-                        Revisado: {verificacion.estado ? "Sí" : "No"}
-                      </Typography>
-                      {verificacion.fechaRevision && (
-                        <Typography>
-                          Fecha de revisión:{" "}
-                          {formatearFecha(verificacion.fechaRevision)}
-                        </Typography>
-                      )}
-                      {comprobanteURL ? (
-                        <Typography>
-                          <Link
-                            href={comprobanteURL}
-                            download={`comprobante-${cita.id}.jpg`}
-                            rel="noopener"
-                            target="_blank"
-                          >
-                            Descargar Comprobante
-                          </Link>
-                        </Typography>
-                      ) : (
-                        <Typography color="error">
-                          No se ha subido un comprobante
-                        </Typography>
-                      )}
-
-                      {!verificacion.estado && (
-                        <Box sx={{ mt: 2, display: "flex", gap: 2 }}>
-                          <Button
-                            variant="contained"
-                            color="success"
-                            onClick={() => manejarAprobacion(cita.id, true)}
-                            disabled={loading}
-                          >
-                            Aprobar
-                          </Button>
-                          <Button
-                            variant="contained"
-                            color="error"
-                            onClick={() => manejarAprobacion(cita.id, false)}
-                            disabled={loading}
-                          >
-                            Rechazar
-                          </Button>
-                        </Box>
-                      )}
-                    </CardContent>
-                  </Card>
-                </Grid>
-              );
-            })}
-          </Grid>
-        </Box>
-      </Box>
-    </Box>
+    <DashboardLayout>
+      <div className="pagos-container">
+        <h1 className="pagos-title">Comprobantes de Transferencia</h1>
+        
+        <div className="pagos-grid">
+          {citas.map((cita) => {
+            const verificacion = cita.pago?.verificacion || {};
+            
+            return (
+              <div className="pagos-card" key={cita.id}>
+                <div className="card-content">
+                  <h3>{cita.paciente?.firstName} {cita.paciente?.lastName}</h3>
+                  <p><strong>Email:</strong> {cita.paciente?.email}</p>
+                  <p><strong>Fecha:</strong> {formatearFecha(cita.fechaCita?.start)}</p>
+                  <p><strong>Estado:</strong> {cita.estado}</p>
+                  <p><strong>Revisado:</strong> {verificacion.estado ? "Sí" : "No"}</p>
+                  {verificacion.fechaRevision && (
+                    <p><strong>Fecha revisión:</strong> {formatearFecha(verificacion.fechaRevision)}</p>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </DashboardLayout>
   );
 };
 

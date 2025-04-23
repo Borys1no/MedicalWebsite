@@ -1,16 +1,16 @@
-import React, { useState } from 'react';
-import { useAuth } from '../../../../contexts/authContext';
-import { useNavigate } from 'react-router-dom';
-import { auth } from '../../../../Firebase/firebase';
-import { 
-  CalendarDays, 
-  Settings, 
-  LogOut, 
-  ClipboardPlus, 
+import React, { useState } from "react";
+import { useAuth } from "../../../../contexts/authContext";
+import { useNavigate } from "react-router-dom";
+import { auth } from "../../../../Firebase/firebase";
+import {
+  CalendarDays,
+  Settings,
+  LogOut,
+  ClipboardPlus,
   CircleDollarSign,
   Menu,
-  X
-} from 'lucide-react';
+  X,
+} from "lucide-react";
 import {
   Drawer,
   List,
@@ -25,14 +25,14 @@ import {
   Avatar,
   IconButton,
   useMediaQuery,
-  useTheme
-} from '@mui/material';
+  useTheme,
+} from "@mui/material";
 
 const SideBar = () => {
   const { currentUser } = useAuth();
   const navigate = useNavigate();
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const handleDrawerToggle = () => {
@@ -42,17 +42,29 @@ const SideBar = () => {
   const handleLogout = async () => {
     try {
       await auth.signOut();
-      navigate('/login');
+      navigate("/login");
     } catch (error) {
       console.error("Error al cerrar sesión: ", error);
     }
   };
 
   const menuItems = [
-    { text: 'Inicio', icon: <ClipboardPlus size={20} />, path: '/dashboard/AdminHome' },
-    { text: 'Agenda', icon: <CalendarDays size={20} />, path: '/Admin/Citas/Citas' },
-    { text: 'Pagos', icon: <CircleDollarSign size={20} />, path: '/Admin/Pagos' },
-    { text: 'Configuración', icon: <Settings size={20} />, path: '#' }
+    {
+      text: "Inicio",
+      icon: <ClipboardPlus size={20} />,
+      path: "/dashboard/AdminHome",
+    },
+    {
+      text: "Agenda",
+      icon: <CalendarDays size={20} />,
+      path: "/Admin/Citas/Citas",
+    },
+    {
+      text: "Pagos",
+      icon: <CircleDollarSign size={20} />,
+      path: "/Admin/Pagos",
+    },
+    { text: "Configuración", icon: <Settings size={20} />, path: "#" },
   ];
 
   return (
@@ -62,15 +74,13 @@ const SideBar = () => {
         <IconButton
           onClick={handleDrawerToggle}
           sx={{
-            position: 'fixed',
+            position: "fixed",
             top: 16,
             left: 16,
-            zIndex: theme.zIndex.drawer + 1,
-            color: '#fff',
-            backgroundColor: '#0288D1',
-            '&:hover': {
-              backgroundColor: '#0277BD',
-            }
+            zIndex: theme.zIndex.drawer + 1, // Encima del Drawer
+            color: "#fff",
+            backgroundColor: "#0288D1",
+            "&:hover": { backgroundColor: "#0277BD" },
           }}
         >
           {mobileOpen ? <X size={24} /> : <Menu size={24} />}
@@ -83,24 +93,23 @@ const SideBar = () => {
         open={isMobile ? mobileOpen : true}
         onClose={handleDrawerToggle}
         sx={{
-          '& .MuiDrawer-paper': {
+          "& .MuiDrawer-paper": {
             width: 240,
-            boxSizing: 'border-box',
-            bgcolor: '#0288D1',
-            color: '#fff',
-            // Añade estas propiedades:
-            position: 'fixed',       // Fija la posición
-            top: 0,                  // Pegado al borde superior
-            height: '100vh',         // Altura completa
-            zIndex: theme.zIndex.drawer, // Asegura que esté sobre otros elementos
+            boxSizing: "border-box",
+            bgcolor: "#0288D1",
+            color: "#fff",
+            position: "fixed",
+            top: 0,
+            height: "100vh",
+            zIndex: theme.zIndex.drawer,
             ...(!isMobile && {
-              position: 'relative' // Comportamiento normal en desktop
-            })
+              position: "relative", // Comportamiento normal en desktop
+            }),
           },
         }}
       >
         <Box>
-          <Box sx={{ p: 2, textAlign: 'center' }}>
+          <Box sx={{ p: 2, textAlign: "center" }}>
             <Typography variant="h6" component="div">
               ReumaSur Administrador
             </Typography>
@@ -109,11 +118,11 @@ const SideBar = () => {
           <List>
             {menuItems.map((item) => (
               <ListItem key={item.text} disablePadding>
-                <ListItemButton 
+                <ListItemButton
                   href={item.path}
                   onClick={isMobile ? handleDrawerToggle : null} // Cierra el drawer en móvil al seleccionar
                 >
-                  <ListItemIcon sx={{ minWidth: '40px', color: '#fff' }}>
+                  <ListItemIcon sx={{ minWidth: "40px", color: "#fff" }}>
                     {item.icon}
                   </ListItemIcon>
                   <ListItemText primary={item.text} />
@@ -122,15 +131,15 @@ const SideBar = () => {
             ))}
           </List>
         </Box>
-        
+
         <Box sx={{ p: 2 }}>
           <Divider sx={{ mb: 2 }} />
-          <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+          <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
             <Avatar sx={{ mr: 1 }}>
               {currentUser?.email?.charAt(0).toUpperCase()}
             </Avatar>
             <Typography variant="body2" noWrap>
-              {currentUser ? currentUser.email : 'Cargando...'}
+              {currentUser ? currentUser.email : "Cargando..."}
             </Typography>
           </Box>
           <Button
@@ -140,12 +149,12 @@ const SideBar = () => {
             onClick={handleLogout}
             fullWidth
             sx={{
-              color: '#fff',
-              borderColor: '#fff',
-              '&:hover': {
-                borderColor: '#fff',
-                backgroundColor: 'rgba(255, 255, 255, 0.08)'
-              }
+              color: "#fff",
+              borderColor: "#fff",
+              "&:hover": {
+                borderColor: "#fff",
+                backgroundColor: "rgba(255, 255, 255, 0.08)",
+              },
             }}
           >
             Cerrar sesión
