@@ -49,9 +49,69 @@
     background-color: #E1F5FE;
     padding: 10px;
     border-radius: 5px;
-    margin-bottom: 10px;
+    margin-bottom: 50px;
 }
 
 .appointments-container ul li p strong {
     color: #0288D1;
+}
+.appointments-list {
+    list-style: none;
+    padding: 0;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.appointment-card {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    border-left: 4px solid #4CAF50;
+}
+
+.appointment-card h3 {
+    color: #2c3e50;
+    margin-top: 0;
+}
+
+.zoom-link-container {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid #eee;
+}
+
+.zoom-link-button {
+    display: inline-block;
+    background-color: #2D8CFF;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+.zoom-link-button:hover {
+    background-color: #1a73e8;
+}
+
+.zoom-notice {
+    font-size: 0.9em;
+    color: #666;
+    margin-top: 8px;
+    font-style: italic;
+}
+
+/* Estilos responsivos */
+@media (max-width: 768px) {
+    .appointment-card {
+        padding: 15px;
+    }
+    
+    .zoom-link-button {
+        display: block;
+        text-align: center;
+    }
 }

@@ -1,15 +1,23 @@
-import React, { useEffect, useState } from 'react';
-import FullCalendar from '@fullcalendar/react';
-import timeGridPlugin from '@fullcalendar/timegrid';
-import interactionPlugin from '@fullcalendar/interaction';
-import { collection, query, where, getDocs, doc, getDoc, setDoc } from 'firebase/firestore';
-import { db } from '../../../../Firebase/firebase';
-import SideBar from '../SideBar/SideBar';
-import Modal from 'react-modal';
-import './HomeAdmin.css';
+import React, { useEffect, useState } from "react";
+import FullCalendar from "@fullcalendar/react";
+import timeGridPlugin from "@fullcalendar/timegrid";
+import interactionPlugin from "@fullcalendar/interaction";
+import {
+  collection,
+  query,
+  where,
+  getDocs,
+  doc,
+  getDoc,
+  setDoc,
+} from "firebase/firestore";
+import { db } from "../../../../Firebase/firebase";
+import SideBar from "../SideBar/SideBar";
+import Modal from "react-modal";
+import "./HomeAdmin.css";
 
 // Configura el elemento del modal
-Modal.setAppElement('#root');
+Modal.setAppElement("#root");
 
 const AdminHome = () => {
   const [events, setEvents] = useState([]);
@@ -20,11 +28,11 @@ const AdminHome = () => {
   const [isUnavailableModalOpen, setIsUnavailableModalOpen] = useState(false);
   const [selectedSlot, setSelectedSlot] = useState(null);
 
-   // Función para convertir timestamp de Firestore
-   const convertirFecha = (timestamp) => {
+  // Función para convertir timestamp de Firestore
+  const convertirFecha = (timestamp) => {
     if (!timestamp) return null;
-    return typeof timestamp.toDate === 'function' 
-      ? timestamp.toDate() 
+    return typeof timestamp.toDate === "function"
+      ? timestamp.toDate()
       : new Date(timestamp);
   };
 
@@ -32,18 +40,18 @@ const AdminHome = () => {
   const fetchAppointments = async (startDate, endDate) => {
     setLoading(true);
     try {
-      const q = query(collection(db, 'citas'));
+      const q = query(collection(db, "citas"));
       const querySnapshot = await getDocs(q);
-      
+
       const appointments = [];
-      
+
       querySnapshot.forEach((doc) => {
         const data = doc.data();
-        
+
         // Manejar ambas estructuras de fecha
         const start = convertirFecha(data.startTime || data.fechaCita?.start);
         const end = convertirFecha(data.endTime || data.fechaCita?.end);
-        
+
         if (!start || !end) {
           console.warn("Cita con fecha inválida:", data);
           return;
@@ -51,35 +59,41 @@ const AdminHome = () => {
 
         // Filtrar por rango de fechas
         if (start >= startDate && end <= endDate) {
-          const title = data.estado === 'rechazada' ? 'Disponible' : 
-                       data.estado === 'confirmada' ? 'Cita Agendada' : 
-                       'Pendiente de pago';
-          
-          const color = data.estado === 'confirmada' ? '#5cb85c' : 
-                       data.estado === 'pendiente_verificacion' ? '#f0ad4e' : 
-                       '#d9534f';
-          
+          const title =
+            data.estado === "rechazada"
+              ? "Disponible"
+              : data.estado === "confirmada"
+              ? "Cita Agendada"
+              : "Pendiente de pago";
+
+          const color =
+            data.estado === "confirmada"
+              ? "#5cb85c"
+              : data.estado === "pendiente_verificacion"
+              ? "#f0ad4e"
+              : "#d9534f";
+
           appointments.push({
             id: doc.id,
             title: title,
             start: start,
             end: end,
-            userId: data.paciente?.identificationNumber || '',
-            zoomLink: data.zoomLink || '',
+            userId: data.paciente?.identificationNumber || "",
+            zoomLink: data.zoomLink || "",
             color: color,
             extendedProps: {
               paciente: data.paciente || {},
               estado: data.estado,
               metodoPago: data.pago?.metodo,
-              comprobante: data.pago?.comprobante
-            }
+              comprobante: data.pago?.comprobante,
+            },
           });
         }
       });
 
       setEvents(appointments);
     } catch (error) {
-      console.error('Error al cargar citas:', error);
+      console.error("Error al cargar citas:", error);
     }
     setLoading(false);
   };
@@ -93,7 +107,7 @@ const AdminHome = () => {
   const handleEventClick = async (clickInfo) => {
     setSelectedEvent(clickInfo.event);
     const pacienteInfo = clickInfo.event.extendedProps.paciente;
-    
+
     if (pacienteInfo) {
       setPatientInfo({
         firstName: pacienteInfo.firstName,
@@ -102,10 +116,10 @@ const AdminHome = () => {
         identificationNumber: pacienteInfo.identificationNumber,
         email: pacienteInfo.email,
         country: pacienteInfo.country,
-        city: pacienteInfo.city
+        city: pacienteInfo.city,
       });
     }
-    
+
     setIsModalOpen(true);
   };
 
@@ -115,7 +129,7 @@ const AdminHome = () => {
       setSelectedSlot(info);
       setIsUnavailableModalOpen(true);
     } else {
-      console.error('No se pudo seleccionar el horario.');
+      console.error("No se pudo seleccionar el horario.");
     }
   };
 
@@ -129,27 +143,29 @@ const AdminHome = () => {
       end.setHours(start.getHours() + 1);
 
       const newUnavailableEvent = {
-        title: 'No Disponible',
+        title: "No Disponible",
         start: start,
         end: end,
-        type: 'NoDisponible', // Añadimos el tipo de evento
-        color: '#d9534f', // Rojo para indicar no disponible
+        type: "NoDisponible", // Añadimos el tipo de evento
+        color: "#d9534f", // Rojo para indicar no disponible
       };
 
       try {
-        await setDoc(doc(collection(db, 'citas')), {
+        await setDoc(doc(collection(db, "citas")), {
           startTime: newUnavailableEvent.start,
           endTime: newUnavailableEvent.end,
-          type: 'NoDisponible', // Guardamos el tipo de evento en la base de datos
+          type: "NoDisponible", // Guardamos el tipo de evento en la base de datos
           userId: null, // Sin `userId` ya que es un horario no disponible
         });
         setEvents((prevEvents) => [...prevEvents, newUnavailableEvent]);
-        console.log('Horario marcado como no disponible correctamente.');
+        console.log("Horario marcado como no disponible correctamente.");
       } catch (error) {
-        console.error('Error al marcar como no disponible:', error);
+        console.error("Error al marcar como no disponible:", error);
       }
     } else {
-      console.error('No hay un horario seleccionado para marcar como no disponible o el horario no es válido.');
+      console.error(
+        "No hay un horario seleccionado para marcar como no disponible o el horario no es válido."
+      );
     }
     setIsUnavailableModalOpen(false);
   };
@@ -177,8 +193,8 @@ const AdminHome = () => {
           plugins={[timeGridPlugin, interactionPlugin]}
           initialView="timeGridWeek"
           slotDuration="01:00:00"
-          slotMinTime="08:00:00"
-          slotMaxTime="17:00:00"
+          slotMinTime="06:00:00"
+          slotMaxTime="19:00:00"
           weekends={false}
           height="auto"
           allDaySlot={false}
@@ -199,12 +215,22 @@ const AdminHome = () => {
           {selectedEvent && (
             <>
               <h2>Detalles de la Cita</h2>
-              <p><strong>Fecha y Hora:</strong> {new Date(selectedEvent.start).toLocaleString()}</p>
+              <p>
+                <strong>Fecha y Hora:</strong>{" "}
+                {new Date(selectedEvent.start).toLocaleString()}
+              </p>
               {patientInfo ? (
                 <>
-                  <p><strong>Nombre:</strong> {patientInfo.firstName} {patientInfo.lastName}</p>
-                  <p><strong>Teléfono:</strong> {patientInfo.phoneNumber}</p>
-                  <p><strong>Email:</strong> {patientInfo.email}</p>
+                  <p>
+                    <strong>Nombre:</strong> {patientInfo.firstName}{" "}
+                    {patientInfo.lastName}
+                  </p>
+                  <p>
+                    <strong>Teléfono:</strong> {patientInfo.phoneNumber}
+                  </p>
+                  <p>
+                    <strong>Email:</strong> {patientInfo.email}
+                  </p>
                 </>
               ) : (
                 <p>Cargando información del paciente...</p>
@@ -212,13 +238,19 @@ const AdminHome = () => {
               {/* Mostrar el enlace de Zoom */}
               {selectedEvent.extendedProps.zoomLink && (
                 <p>
-                  <strong>Enlace de Zoom:</strong>{' '}
-                  <a href={selectedEvent.extendedProps.zoomLink} target="_blank" rel="noopener noreferrer">
+                  <strong>Enlace de Zoom:</strong>{" "}
+                  <a
+                    href={selectedEvent.extendedProps.zoomLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
                     Unirse a la reunión
                   </a>
                 </p>
               )}
-              <button onClick={closeModal} className="close-modal-btn">Cerrar</button>
+              <button onClick={closeModal} className="close-modal-btn">
+                Cerrar
+              </button>
             </>
           )}
         </Modal>
@@ -235,8 +267,15 @@ const AdminHome = () => {
             <>
               <h2>Marcar como No Disponible</h2>
               <p>¿Deseas marcar este horario como no disponible?</p>
-              <button onClick={markAsUnavailable} className="confirm-modal-btn">Confirmar</button>
-              <button onClick={closeUnavailableModal} className="close-modal-btn">Cancelar</button>
+              <button onClick={markAsUnavailable} className="confirm-modal-btn">
+                Confirmar
+              </button>
+              <button
+                onClick={closeUnavailableModal}
+                className="close-modal-btn"
+              >
+                Cancelar
+              </button>
             </>
           )}
         </Modal>

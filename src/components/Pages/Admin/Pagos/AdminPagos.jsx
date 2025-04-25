@@ -1,32 +1,26 @@
 import React, { useEffect, useState } from "react";
 import { db } from "../../../../Firebase/firebase";
-import {
-  collection,
-  getDocs,
-  doc,
-  updateDoc,
-  deleteDoc,
-} from "firebase/firestore";
+import { collection, getDocs, doc, updateDoc } from "firebase/firestore";
 import { useAuth } from "../../../../contexts/authContext";
+import DashboardLayout from "../DashboardLayout/DashboardLayout";
 import {
+  Box,
+  Typography,
+  Card,
+  CardContent,
+  Button,
   CircularProgress,
-  useMediaQuery
+  Grid,
+  Link,
 } from "@mui/material";
 import axios from "axios";
 import Swal from "sweetalert2";
-import DashboardLayout from "../DashboardLayout/DashboardLayout";
-import "./AdminPagos.css";
+import SideBar from "../SideBar/SideBar";
 
 const AdminPagos = () => {
   const [citas, setCitas] = useState([]);
   const [loading, setLoading] = useState(true);
   const { user } = useAuth();
-  const [mobileOpen, setMobileOpen] = useState(false);
-  const isMobile = useMediaQuery((theme) => theme.breakpoints.down("md"));
-
-  const handleDrawerToggle = () => {
-    setMobileOpen(!mobileOpen);
-  };
 
   // Función mejorada para parsear fechas
   const parseFirestoreDate = (date) => {
@@ -218,25 +212,28 @@ const AdminPagos = () => {
         );
       } else {
         const confirmacion = await Swal.fire({
-          title: "¿Estás seguro?",
-          text: "Esta acción no se puede deshacer.",
-          icon: "warning",
+          title: '¿Estás seguro?',
+          text: "Esta acción rechazará y eliminará permanentemente la cita. No podrás revertir esto.",
+          icon: 'warning',
           showCancelButton: true,
-          confirmButtonColor: "#d33",
-          cancelButtonColor: "#3085d6",
-          confirmButtonText: "Sí, rechazar",
-          cancelButtonText: "Cancelar",
+          confirmButtonColor: '#d33',
+          cancelButtonColor: '#3085d6',
+          confirmButtonText: 'Sí, eliminar',
+          cancelButtonText: 'Cancelar'
         });
-
         if (!confirmacion.isConfirmed) return;
-        setLoading(true);
 
-        await deleteDoc(citaRef);
-        setCitas((prev) => prev.filter((c) => c.id !== id));
+      setLoading(true);
+        // Solo actualizar estado si es rechazado
+        await updateDoc(citaRef);
+
+        // Actualizar estado local para rechazo
+        setCitas(prev => prev.filter(c => c.id !== id));
+
         Swal.fire(
-          "Eliminada",
-          "La cita ha sido rechazada y eliminada correctamente.",
-          "success"
+          'Eliminada',
+          'La cita ha sido rechazada y eliminada correctamente.',
+          'success'
         );
       }
     } catch (error) {
@@ -265,32 +262,111 @@ const AdminPagos = () => {
   if (loading) return <CircularProgress />;
 
   return (
-    <DashboardLayout>
-      <div className="pagos-container">
-        <h1 className="pagos-title">Comprobantes de Transferencia</h1>
+    
+    <Box sx={{ p: 3 }}>
+    <Typography
+      variant="h4"
+      gutterBottom
+      sx={{
+        textAlign: "center",
+        mb: 3,
+      }}
+    >
+      Comprobantes de Transferencia
+    </Typography>
+
+    {/* Contenedor principal con Flexbox */}
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: { xs: "column", md: "row" },
+        gap: 2,
+      }}
+    >
+      {/* SideBar con ancho fijo en desktop */}
+      <Box sx={{
+        width: { xs: "100%", md: "250px" },
+        flexShrink: 0,
+        marginTop: { xs: 0, md: "-90px" },
+        marginLeft: { xs: 0, md: "-25px" },
         
-        <div className="pagos-grid">
+        }}>
+        <SideBar />
+      </Box>
+
+      <Box sx={{ flexGrow: 1 }}>
+        <Grid container spacing={2}>
           {citas.map((cita) => {
             const verificacion = cita.pago?.verificacion || {};
-            
+            const comprobanteURL = cita.pago?.comprobante?.url;
+
             return (
-              <div className="pagos-card" key={cita.id}>
-                <div className="card-content">
-                  <h3>{cita.paciente?.firstName} {cita.paciente?.lastName}</h3>
-                  <p><strong>Email:</strong> {cita.paciente?.email}</p>
-                  <p><strong>Fecha:</strong> {formatearFecha(cita.fechaCita?.start)}</p>
-                  <p><strong>Estado:</strong> {cita.estado}</p>
-                  <p><strong>Revisado:</strong> {verificacion.estado ? "Sí" : "No"}</p>
-                  {verificacion.fechaRevision && (
-                    <p><strong>Fecha revisión:</strong> {formatearFecha(verificacion.fechaRevision)}</p>
-                  )}
-                </div>
-              </div>
+              <Grid item xs={12} md={6} key={cita.id}>
+                <Card variant="outlined">
+                  <CardContent>
+                    <Typography variant="h6">
+                      {cita.paciente?.firstName} {cita.paciente?.lastName}
+                    </Typography>
+                    <Typography>Email: {cita.paciente?.email}</Typography>
+                    <Typography>
+                      Fecha: {formatearFecha(cita.fechaCita?.start)}
+                    </Typography>
+                    <Typography>Estado actual: {cita.estado}</Typography>
+                    <Typography>
+                      Revisado: {verificacion.estado ? "Sí" : "No"}
+                    </Typography>
+                    {verificacion.fechaRevision && (
+                      <Typography>
+                        Fecha de revisión:{" "}
+                        {formatearFecha(verificacion.fechaRevision)}
+                      </Typography>
+                    )}
+                    {comprobanteURL ? (
+                      <Typography>
+                        <Link
+                          href={comprobanteURL}
+                          download={`comprobante-${cita.id}.jpg`}
+                          rel="noopener"
+                          target="_blank"
+                        >
+                          Descargar Comprobante
+                        </Link>
+                      </Typography>
+                    ) : (
+                      <Typography color="error">
+                        No se ha subido un comprobante
+                      </Typography>
+                    )}
+
+                    {!verificacion.estado && (
+                      <Box sx={{ mt: 2, display: "flex", gap: 2 }}>
+                        <Button
+                          variant="contained"
+                          color="success"
+                          onClick={() => manejarAprobacion(cita.id, true)}
+                          disabled={loading}
+                        >
+                          Aprobar
+                        </Button>
+                        <Button
+                          variant="contained"
+                          color="error"
+                          onClick={() => manejarAprobacion(cita.id, false)}
+                          disabled={loading}
+                        >
+                          Rechazar
+                        </Button>
+                      </Box>
+                    )}
+                  </CardContent>
+                </Card>
+              </Grid>
             );
           })}
-        </div>
-      </div>
-    </DashboardLayout>
+        </Grid>
+      </Box>
+    </Box>
+  </Box>
   );
 };
 

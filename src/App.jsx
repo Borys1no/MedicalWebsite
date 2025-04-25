@@ -32,7 +32,14 @@ const App = () => {
           {/* Rutas públicas y protegidas con Navbar y Footer */}
           <Route element={<WithNavbarFooter />}>
             <Route path="/" element={<Navigate to="/Home" />} />
-            <Route path="/Home" element={<Home />} />
+            <Route
+              path="/Home"
+              element={
+                <ProtectedRouteGeneral>
+                  <Home />
+                </ProtectedRouteGeneral>
+              }
+            />
             <Route path="/login" element={<LoginMenu />} />
             <Route path="/Resgister" element={<Register />} />
             <Route path="/footer" element={<Footer />} />
