@@ -106,6 +106,14 @@
 
 /* Estilos responsivos */
 @media (max-width: 768px) {
+    .profile-page {
+        flex-direction: column;
+        align-items: center;
+        width: 700px;
+        height: auto;
+        padding: 10px;  
+        margin-left: -180px;        
+    }
     .appointment-card {
         padding: 15px;
     }

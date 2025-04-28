@@ -48,7 +48,7 @@ const ProtectedRoute = ({ role, children }) => {
 
   // Verificación de roles para rutas protegidas
   if (role && userRole !== role) {
-    return <Navigate to={userRole === 'admin' ? "/dashboard/AdminHome" : "/home"} replace />;
+    return <Navigate to={userRole === 'admin' ? "/dashboard/AdminHome" : "/Home"} replace />;
   }
 
   return children;

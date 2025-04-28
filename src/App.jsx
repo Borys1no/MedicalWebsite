@@ -23,6 +23,7 @@ import Citas from "./components/Pages/Admin/Citas/Citas";
 import Resgister from "./components/auth/register/Resgister";
 import PagoTransferencia from "./components/Pages/PasarelaPago/PagosTransferencia";
 import PagoAdmin from "./components/Pages/Admin/Pagos/AdminPagos";
+import PublicRoute from "./components/ProtectedRoutes/PublicRoutes";
 
 const App = () => {
   return (
@@ -31,15 +32,19 @@ const App = () => {
         <Routes>
           {/* Rutas públicas y protegidas con Navbar y Footer */}
           <Route element={<WithNavbarFooter />}>
-            <Route path="/" element={<Navigate to="/Home" />} />
             <Route
-              path="/Home"
+              path="/"
               element={
-                <ProtectedRouteGeneral>
-                  <Home />
-                </ProtectedRouteGeneral>
+                <PublicRoute>
+                  <Navigate to="/Home" />
+                </PublicRoute>
               }
             />
+            <Route path="/Home" element={
+              <PublicRoute>
+              <Home />
+              </PublicRoute>
+              } />
             <Route path="/login" element={<LoginMenu />} />
             <Route path="/Resgister" element={<Register />} />
             <Route path="/footer" element={<Footer />} />

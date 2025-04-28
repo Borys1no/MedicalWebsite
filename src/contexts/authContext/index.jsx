@@ -1,7 +1,9 @@
 import React, { useContext, useState, useEffect } from "react";
 import { auth } from "../../Firebase/firebase";
 import { onAuthStateChanged } from "firebase/auth";
-import { doSignOut } from "../../Firebase/auth"; // Asegúrate de importar doSignOut
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "../../Firebase/firebase";
+import { doSignOut } from "../../Firebase/auth";
 
 const AuthContext = React.createContext();
 
@@ -11,6 +13,7 @@ export function useAuth() {
 
 export function AuthProvider({ children }) {
   const [currentUser, setCurrentUser] = useState(null);
+  const [userRole, setUserRole] = useState(null); // Nuevo estado para el rol
   const [userLoggedIn, setUserLoggedIn] = useState(false);
   const [isEmailUser, setIsEmailUser] = useState(false);
   const [isGoogleUser, setIsGoogleUser] = useState(false);
@@ -24,6 +27,12 @@ export function AuthProvider({ children }) {
   async function initializeUser(user) {
     if (user) {
       setCurrentUser({ ...user });
+      
+      // Obtener el rol del usuario desde Firestore
+      const userDoc = await getDoc(doc(db, "users", user.uid));
+      if (userDoc.exists()) {
+        setUserRole(userDoc.data().role);
+      }
 
       // Check if provider is email and password login
       const isEmail = user.providerData.some(
@@ -31,27 +40,21 @@ export function AuthProvider({ children }) {
       );
       setIsEmailUser(isEmail);
 
-      // Check if the auth provider is google or not
-      // const isGoogle = user.providerData.some(
-      //   (provider) => provider.providerId === GoogleAuthProvider.PROVIDER_ID
-      // );
-      // setIsGoogleUser(isGoogle);
-
       setUserLoggedIn(true);
     } else {
       setCurrentUser(null);
+      setUserRole(null);
       setUserLoggedIn(false);
     }
-
     setLoading(false);
   }
 
-  // Función para cerrar sesión
   async function logout() {
     try {
-      await doSignOut(); // Llamamos al método para cerrar sesión
-      setCurrentUser(null); // Limpiamos el estado del usuario
-      setUserLoggedIn(false); // Actualizamos el estado de sesión
+      await doSignOut();
+      setCurrentUser(null);
+      setUserRole(null);
+      setUserLoggedIn(false);
     } catch (error) {
       console.error("Error al cerrar sesión:", error);
     }
@@ -59,11 +62,13 @@ export function AuthProvider({ children }) {
 
   const value = {
     currentUser,
+    userRole, // Añadimos el rol al contexto
     userLoggedIn,
     isEmailUser,
     isGoogleUser,
+    loading,
     setCurrentUser,
-    logout, // Añadimos el método logout al objeto value
+    logout,
   };
 
   return (

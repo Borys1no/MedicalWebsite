@@ -24,6 +24,7 @@ const ProtectedRouteGeneral = ({ children }) => {
   }, [currentUser]);
 
   if (loading) return <div>Cargando...</div>;
+  
 
   if (!currentUser) {
     return <Navigate to="/login" state={{ from: location }} replace />;
