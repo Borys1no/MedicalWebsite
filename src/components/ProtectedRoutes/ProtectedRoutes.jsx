@@ -30,7 +30,9 @@ const ProtectedRoute = ({ role, children }) => {
     '/dashboard',
     '/dashboard/AdminHome',
     '/Admin/Citas/Citas',
-    '/Admin/Pagos'
+    '/Admin/Pagos',
+    '/Admin/settings/ConfiguracionCitas',
+
   ];
 
   if (loading) {

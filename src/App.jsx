@@ -24,6 +24,7 @@ import Resgister from "./components/auth/register/Resgister";
 import PagoTransferencia from "./components/Pages/PasarelaPago/PagosTransferencia";
 import PagoAdmin from "./components/Pages/Admin/Pagos/AdminPagos";
 import PublicRoute from "./components/ProtectedRoutes/PublicRoutes";
+import ConfiguracionCitas from "./components/Pages/Admin/settings/ConfiguracionCitas";
 
 const App = () => {
   return (
@@ -87,6 +88,14 @@ const App = () => {
             element={
               <ProtectedRoute role="admin">
                 <PagoAdmin />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/Admin/settings/ConfiguracionCitas"
+            element={
+              <ProtectedRoute role="admin">
+                <ConfiguracionCitas />
               </ProtectedRoute>
             }
           />
