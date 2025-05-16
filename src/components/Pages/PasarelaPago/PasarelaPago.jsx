@@ -15,16 +15,60 @@ const PasarelaPago = () => {
   const [userData, setUserData] = useState({
     firstName: '',
     lastName: '',
-    phoneNumber: ''
+    phoneNumber: '',
+    ubication: 'EC'
   });
+  const [price, setPrice] = useState(100); //valor por defecto
+  const [loadingPrice, setLoadingPrice] = useState(true);
+
+  // Obtener datos del usuario y determinar el precio
+  useEffect(()=>{
+    const fetchUserDataAndPrice = async() =>{
+      if(!email){
+        console.error("Error: Email no proporcionado");
+        setLoadingPrice(false);
+        return;
+      }
+      try{
+        const usersRef = collection(db, 'users');
+        const q = query(usersRef, where('email', '==', email));
+        const querySnapshot = await getDocs(q);
+        if (querySnapshot.empty) {
+          console.error(`Usuario con email ${email} no encontrado`);
+          setLoadingPrice(false);
+          return;
+        }
+        const userDoc = querySnapshot.docs[0];
+        const userData = userDoc.data();
+
+        // Determinar el precio basado en el país del usuario
+        const userCountry = userData.ubication || 'EC';
+        const userPrice = userCountry === 'EC' ? 100 : 150;
+
+        setUserData({
+          firstName: userData.firstName || '',
+          lastName: userData.lastName || '',
+          phoneNumber: userData.phoneNumber || '',
+          ubication: userCountry
+        });
+        setPrice(userPrice);
+      } catch (error) {
+        console.error("Error al obtener datos del usuario:", error);
+      } finally {
+        setLoadingPrice(false);
+      }
+    };
+    fetchUserDataAndPrice();
+
+  }, [email]);
 
   const [data, setData] = useState({
     PayboxRemail: 'agenda.reumasur@gmail.com',
     PayboxSendmail: email || 'correo_cliente@example.com',
     PayboxRename: 'Emilio Aroca Briones Briones',
     PayboxSendname: 'Nombre Cliente',
-    PayboxBase0: '25.00',
-    PayboxBase12: '25.00',
+    PayboxBase0: '0.00', //se actualiza según el país
+    PayboxBase12: '0.00', //se actualiza según el país
     PayboxDescription: 'Pago de Servicios Médicos',
     PayboxProduction: false,
     PayboxEnvironment: 'sandbox',
@@ -82,6 +126,7 @@ const PasarelaPago = () => {
   
           setData(prev => ({
             ...prev,
+            PayboxBase12: price.toFixed(2),
             PayboxSendmail: email,
             PayboxSendname: `${userData.firstName || ''} ${userData.lastName || ''}`.trim() || 'Cliente',
             PayBoxClientPhone: userData.phoneNumber || 'Sin teléfono'
@@ -95,7 +140,7 @@ const PasarelaPago = () => {
       };
   
       fetchUserData();
-    }, [email]);
+    }, [price, email, userData, loadingPrice ]);
 
   // Carga el script de PagoPlux
   useEffect(() => {
@@ -204,7 +249,6 @@ const PasarelaPago = () => {
 
   const handlePayment = () => {
     if (window.Data) {
-      console.log("Iniciando proceso de pago con los siguientes datos:", data);
       window.Data.init(data);
     } else {
       console.error("Data no está definido. Asegúrate de que el script de PagoPlux esté cargado.");

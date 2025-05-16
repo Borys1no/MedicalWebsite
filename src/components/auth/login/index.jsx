@@ -3,7 +3,7 @@ import { Navigate, Link, useNavigate } from 'react-router-dom';
 import { doSignInWithEmailAndPassword } from '../../../Firebase/auth';
 import { useAuth } from '../../../contexts/authContext';
 import { db } from '../../../Firebase/firebase';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import './login.css'; // Importa los estilos
 
 const Login = () => {
@@ -17,6 +17,34 @@ const Login = () => {
     const [errorMessage, setErrorMessage] = useState('');
     const [loading, setLoading] = useState(true);
     const [role, setRole] = useState(null);
+    const [userCountry, setUserCountry] = useState(null);
+
+
+    const detectUserCountry = async () =>{
+        try{
+            const position = await new Promise((resolve, reject)=>{
+                navigator.geolocation.getCurrentPosition(resolve, reject,{
+                    timeout: 5000,
+                    enableHighAccuracy: true
+                });
+            });
+            const response = await fetch(
+                `https://nominatim.openstreetmap.org/reverse?format=json&lat=${position.coords.latitude}&lon=${position.coords.longitude}`
+            );
+            const data = await response.json();
+            return data.address?.country || null;
+        }catch (geoError){
+            console.error("Geolocalización falló, intentando por IP...");
+        }
+        try{
+            const ipResponse = await fetch('https://ipapi.co/json/');
+            const ipData =await ipResponse.json();
+            return ipData.country || null;
+        }catch (ipError){
+            console.error("Error al obtener el país por IP:", ipError);
+            return null; 
+        }
+    }
 
     useEffect(() => {
         if (auth?.currentUser) {
@@ -63,7 +91,18 @@ const Login = () => {
 
                 if (userDoc.exists()) {
                     const role = userDoc.data().role;
+                    //Detectar el país del usuario
+                    const detectedCountry = await detectUserCountry();
+                    const isEcuador = detectedCountry === 'Ecuador';
+                    setUserCountry(isEcuador ? "EC" : "foreign");
 
+                    //Actualizar el país del usuario en Firestore
+                    await updateDoc(doc(db, 'users', user.uid), {
+                        ubication: isEcuador ? "EC" : "foreign",
+                        lastLocationUpdate: new Date()
+                    });
+
+                    // Redirigir según el rol del usuario
                     if (role === 'admin') {
                         navigate('/dashboard/AdminHome');
                     } else {
