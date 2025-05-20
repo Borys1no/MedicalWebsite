@@ -25,6 +25,7 @@ import PagoTransferencia from "./components/Pages/PasarelaPago/PagosTransferenci
 import PagoAdmin from "./components/Pages/Admin/Pagos/AdminPagos";
 import PublicRoute from "./components/ProtectedRoutes/PublicRoutes";
 import ConfiguracionCitas from "./components/Pages/Admin/settings/ConfiguracionCitas";
+import Reportes from "./components/Pages/Admin/Reports/Reportes";
 
 const App = () => {
   return (
@@ -96,6 +97,14 @@ const App = () => {
             element={
               <ProtectedRoute role="admin">
                 <ConfiguracionCitas />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/Admin/Reports/Reportes"
+            element={
+              <ProtectedRoute role="admin">
+                <Reportes />
               </ProtectedRoute>
             }
           />

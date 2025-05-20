@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import PasarelaPago from '../PasarelaPago/PasarelaPago';
+import { collection, query, where, getDocs } from 'firebase/firestore';
+import { db } from '../../../Firebase/firebase';
 import './checkout.css';
 
 const Checkout = () => {
@@ -11,6 +13,45 @@ const Checkout = () => {
 
   // Estado para controlar la visibilidad de la pasarela de pago
   const [showPasarela, setShowPasarela] = useState(false);
+  const [ubication, setUbication] = useState('EC');
+  const [price, setPrice] = useState(100); // Valor por defecto 
+  const [loadingPrice, setLoadingPrice] = useState(true);
+
+  useEffect(() => {
+    const fetchUbicationAndSetPrice = async () => {
+      if (!email) {
+        console.error("Email no proporcionado");
+        setLoadingPrice(false);
+        return;
+      }
+
+      try {
+        const usersRef = collection(db, 'users');
+        const q = query(usersRef, where('email', '==', email));
+        const querySnapshot = await getDocs(q);
+
+        if (!querySnapshot.empty) {
+          const userData = querySnapshot.docs[0].data();
+          const userUbication = userData.ubication || 'EC';
+
+          setUbication(userUbication);
+          setPrice(userUbication === 'EC' ? 100 : 150);
+        } else {
+          console.warn("Usuario no encontrado, usando valores por defecto.");
+        }
+      } catch (error) {
+        console.error("Error al obtener datos del usuario:", error);
+      } finally {
+        setLoadingPrice(false);
+      }
+    };
+
+    fetchUbicationAndSetPrice();
+  }, [email]);
+
+  if (loadingPrice) {
+    return <div className="loading-message">Cargando información de usuario...</div>;
+  }
 
   const handleConfirmClicktransfer = () => {
     // Redirigir a la pasarela de transferencia con los detalles de la cita
@@ -36,7 +77,7 @@ const Checkout = () => {
           <>
             <p><strong>Fecha y Hora de Inicio:</strong> {new Date(startTime).toLocaleString()}</p>
             <p><strong>Fecha y Hora de Fin:</strong> {new Date(endTime).toLocaleString()}</p>
-            <p><strong>Precio:</strong> $50.00</p>
+            <p><strong>Precio:</strong> ${price}</p>
           </>
         ) : (
           <p>No se encontró información sobre la cita. Por favor, intenta nuevamente.</p>

@@ -10,6 +10,7 @@ import {
   CircleDollarSign,
   Menu,
   X,
+  FolderDown
 } from "lucide-react";
 import {
   Drawer,
@@ -67,6 +68,10 @@ const SideBar = () => {
     { text: "Configuración",
       icon: <Settings size={20} />, 
       path: "/Admin/settings/ConfiguracionCitas" 
+    },
+    { text: "Reportes",
+      icon: <FolderDown size={20} />, 
+      path: "/Admin/Reports/Reportes" 
     },
   ];
 

@@ -32,6 +32,7 @@ const ProtectedRoute = ({ role, children }) => {
     '/Admin/Citas/Citas',
     '/Admin/Pagos',
     '/Admin/settings/ConfiguracionCitas',
+    '/Admin/Reports/Reportes',
 
   ];
 

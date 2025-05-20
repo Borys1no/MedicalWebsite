@@ -26,12 +26,13 @@ import {
   ToggleButton,
   ToggleButtonGroup,
 } from "@mui/material";
-import { format, 
-  startOfDay, 
-  endOfDay, 
-  startOfWeek, 
-  endOfWeek, 
-  startOfMonth, 
+import {
+  format,
+  startOfDay,
+  endOfDay,
+  startOfWeek,
+  endOfWeek,
+  startOfMonth,
   endOfMonth,
   isWithinInterval,
   addDays,
@@ -39,11 +40,15 @@ import { format,
   addMonths,
   subDays,
   subWeeks,
-  subMonths} from "date-fns";
+  subMonths,
+} from "date-fns";
 import { es } from "date-fns/locale";
+import ReporteCitasPDF from "./ReporteCitasPDF";
 import SideBar from "../SideBar/SideBar";
+import { PDFDownloadLink } from "@react-pdf/renderer";
 
-const Citas = () => {
+
+const Reportes = () => {
   const [citas, setCitas] = useState([]);
   const [allCitas, setAllCitas] = useState([]); // Todas las citas sin filtrar
   const [citaSelected, setCitaSelected] = useState(null);
@@ -67,12 +72,12 @@ const Citas = () => {
       try {
         const querySnapshot = await getDocs(collection(db, "citas"));
         const citasData = [];
-        
+
         querySnapshot.forEach((doc) => {
           const data = doc.data();
           const start = convertirFecha(data.startTime || data.fechaCita?.start);
           const end = convertirFecha(data.endTime || data.fechaCita?.end);
-          
+
           if (start && end) {
             citasData.push({
               id: doc.id,
@@ -80,8 +85,10 @@ const Citas = () => {
               endTime: end,
               fechaCita: start,
               paciente: {
-                nombre: data.paciente 
-                  ? `${data.paciente.firstName || ""} ${data.paciente.lastName || ""}`.trim()
+                nombre: data.paciente
+                  ? `${data.paciente.firstName || ""} ${
+                      data.paciente.lastName || ""
+                    }`.trim()
                   : "No especificado",
                 email: data.paciente?.email || "No especificado",
                 telefono: data.paciente?.phoneNumber || "No especificado",
@@ -89,7 +96,10 @@ const Citas = () => {
               estado: data.estado || "pendiente",
               pago: {
                 metodo: data.pago?.metodo || "No especificado",
-                estado: data.respuesta?.description || data.pago?.estado || "No especificado",
+                estado:
+                  data.respuesta?.description ||
+                  data.pago?.estado ||
+                  "No especificado",
                 monto: data.detail?.amount || "No especificado",
                 tarjeta: data.detail?.cardInfo || "No especificado",
               },
@@ -120,7 +130,7 @@ const Citas = () => {
     }
 
     let startDate, endDate;
-    
+
     switch (filterType) {
       case "day":
         startDate = startOfDay(currentDate);
@@ -138,9 +148,11 @@ const Citas = () => {
         return;
     }
 
-    const filtered = allCitas.filter(cita => 
-      isWithinInterval(cita.startTime, { start: startDate, end: endDate })
-      || isWithinInterval(cita.endTime, { start: startDate, end: endDate }));
+    const filtered = allCitas.filter(
+      (cita) =>
+        isWithinInterval(cita.startTime, { start: startDate, end: endDate }) ||
+        isWithinInterval(cita.endTime, { start: startDate, end: endDate })
+    );
 
     setCitas(filtered);
   }, [filterType, currentDate, allCitas]);
@@ -154,13 +166,25 @@ const Citas = () => {
   const navigateDate = (direction) => {
     switch (filterType) {
       case "day":
-        setCurrentDate(direction === "next" ? addDays(currentDate, 1) : subDays(currentDate, 1));
+        setCurrentDate(
+          direction === "next"
+            ? addDays(currentDate, 1)
+            : subDays(currentDate, 1)
+        );
         break;
       case "week":
-        setCurrentDate(direction === "next" ? addWeeks(currentDate, 1) : subWeeks(currentDate, 1));
+        setCurrentDate(
+          direction === "next"
+            ? addWeeks(currentDate, 1)
+            : subWeeks(currentDate, 1)
+        );
         break;
       case "month":
-        setCurrentDate(direction === "next" ? addMonths(currentDate, 1) : subMonths(currentDate, 1));
+        setCurrentDate(
+          direction === "next"
+            ? addMonths(currentDate, 1)
+            : subMonths(currentDate, 1)
+        );
         break;
       default:
         break;
@@ -172,7 +196,11 @@ const Citas = () => {
       case "day":
         return format(currentDate, "PPPP", { locale: es });
       case "week":
-        return `${format(startOfWeek(currentDate, { locale: es }), "d MMM", { locale: es })} - ${format(endOfWeek(currentDate, { locale: es }), "d MMM yyyy", { locale: es })}`;
+        return `${format(startOfWeek(currentDate, { locale: es }), "d MMM", {
+          locale: es,
+        })} - ${format(endOfWeek(currentDate, { locale: es }), "d MMM yyyy", {
+          locale: es,
+        })}`;
       case "month":
         return format(currentDate, "MMMM yyyy", { locale: es });
       default:
@@ -255,10 +283,15 @@ const Citas = () => {
       <SideBar />
       <div style={{ flex: 1, padding: "20px" }}>
         <Typography variant="h4" gutterBottom>
-          Gestión de Citas
+          Gestión de Reportes
         </Typography>
-         {/* Controles de filtrado */}
-        <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
+        {/* Controles de filtrado */}
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+          mb={3}
+        >
           <ToggleButtonGroup
             value={filterType}
             exclusive
@@ -279,27 +312,63 @@ const Citas = () => {
             </ToggleButton>
           </ToggleButtonGroup>
 
-          {filterType !== "all" && (
-            <Box display="flex" alignItems="center">
-              <Button onClick={() => navigateDate("prev")} variant="outlined">
-                Anterior
-              </Button>
-              <Typography variant="h6" mx={2}>
-                {getDateRangeText()}
-              </Typography>
-              <Button onClick={() => navigateDate("next")} variant="outlined">
-                Siguiente
-              </Button>
-              <Button 
-                onClick={() => setCurrentDate(new Date())} 
-                variant="contained" 
-                color="primary" 
-                sx={{ ml: 2 }}
-              >
-                Hoy
-              </Button>
-            </Box>
-          )}
+          <Box display="flex" alignItems="center" gap={2}>
+            {filterType !== "all" && (
+              <>
+                <Button onClick={() => navigateDate("prev")} variant="outlined">
+                  Anterior
+                </Button>
+                <Typography variant="h6" mx={2}>
+                  {getDateRangeText()}
+                </Typography>
+                <Button onClick={() => navigateDate("next")} variant="outlined">
+                  Siguiente
+                </Button>
+                <Button
+                  onClick={() => setCurrentDate(new Date())}
+                  variant="contained"
+                  color="primary"
+                  sx={{ ml: 2 }}
+                >
+                  Hoy
+                </Button>
+
+                {/* Botón para descargar PDF */}
+                <PDFDownloadLink
+                  document={
+                    <ReporteCitasPDF
+                      citas={citas}
+                      filtro={
+                        filterType === "day"
+                          ? "Diario"
+                          : filterType === "week"
+                          ? "Semanal"
+                          : "Mensual"
+                      }
+                      rango={getDateRangeText()}
+                    />
+                  }
+                  fileName={`reporte-citas-${filterType}-${format(
+                    new Date(),
+                    "yyyy-MM-dd"
+                  )}.pdf`}
+                >
+                  {({ loading }) => (
+                    <Button
+                      variant="contained"
+                      color="secondary"
+                      disabled={loading || citas.length === 0}
+                      startIcon={
+                        loading ? <CircularProgress size={20} /> : null
+                      }
+                    >
+                      {loading ? "Generando PDF..." : "Descargar Reporte"}
+                    </Button>
+                  )}
+                </PDFDownloadLink>
+              </>
+            )}
+          </Box>
         </Box>
 
         <TableContainer component={Paper}>
@@ -311,7 +380,6 @@ const Citas = () => {
                 <TableCell>Hora</TableCell>
                 <TableCell>Método de Pago</TableCell>
                 <TableCell>Estado</TableCell>
-                <TableCell>Zoom</TableCell>
                 <TableCell>Acciones</TableCell>
               </TableRow>
             </TableHead>
@@ -341,25 +409,9 @@ const Citas = () => {
                         color={getEstadoColor(cita.estado)}
                       />
                     </TableCell>
-                    <TableCell>
-                      {cita.zoomLink !== "No disponible" ? (
-                        <Link href={cita.zoomLink} target="_blank" rel="noopener">
-                          Unirse
-                        </Link>
-                      ) : (
-                        "No disponible"
-                      )}
-                    </TableCell>
+
                     <TableCell>
                       <Box display="flex" gap={1}>
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          size="small"
-                          onClick={() => handleOpenModal(cita)}
-                        >
-                          Cambiar Estado
-                        </Button>
                         <Button
                           variant="outlined"
                           size="small"
@@ -381,56 +433,6 @@ const Citas = () => {
             </TableBody>
           </Table>
         </TableContainer>
-
-        {/* Modal para cambiar estado */}
-        <Dialog open={modalOpen} onClose={handleCloseModal}>
-          <DialogTitle>Cambiar estado de la cita</DialogTitle>
-          <DialogContent>
-            {citaSelected && (
-              <>
-                <Typography gutterBottom>
-                  Paciente: <strong>{citaSelected.paciente.nombre}</strong>
-                </Typography>
-                <Typography gutterBottom>
-                  Fecha:{" "}
-                  <strong>
-                    {format(citaSelected.fechaCita, "dd/MM/yyyy", { locale: es })}
-                  </strong>
-                </Typography>
-                <Typography gutterBottom>
-                  Hora:{" "}
-                  <strong>
-                    {format(citaSelected.startTime, "HH:mm")} -{" "}
-                    {format(citaSelected.endTime, "HH:mm")}
-                  </strong>
-                </Typography>
-
-                <Box mt={3}>
-                  <Typography variant="subtitle1" gutterBottom>
-                    Seleccionar nuevo estado:
-                  </Typography>
-                  <Select fullWidth value={estado} onChange={handleEstadoChange}>
-                    <MenuItem value="confirmada">Confirmada</MenuItem>
-                    <MenuItem value="completada">Completada</MenuItem>
-                    <MenuItem value="cancelada">Cancelada</MenuItem>
-                    <MenuItem value="pendiente_verificacion">Pendiente verificación</MenuItem>
-                    <MenuItem value="rechazada">Rechazada</MenuItem>
-                  </Select>
-                </Box>
-              </>
-            )}
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleCloseModal}>Cancelar</Button>
-            <Button
-              onClick={actualizarEstadoCita}
-              color="primary"
-              variant="contained"
-            >
-              Guardar Cambios
-            </Button>
-          </DialogActions>
-        </Dialog>
 
         {/* Modal para detalles de la cita */}
         <Dialog
@@ -533,4 +535,4 @@ const Citas = () => {
   );
 };
 
-export default Citas;
+export default Reportes;
