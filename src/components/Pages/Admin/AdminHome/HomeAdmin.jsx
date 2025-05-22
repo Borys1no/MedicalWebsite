@@ -59,19 +59,23 @@ const AdminHome = () => {
 
         // Filtrar por rango de fechas
         if (start >= startDate && end <= endDate) {
-          const title =
-            data.estado === "rechazada"
-              ? "Disponible"
-              : data.estado === "confirmada"
-              ? "Cita Agendada"
-              : "Pendiente de pago";
+          let title = "Pendiente de pago";
+          let color = "#d9534f";
 
-          const color =
-            data.estado === "confirmada"
-              ? "#5cb85c"
-              : data.estado === "pendiente_verificacion"
-              ? "#f0ad4e"
-              : "#d9534f";
+          // Detectar eventos marcados como no disponibles
+          if (data.type === "NoDisponible") {
+            title = "No Disponible";
+            color = "#d9534f";
+          } else if (data.estado === "rechazada") {
+            title = "Disponible";
+            color = "#5bc0de";
+          } else if (data.estado === "confirmada") {
+            title = "Cita Agendada";
+            color = "#5cb85c";
+          } else if (data.estado === "pendiente_verificacion") {
+            title = "Pendiente de Verificación";
+            color = "#f0ad4e";
+          }
 
           appointments.push({
             id: doc.id,
