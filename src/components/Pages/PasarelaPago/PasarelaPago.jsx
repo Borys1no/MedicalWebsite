@@ -11,6 +11,7 @@ const PasarelaPago = () => {
   const navigate = useNavigate();
   const { state } = location;
   const { startTime, endTime, email } = state || {};
+  const executedRef = useRef(false);
 
   const [userData, setUserData] = useState({
     firstName: "",
@@ -119,6 +120,9 @@ const PasarelaPago = () => {
   useEffect(() => {
     if (scriptLoaded && !onAuthorizeDefined && !loadingUserData) {
       window.onAuthorize = async function (response) {
+        if (executedRef.current) return;
+        executedRef.current = true;
+        
         if (response.status === "succeeded") {
           if (!email || !startTime || !endTime) {
             throw new Error("Faltan datos esenciales para agendar la cita");
