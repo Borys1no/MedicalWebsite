@@ -71,7 +71,7 @@ const AgendarCita = () => {
         });
 
         setEvents(appointments);
-        console.log("Citas:", appointments);
+        
         setHasFutureAppointments(userHasFutureAppointment);
       } catch (error) {
         console.error("Error al cargar citas:", error);
