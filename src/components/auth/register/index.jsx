@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Navigate, Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../../contexts/authContext";
 import { doCreateUserWithEmailAndPassword } from "../../../Firebase/auth";
 import { db } from "../../../Firebase/firebase";
 import { doc, setDoc } from "firebase/firestore";
+import { Country, State, City } from "country-state-city";
 
 // Material UI Components
 import {
@@ -59,6 +60,43 @@ const Register = ({
     ...initialValues,
   });
 
+  const [selectedCountry, setSelectedCountry] = useState("");
+  const [selectedState, setSelectedState] = useState("");
+  const [selectedCity, setSelectedCity] = useState("");
+
+  const [countryList, setCountryList] = useState([]);
+  const [stateList, setStateList] = useState([]);
+  const [cityList, setCityList] = useState([]);
+
+  useEffect(() => {
+    const countries = Country.getAllCountries();
+    setCountryList(countries);
+  }, []);
+
+  const handleCountryChange = (e) => {
+    const countryCode = e.target.value;
+    setSelectedCountry(countryCode);
+    setSelectedState("");
+    setSelectedCity("");
+
+    const states = State.getStatesOfCountry(countryCode);
+    setStateList(states);
+    setSelectedState("");
+    setCityList([]);
+  };
+  const handleStateChange = (e) => {
+    const stateCode = e.target.value;
+    setSelectedState(stateCode);
+    setSelectedCity("");
+    const cities = City.getCitiesOfState(selectedCountry, stateCode);
+    setCityList(cities);
+  };
+
+  const handleCityChange = (e) => {
+    const city = e.target.value;
+    setSelectedCity(city);
+  };
+
   const [isRegistering, setIsRegistering] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [errors, setErrors] = useState({});
@@ -86,6 +124,16 @@ const Register = ({
       ...prev,
     }));
   };
+
+  useEffect(() => {
+  setFormData((prev) => ({
+    ...prev,
+    country: selectedCountry,
+    province: selectedState,
+    city: selectedCity,
+  }));
+}, [selectedCountry, selectedState, selectedCity]);
+
 
   const validateForm = () => {
     const newErrors = {};
@@ -314,33 +362,42 @@ const Register = ({
             <Grid item xs={12} sm={6}></Grid>
 
             <Grid item xs={12} sm={6}>
-              <TextField
-                fullWidth
-                name="country"
-                label="País"
-                value={formData.country}
-                onChange={handleChange}
-              />
+              <FormControl fullWidth>
+                <InputLabel>País</InputLabel>
+                <Select value={selectedCountry} onChange={handleCountryChange}>
+                  {countryList.map((country) => (
+                    <MenuItem key={country.isoCode} value={country.isoCode}>
+                      {country.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
             </Grid>
 
             <Grid item xs={12} sm={6}>
-              <TextField
-                fullWidth
-                name="province"
-                label="Provincia"
-                value={formData.province}
-                onChange={handleChange}
-              />
+              <FormControl fullWidth disabled={!stateList.length}>
+                <InputLabel>Provincia/Estado</InputLabel>
+                <Select value={selectedState} onChange={handleStateChange}>
+                  {stateList.map((state) => (
+                    <MenuItem key={state.isoCode} value={state.isoCode}>
+                      {state.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
             </Grid>
 
             <Grid item xs={12} sm={6}>
-              <TextField
-                fullWidth
-                name="city"
-                label="Ciudad"
-                value={formData.city}
-                onChange={handleChange}
-              />
+              <FormControl fullWidth disabled={!cityList.length}>
+                <InputLabel>Ciudad</InputLabel>
+                <Select value={selectedCity} onChange={handleCityChange}>
+                  {cityList.map((city, index) => (
+                    <MenuItem key={index} value={city.name}>
+                      {city.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
             </Grid>
 
             <Grid item xs={12}>
@@ -357,7 +414,7 @@ const Register = ({
               <TextField
                 fullWidth
                 name="postalCode"
-                label="Código Postal"
+                label="Código Postal (Opcional)"
                 value={formData.postalCode}
                 onChange={handleChange}
               />

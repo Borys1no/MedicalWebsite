@@ -25,7 +25,7 @@ const PasarelaPago = () => {
   const [data, setData] = useState({
     PayboxRemail: "agenda.reumasur@gmail.com",
     PayboxSendmail: email || "correo_cliente@example.com",
-    PayboxRename: "Emilio Aroca Briones Briones",
+    PayboxRename: "Emilio Aroca Briones",
     PayboxSendname: "Nombre Cliente",
     PayboxBase0: "0.00",
     PayboxBase12: "0.00",
