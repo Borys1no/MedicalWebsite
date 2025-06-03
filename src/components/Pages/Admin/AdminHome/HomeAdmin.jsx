@@ -10,10 +10,12 @@ import {
   doc,
   getDoc,
   setDoc,
+  deleteDoc
 } from "firebase/firestore";
 import { db } from "../../../../Firebase/firebase";
 import SideBar from "../SideBar/SideBar";
 import Modal from "react-modal";
+import Swal from "sweetalert2";
 import "./HomeAdmin.css";
 
 // Configura el elemento del modal
@@ -109,8 +111,37 @@ const AdminHome = () => {
 
   // Mostrar modal al hacer clic en un evento
   const handleEventClick = async (clickInfo) => {
-    setSelectedEvent(clickInfo.event);
-    const pacienteInfo = clickInfo.event.extendedProps.paciente;
+  const event = clickInfo.event;
+  
+  // Si es un horario marcado como No Disponible
+  if (event.title === "No Disponible") {
+    try{
+      const result = await Swal.fire({
+      title: "¿Liberar horario?",
+      text: "¿Deseas liberar este horario marcado como No Disponible?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Sí, liberar",
+      cancelButtonText: "Cancelar",
+      });
+      if (result.isConfirmed) {
+      await deleteUnavailableSlot(event);
+    }
+    } catch (error){
+      Swal.fire({
+        title: "Error",
+        text: "No se pudo liberar el horario. Por favor, inténtalo de nuevo.",
+        icon: "error",
+      });
+      console.error("Error al liberar el horario:", error);
+    }
+    
+    
+  } 
+  // Si es una cita normal
+  else {
+    setSelectedEvent(event);
+    const pacienteInfo = event.extendedProps.paciente;
 
     if (pacienteInfo) {
       setPatientInfo({
@@ -125,7 +156,25 @@ const AdminHome = () => {
     }
 
     setIsModalOpen(true);
-  };
+  }
+};
+
+  const handleEventDelete = async (clickInfo) => {
+  const event = clickInfo.event;
+  
+  if (event.title === "No Disponible") {
+    const confirmDelete = window.confirm(
+      "¿Deseas liberar este horario marcado como No Disponible?"
+    );
+    
+    if (confirmDelete) {
+      await deleteUnavailableSlot(event);
+    }
+  } else {
+    // Aquí puedes manejar otros tipos de eventos si lo deseas
+    console.log("Este no es un horario marcado como No Disponible");
+  }
+};
 
   // Mostrar modal para marcar como no disponible al hacer clic en un slot vacío
   const handleDateClick = (info) => {
@@ -187,6 +236,36 @@ const AdminHome = () => {
     setSelectedSlot(null);
   };
 
+  const deleteUnavailableSlot = async (event) => {
+  try {
+    // Buscar el documento en Firestore que coincide con este evento
+    const q = query(
+      collection(db, "citas"),
+      where("startTime", "==", event.start),
+      where("type", "==", "NoDisponible")
+    );
+    
+    const querySnapshot = await getDocs(q);
+    
+    if (!querySnapshot.empty) {
+      // Eliminar cada documento encontrado (debería ser solo uno)
+      const deletePromises = querySnapshot.docs.map(async (doc) => {
+        await deleteDoc(doc.ref);
+      });
+      
+      await Promise.all(deletePromises);
+      
+      // Actualizar el estado local eliminando el evento
+      setEvents(prevEvents => prevEvents.filter(e => e.id !== event.id));
+      console.log("Horario liberado correctamente.");
+    } else {
+      console.error("No se encontró el horario no disponible en la base de datos.");
+    }
+  } catch (error) {
+    console.error("Error al liberar el horario:", error);
+  }
+};
+
   return (
     <div className="admin-container">
       <SideBar />
@@ -204,7 +283,7 @@ const AdminHome = () => {
           allDaySlot={false}
           events={events}
           datesSet={handleDatesSet}
-          eventClick={handleEventClick}
+          eventClick ={handleEventClick} // Manejador
           dateClick={handleDateClick} // Manejador para clic en fecha no reservada
         />
 

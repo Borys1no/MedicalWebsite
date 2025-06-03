@@ -12,23 +12,111 @@ import {
   CircularProgress,
   Grid,
   Link,
+  ToggleButton,
+  ToggleButtonGroup,
 } from "@mui/material";
 import axios from "axios";
 import Swal from "sweetalert2";
 import SideBar from "../SideBar/SideBar";
+import { 
+  format,
+  startOfDay,
+  endOfDay,
+  startOfWeek,
+  endOfWeek,
+  startOfMonth,
+  endOfMonth,
+  isWithinInterval,
+  addDays,
+  addWeeks,
+  addMonths,
+  subDays,
+  subWeeks,
+  subMonths,
+ } from "date-fns";
+import { es } from "date-fns/locale"; // Importar el locale español
 
 const AdminPagos = () => {
   const [citas, setCitas] = useState([]);
+  const [allcitas, setAllCitas] = useState([]);
   const [loading, setLoading] = useState(true);
   const { user } = useAuth();
 
-  // Función mejorada para parsear fechas
+  const [filterType, setFilterType] = useState("all");
+  const [currentDate, setCurrentDate] = useState(new Date());
+
+   // Función para parsear fechas
   const parseFirestoreDate = (date) => {
     if (!date) return null;
-    if (date.toDate) return date.toDate(); // Firebase Timestamp
-    if (date instanceof Date) return date; // Ya es Date
-    return new Date(date); // String ISO o timestamp numérico
+    if (date.toDate) return date.toDate();
+    if (date instanceof Date) return date;
+    return new Date(date);
   };
+
+  // Función para formatear fechas
+  const formatearFecha = (fecha) => {
+    try {
+      const date = parseFirestoreDate(fecha);
+      return date.toLocaleString("es-ES", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+    } catch {
+      return "Fecha inválida";
+    }
+  };
+
+  // Función para obtener el texto del rango de fechas
+  const getDateRangeText = () => {
+    switch (filterType) {
+      case "day":
+        return format(currentDate, "PPPP", { locale: es });
+      case "week":
+        return `${format(startOfWeek(currentDate, { locale: es }), "d MMM", {
+          locale: es,
+        })} - ${format(endOfWeek(currentDate, { locale: es }), "d MMM yyyy", {
+          locale: es,
+        })}`;
+      case "month":
+        return format(currentDate, "MMMM yyyy", { locale: es });
+      default:
+        return "Todos los pagos";
+    }
+  };
+
+  // Función para navegar entre fechas
+  const navigateDate = (direction) => {
+    switch (filterType) {
+      case "day":
+        setCurrentDate(
+          direction === "next"
+            ? addDays(currentDate, 1)
+            : subDays(currentDate, 1)
+        );
+        break;
+      case "week":
+        setCurrentDate(
+          direction === "next"
+            ? addWeeks(currentDate, 1)
+            : subWeeks(currentDate, 1)
+        );
+        break;
+      case "month":
+        setCurrentDate(
+          direction === "next"
+            ? addMonths(currentDate, 1)
+            : subMonths(currentDate, 1)
+        );
+        break;
+      default:
+        break;
+    }
+  };
+
+  
 
   // Función para enviar correo de confirmación
   const enviarCorreoConfirmacion = async (cita) => {
@@ -102,7 +190,7 @@ const AdminPagos = () => {
             const verificadoB = b.pago?.verificacion?.estado ? 1 : 0;
             return verificadoA - verificadoB;
           });
-
+        setAllCitas(citasTransferencia);
         setCitas(citasTransferencia);
       } catch (error) {
         console.error("Error al obtener citas:", error);
@@ -113,6 +201,36 @@ const AdminPagos = () => {
 
     fetchCitas();
   }, []);
+
+  useEffect(() =>{
+    if (filterType === "all"){
+      setCitas(allcitas);
+      return;
+    }
+    let startDate, endDate;
+    switch (filterType){
+      case "day":
+      startDate = startOfDay(currentDate);
+      endDate = endOfDay(currentDate);
+      break;
+    case "week":
+      startDate = startOfWeek(currentDate, { locale: es });
+      endDate = endOfWeek(currentDate, { locale: es });
+      break;
+    case "month":
+      startDate = startOfMonth(currentDate);
+      endDate = endOfMonth(currentDate);
+      break;
+    default:
+      return;
+    }
+    const filtered = allcitas.filter((cita) =>
+    isWithinInterval(cita.fechaCita.start, {
+      start: startDate,
+      end: endDate })
+    );
+    setCitas(filtered);
+  }, [filterType, currentDate, allcitas]);
 
   const manejarAprobacion = async (id, aprobado) => {
     const estado = aprobado ? "confirmada" : "rechazada";
@@ -244,130 +362,162 @@ const AdminPagos = () => {
     }
   };
 
-  const formatearFecha = (fecha) => {
-    try {
-      const date = parseFirestoreDate(fecha);
-      return date.toLocaleString("es-ES", {
-        day: "2-digit",
-        month: "2-digit",
-        year: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-      });
-    } catch {
-      return "Fecha inválida";
-    }
-  };
-
   if (loading) return <CircularProgress />;
 
   return (
-    
-    <Box sx={{ p: 3 }}>
-    <Typography
-      variant="h4"
-      gutterBottom
-      sx={{
-        textAlign: "center",
-        mb: 3,
-      }}
-    >
-      Comprobantes de Transferencia
-    </Typography>
+  <Box sx={{ display: 'flex', minHeight: '100vh' }}>
+    {/* Sidebar fijo */}
+    <Box sx={{ 
+      width: '250px',
+      flexShrink: 0,
+      position: 'sticky',
+      top: 0,
+      height: '100vh',
+      overflowY: 'auto',
+      borderRight: '1px solid rgba(0, 0, 0, 0.12)'
+    }}>
+      <SideBar />
+    </Box>
 
-    {/* Contenedor principal con Flexbox */}
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: { xs: "column", md: "row" },
-        gap: 2,
-      }}
-    >
-      {/* SideBar con ancho fijo en desktop */}
-      <Box sx={{
-        width: { xs: "100%", md: "250px" },
-        flexShrink: 0,
-        marginTop: { xs: 0, md: "-90px" },
-        marginLeft: { xs: 0, md: "-25px" },
-        
-        }}>
-        <SideBar />
+    {/* Contenido principal */}
+    <Box sx={{ 
+      flexGrow: 1,
+      p: 3,
+      display: 'flex',
+      flexDirection: 'column'
+    }}>
+      {/* Título */}
+      <Typography variant="h4" gutterBottom sx={{ textAlign: "center", mb: 3 }}>
+        Comprobantes de Transferencia
+      </Typography>
+
+      {/* Controles de filtrado */}
+      <Box sx={{ 
+        mb: 3,
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        flexWrap: 'wrap',
+        gap: 2
+      }}>
+        <ToggleButtonGroup
+          value={filterType}
+          exclusive
+          onChange={(e, newFilterType) => setFilterType(newFilterType)}
+          aria-label="Filtro de tiempo"
+          sx={{ flexWrap: 'wrap' }}
+        >
+          <ToggleButton value="all" aria-label="Todos">Todos</ToggleButton>
+          <ToggleButton value="day" aria-label="Día">Día</ToggleButton>
+          <ToggleButton value="week" aria-label="Semana">Semana</ToggleButton>
+          <ToggleButton value="month" aria-label="Mes">Mes</ToggleButton>
+        </ToggleButtonGroup>
+
+        {filterType !== "all" && (
+          <Box display="flex" alignItems="center" gap={2} sx={{ flexWrap: 'wrap' }}>
+            <Button onClick={() => navigateDate("prev")} variant="outlined">
+              Anterior
+            </Button>
+            <Typography variant="h6" sx={{ textAlign: 'center' }}>
+              {getDateRangeText()}
+            </Typography>
+            <Button onClick={() => navigateDate("next")} variant="outlined">
+              Siguiente
+            </Button>
+            <Button
+              onClick={() => setCurrentDate(new Date())}
+              variant="contained"
+              color="primary"
+            >
+              Hoy
+            </Button>
+          </Box>
+        )}
       </Box>
 
+      {/* Lista de citas */}
       <Box sx={{ flexGrow: 1 }}>
-        <Grid container spacing={2}>
-          {citas.map((cita) => {
-            const verificacion = cita.pago?.verificacion || {};
-            const comprobanteURL = cita.pago?.comprobante?.url;
-
-            return (
-              <Grid item xs={12} md={6} key={cita.id}>
-                <Card variant="outlined">
-                  <CardContent>
-                    <Typography variant="h6">
-                      {cita.paciente?.firstName} {cita.paciente?.lastName}
-                    </Typography>
-                    <Typography>Email: {cita.paciente?.email}</Typography>
-                    <Typography>
-                      Fecha: {formatearFecha(cita.fechaCita?.start)}
-                    </Typography>
-                    <Typography>Estado actual: {cita.estado}</Typography>
-                    <Typography>
-                      Revisado: {verificacion.estado ? "Sí" : "No"}
-                    </Typography>
-                    {verificacion.fechaRevision && (
+        {loading ? (
+          <Box display="flex" justifyContent="center" alignItems="center" minHeight="200px">
+            <CircularProgress />
+          </Box>
+        ) : (
+          <Grid container spacing={2}>
+            {citas.length > 0 ? (
+              citas.map((cita) => (
+                <Grid item xs={12} md={6} key={cita.id}>
+                  <Card variant="outlined">
+                    <CardContent>
+                      <Typography variant="h6">
+                        {cita.paciente?.firstName} {cita.paciente?.lastName}
+                      </Typography>
+                      <Typography>Email: {cita.paciente?.email}</Typography>
                       <Typography>
-                        Fecha de revisión:{" "}
-                        {formatearFecha(verificacion.fechaRevision)}
+                        Fecha: {formatearFecha(cita.fechaCita?.start)}
                       </Typography>
-                    )}
-                    {comprobanteURL ? (
+                      <Typography>Estado actual: {cita.estado}</Typography>
                       <Typography>
-                        <Link
-                          href={comprobanteURL}
-                          download={`comprobante-${cita.id}.jpg`}
-                          rel="noopener"
-                          target="_blank"
-                        >
-                          Descargar Comprobante
-                        </Link>
+                        Revisado: {cita.pago?.verificacion?.estado ? "Sí" : "No"}
                       </Typography>
-                    ) : (
-                      <Typography color="error">
-                        No se ha subido un comprobante
-                      </Typography>
-                    )}
+                      {cita.pago?.verificacion?.fechaRevision && (
+                        <Typography>
+                          Fecha de revisión: {formatearFecha(cita.pago.verificacion.fechaRevision)}
+                        </Typography>
+                      )}
+                      {cita.pago?.comprobante?.url ? (
+                        <Typography>
+                          <Link
+                            href={cita.pago.comprobante.url}
+                            download={`comprobante-${cita.id}.jpg`}
+                            rel="noopener"
+                            target="_blank"
+                          >
+                            Descargar Comprobante
+                          </Link>
+                        </Typography>
+                      ) : (
+                        <Typography color="error">
+                          No se ha subido un comprobante
+                        </Typography>
+                      )}
 
-                    {!verificacion.estado && (
-                      <Box sx={{ mt: 2, display: "flex", gap: 2 }}>
-                        <Button
-                          variant="contained"
-                          color="success"
-                          onClick={() => manejarAprobacion(cita.id, true)}
-                          disabled={loading}
-                        >
-                          Aprobar
-                        </Button>
-                        <Button
-                          variant="contained"
-                          color="error"
-                          onClick={() => manejarAprobacion(cita.id, false)}
-                          disabled={loading}
-                        >
-                          Rechazar
-                        </Button>
-                      </Box>
-                    )}
-                  </CardContent>
-                </Card>
+                      {!cita.pago?.verificacion?.estado && (
+                        <Box sx={{ mt: 2, display: "flex", gap: 2 }}>
+                          <Button
+                            variant="contained"
+                            color="success"
+                            onClick={() => manejarAprobacion(cita.id, true)}
+                            disabled={loading}
+                          >
+                            Aprobar
+                          </Button>
+                          <Button
+                            variant="contained"
+                            color="error"
+                            onClick={() => manejarAprobacion(cita.id, false)}
+                            disabled={loading}
+                          >
+                            Rechazar
+                          </Button>
+                        </Box>
+                      )}
+                    </CardContent>
+                  </Card>
+                </Grid>
+              ))
+            ) : (
+              <Grid item xs={12}>
+                <Typography variant="body1" textAlign="center">
+                  No hay citas con transferencias pendientes
+                </Typography>
               </Grid>
-            );
-          })}
-        </Grid>
+            )}
+          </Grid>
+        )}
       </Box>
     </Box>
   </Box>
-  );
+);
 };
 
 export default AdminPagos;

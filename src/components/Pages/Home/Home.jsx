@@ -64,7 +64,7 @@ const Home = () => {
 
   const whatsapp =[
     {
-      phoneNumber: '593985340336',
+      phoneNumber: '593980304357',
       message: '¡Hola! Me gustaría obtener más información.'
 
     },

@@ -64,11 +64,27 @@ body {
   z-index: 999;
   /* Debe estar debajo del modal pero encima del calendario */
 }
+/* Botón de Confirmar */
+.confirm-modal-btn{
+  margin-top: 1rem;
+  background-color: #2874a6;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  margin-right: 30px;
+}
+.confirm-modal-btn:hover {
+  background-color: #1c5980;
+}
+
 
 /* Botón de Cerrar */
 .close-modal-btn {
   margin-top: 1rem;
-  background-color: #2874a6;
+  background-color: #d9534f;
   color: white;
   border: none;
   padding: 10px 20px;
@@ -78,5 +94,5 @@ body {
 }
 
 .close-modal-btn:hover {
-  background-color: #1b5e86;
+  background-color: #b4423e;
 }
