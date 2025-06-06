@@ -4,6 +4,7 @@ import { doSignInWithEmailAndPassword } from '../../../Firebase/auth';
 import { useAuth } from '../../../contexts/authContext';
 import { db } from '../../../Firebase/firebase';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
+import Swal from 'sweetalert2';
 import './login.css'; // Importa los estilos
 
 const Login = () => {
@@ -112,8 +113,13 @@ const Login = () => {
                     setErrorMessage("No se encontró el rol del usuario.");
                 }
             } catch (error) {
-                console.error("Error en el inicio de sesión:", error);
-                setErrorMessage("Error en el inicio de sesión: " + error.message);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Error al iniciar sesión: Usuario o contraseña incorrectos.'
+
+                })
+                setErrorMessage("Error en el inicio de sesión: Usuario o contraseña incorrectos. ");
             } finally {
                 setIsSigningIn(false);
             }

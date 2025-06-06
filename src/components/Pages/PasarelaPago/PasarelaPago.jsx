@@ -153,6 +153,7 @@ const PasarelaPago = () => {
                 status: "completado",
                 fecha: new Date(),
                 metodo: "PagoPlux",
+                monto: price,
                 respuesta: response,
               },
               metadata: {
