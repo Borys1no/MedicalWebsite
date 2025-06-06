@@ -26,6 +26,7 @@ import PagoAdmin from "./components/Pages/Admin/Pagos/AdminPagos";
 import PublicRoute from "./components/ProtectedRoutes/PublicRoutes";
 import ConfiguracionCitas from "./components/Pages/Admin/settings/ConfiguracionCitas";
 import Reportes from "./components/Pages/Admin/Reports/Reportes";
+import ProfileSettings from "./components/Pages/ProfileSettings/ProfileSettings";
 
 const App = () => {
   return (
@@ -55,6 +56,7 @@ const App = () => {
             <Route path="/ProfileC" element={<ProfileC />} />
             <Route path="/transfer" element={<TransferPayment />} />
             <Route path="/Pagotransferencia" element={<PagoTransferencia />} />
+            <Route path="/ProfileSettings" element={<ProfileSettings />} />
 
             {/* Ruta protegida para agendar cita, requiere login */}
             <Route
