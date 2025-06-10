@@ -131,7 +131,7 @@ const PasarelaPago = () => {
             const userTimeZone =
               Intl.DateTimeFormat().resolvedOptions().timeZone;
             const zoomResponse = await axios.post(
-              "https://zoommicroservice-production.up.railway.app/create-appointment",
+              "https://zoommicroservice.fly.dev/create-appointment",
               {
                 userEmail: email,
                 startTime: new Date(startTime).toISOString(),

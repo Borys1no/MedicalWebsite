@@ -10,7 +10,7 @@ import {
   doc,
   getDoc,
   setDoc,
-  deleteDoc
+  deleteDoc,
 } from "firebase/firestore";
 import { db } from "../../../../Firebase/firebase";
 import SideBar from "../SideBar/SideBar";
@@ -111,70 +111,68 @@ const AdminHome = () => {
 
   // Mostrar modal al hacer clic en un evento
   const handleEventClick = async (clickInfo) => {
-  const event = clickInfo.event;
-  
-  // Si es un horario marcado como No Disponible
-  if (event.title === "No Disponible") {
-    try{
-      const result = await Swal.fire({
-      title: "¿Liberar horario?",
-      text: "¿Deseas liberar este horario marcado como No Disponible?",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonText: "Sí, liberar",
-      cancelButtonText: "Cancelar",
-      });
-      if (result.isConfirmed) {
-      await deleteUnavailableSlot(event);
-    }
-    } catch (error){
-      Swal.fire({
-        title: "Error",
-        text: "No se pudo liberar el horario. Por favor, inténtalo de nuevo.",
-        icon: "error",
-      });
-      console.error("Error al liberar el horario:", error);
-    }
-    
-    
-  } 
-  // Si es una cita normal
-  else {
-    setSelectedEvent(event);
-    const pacienteInfo = event.extendedProps.paciente;
+    const event = clickInfo.event;
 
-    if (pacienteInfo) {
-      setPatientInfo({
-        firstName: pacienteInfo.firstName,
-        lastName: pacienteInfo.lastName,
-        phoneNumber: pacienteInfo.phoneNumber,
-        identificationNumber: pacienteInfo.identificationNumber,
-        email: pacienteInfo.email,
-        country: pacienteInfo.country,
-        city: pacienteInfo.city,
-      });
+    // Si es un horario marcado como No Disponible
+    if (event.title === "No Disponible") {
+      try {
+        const result = await Swal.fire({
+          title: "¿Liberar horario?",
+          text: "¿Deseas liberar este horario marcado como No Disponible?",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonText: "Sí, liberar",
+          cancelButtonText: "Cancelar",
+        });
+        if (result.isConfirmed) {
+          await deleteUnavailableSlot(event);
+        }
+      } catch (error) {
+        Swal.fire({
+          title: "Error",
+          text: "No se pudo liberar el horario. Por favor, inténtalo de nuevo.",
+          icon: "error",
+        });
+        console.error("Error al liberar el horario:", error);
+      }
     }
+    // Si es una cita normal
+    else {
+      setSelectedEvent(event);
+      const pacienteInfo = event.extendedProps.paciente;
 
-    setIsModalOpen(true);
-  }
-};
+      if (pacienteInfo) {
+        setPatientInfo({
+          firstName: pacienteInfo.firstName,
+          lastName: pacienteInfo.lastName,
+          phoneNumber: pacienteInfo.phoneNumber,
+          identificationNumber: pacienteInfo.identificationNumber,
+          email: pacienteInfo.email,
+          country: pacienteInfo.country,
+          city: pacienteInfo.city,
+        });
+      }
+
+      setIsModalOpen(true);
+    }
+  };
 
   const handleEventDelete = async (clickInfo) => {
-  const event = clickInfo.event;
-  
-  if (event.title === "No Disponible") {
-    const confirmDelete = window.confirm(
-      "¿Deseas liberar este horario marcado como No Disponible?"
-    );
-    
-    if (confirmDelete) {
-      await deleteUnavailableSlot(event);
+    const event = clickInfo.event;
+
+    if (event.title === "No Disponible") {
+      const confirmDelete = window.confirm(
+        "¿Deseas liberar este horario marcado como No Disponible?"
+      );
+
+      if (confirmDelete) {
+        await deleteUnavailableSlot(event);
+      }
+    } else {
+      // Aquí puedes manejar otros tipos de eventos si lo deseas
+      console.log("Este no es un horario marcado como No Disponible");
     }
-  } else {
-    // Aquí puedes manejar otros tipos de eventos si lo deseas
-    console.log("Este no es un horario marcado como No Disponible");
-  }
-};
+  };
 
   // Mostrar modal para marcar como no disponible al hacer clic en un slot vacío
   const handleDateClick = (info) => {
@@ -237,34 +235,121 @@ const AdminHome = () => {
   };
 
   const deleteUnavailableSlot = async (event) => {
-  try {
-    // Buscar el documento en Firestore que coincide con este evento
-    const q = query(
-      collection(db, "citas"),
-      where("startTime", "==", event.start),
-      where("type", "==", "NoDisponible")
-    );
-    
-    const querySnapshot = await getDocs(q);
-    
-    if (!querySnapshot.empty) {
-      // Eliminar cada documento encontrado (debería ser solo uno)
-      const deletePromises = querySnapshot.docs.map(async (doc) => {
-        await deleteDoc(doc.ref);
-      });
-      
-      await Promise.all(deletePromises);
-      
-      // Actualizar el estado local eliminando el evento
-      setEvents(prevEvents => prevEvents.filter(e => e.id !== event.id));
-      console.log("Horario liberado correctamente.");
-    } else {
-      console.error("No se encontró el horario no disponible en la base de datos.");
+    try {
+      // Buscar el documento en Firestore que coincide con este evento
+      const q = query(
+        collection(db, "citas"),
+        where("startTime", "==", event.start),
+        where("type", "==", "NoDisponible")
+      );
+
+      const querySnapshot = await getDocs(q);
+
+      if (!querySnapshot.empty) {
+        // Eliminar cada documento encontrado (debería ser solo uno)
+        const deletePromises = querySnapshot.docs.map(async (doc) => {
+          await deleteDoc(doc.ref);
+        });
+
+        await Promise.all(deletePromises);
+
+        // Actualizar el estado local eliminando el evento
+        setEvents((prevEvents) => prevEvents.filter((e) => e.id !== event.id));
+        console.log("Horario liberado correctamente.");
+      } else {
+        console.error(
+          "No se encontró el horario no disponible en la base de datos."
+        );
+      }
+    } catch (error) {
+      console.error("Error al liberar el horario:", error);
     }
-  } catch (error) {
-    console.error("Error al liberar el horario:", error);
-  }
-};
+  };
+
+  const [isRescheduleModalOpen, setIsRescheduleModalOpen] = useState(false);
+  const [newAppointmentTime, setNewAppointmentTime] = useState({
+    start: null,
+    end: null,
+  });
+
+  const handleReschedule = (event) => {
+    setSelectedEvent(event);
+    setIsModalOpen(false);
+    setIsRescheduleModalOpen(true);
+  };
+
+  const handleNewTimeSelect = (selectedTime) => {
+    const endTime = new Date(selectedTime);
+    endTime.setHours(endTime.getHours() + 1);
+
+    setNewAppointmentTime({
+      start: selectedTime,
+      end: endTime,
+    });
+  };
+
+  const confirmReschedule = async () => {
+    if (!newAppointmentTime.start || !selectedEvent) {
+      Swal.fire({
+        title: "Error",
+        text: "Por favor, selecciona una nueva fecha y hora para la cita.",
+        icon: "error",
+      });
+      return;
+    }
+
+    try {
+      const appointmentRef = doc(db, "citas", selectedEvent.id);
+      await setDoc(
+        appointmentRef,
+        {
+          startTime: newAppointmentTime.start,
+          endTime: newAppointmentTime.end,
+          zoomLink: selectedEvent.extendedProps.zoomLink,
+        },
+        { merge: true }
+      );
+
+      const response = await fetch(
+        "https://zoommicroservice.fly.dev/reschedule",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            appointmentId: selectedEvent.id,
+            newStartTime: newAppointmentTime.start.toISOString(),
+            userEmail: patientInfo.email, // corregido
+            userTimeZone: "America/Guayaquil", // puedes obtenerlo dinámicamente si quieres
+            originalZoomLink: selectedEvent.extendedProps.zoomLink,
+          }),
+        }
+      );
+      if (!response.ok) {
+        throw new Error("Error al reagendar la cita en Zoom");
+      }
+
+      Swal.fire({
+        title: "Exito",
+        text: "Cita reagendada correctamente.",
+        icon: "success",
+      });
+
+      fetchAppointments(new Date(), new Date());
+
+      setIsRescheduleModalOpen(false);
+      setSelectedEvent(null);
+      setNewAppointmentTime({ start: null, end: null });
+    } catch (error) {
+      console.error("Error al reagendar la cita:", error);
+      Swal.fire({
+        title: "Error",
+        text: "No se pudo reagendar la cita. Por favor, inténtalo de nuevo.",
+        icon: "error",
+      });
+    }
+  };
 
   return (
     <div className="admin-container">
@@ -283,7 +368,7 @@ const AdminHome = () => {
           allDaySlot={false}
           events={events}
           datesSet={handleDatesSet}
-          eventClick ={handleEventClick} // Manejador
+          eventClick={handleEventClick} // Manejador
           dateClick={handleDateClick} // Manejador para clic en fecha no reservada
         />
 
@@ -331,11 +416,72 @@ const AdminHome = () => {
                   </a>
                 </p>
               )}
+              <button
+                onClick={() => handleReschedule(selectedEvent)}
+                className="reschedule-btn"
+              >
+                Reagendar Cita
+              </button>
               <button onClick={closeModal} className="close-modal-btn">
                 Cerrar
               </button>
             </>
           )}
+        </Modal>
+        {/* Modal para re-agendar cita */}
+        <Modal
+          isOpen={isRescheduleModalOpen}
+          onRequestClose={() => setIsRescheduleModalOpen(false)}
+          contentLabel="Re-agendar Cita"
+          className="Modal"
+          overlayClassName="Overlay"
+        >
+          <h2>Reagendar Cita</h2>
+
+          <p>Cita actual: {new Date(selectedEvent?.start).toLocaleString()}</p>
+
+          <div className="reschedule-calendar">
+            <FullCalendar
+              plugins={[timeGridPlugin, interactionPlugin]}
+              initialView="timeGridWeek"
+              slotDuration="01:00:00"
+              slotMinTime="06:00:00"
+              slotMaxTime="19:00:00"
+              weekends={false}
+              height="auto"
+              allDaySlot={false}
+              events={events}
+              datesSet={handleDatesSet}
+              dateClick={(arg) => handleNewTimeSelect(arg.date)}
+            />
+          </div>
+
+          {newAppointmentTime.start && (
+            <p>
+              Nueva fecha seleccionada:{" "}
+              {newAppointmentTime.start.toLocaleString()}
+            </p>
+          )}
+
+          <div className="modal-buttons">
+            <button
+              onClick={confirmReschedule}
+              disabled={!newAppointmentTime.start}
+              className="confirm-reschedule-btn"
+            >
+              Confirmar Reagendación
+            </button>
+
+            <button
+              onClick={() => {
+                setIsRescheduleModalOpen(false);
+                setIsModalOpen(true);
+              }}
+              className="cancel-reschedule-btn"
+            >
+              Cancelar
+            </button>
+          </div>
         </Modal>
 
         {/* Modal para marcar como no disponible */}

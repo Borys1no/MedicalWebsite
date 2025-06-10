@@ -331,7 +331,7 @@ const Citas = () => {
       const pdfBase64 = doc.output("datauristring").split(",")[1];
 
       // Enviar al Backend
-      const response = await fetch("http:localhost:8080/enviar-receta", {
+      const response = await fetch("https://zoommicroservice.fly.dev/enviar-receta", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

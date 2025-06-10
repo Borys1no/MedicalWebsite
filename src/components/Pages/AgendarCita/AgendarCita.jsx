@@ -43,18 +43,13 @@ const AgendarCita = () => {
           const end = convertirFecha(data.endTime || data.fechaCita?.end);
 
           // Verifica si el usuario tiene una cita futura
-          if (
-            currentUser &&
-            data.email === currentUser.email &&
-            start > now
-          ) {
+          if (currentUser && data.email === currentUser.email && start > now) {
             userHasFutureAppointment = true;
           }
           if (!start || !end) {
             console.warn("Cita con fecha inválida:", data);
             return; // omitir esta cita
           }
-          
 
           // Mostrar todas las citas registradas como RESERVADO
           appointments.push({
@@ -71,7 +66,7 @@ const AgendarCita = () => {
         });
 
         setEvents(appointments);
-        
+
         setHasFutureAppointments(userHasFutureAppointment);
       } catch (error) {
         console.error("Error al cargar citas:", error);
@@ -142,6 +137,11 @@ const AgendarCita = () => {
   return (
     <div className="agendar-cita-container">
       <h1>Agendar tu Cita Médica</h1>
+      <p style={{ fontStyle: "italic", marginBottom: "10px" }}>
+        * Las horas mostradas están en <strong>hora de Ecuador (UTC-5)</strong>.
+        A continuación se mostrará la hora equivalente en tu zona horaria local.
+      </p>
+
       <FullCalendar
         plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
         initialView="timeGridWeek"
@@ -160,9 +160,21 @@ const AgendarCita = () => {
       {showConfirmation && (
         <div className="confirmation-popup">
           <p>
-            ¿Seguro que quieres agendar la cita el{" "}
-            {selectedTimeSlot.start.toLocaleString()}?
+            <strong>Hora en Ecuador (UTC-5):</strong>{" "}
+            {selectedTimeSlot.start.toLocaleString("es-EC", {
+              timeZone: "America/Guayaquil",
+              dateStyle: "full",
+              timeStyle: "short",
+            })}
           </p>
+          <p>
+            <strong>Tu hora local:</strong>{" "}
+            {selectedTimeSlot.start.toLocaleString(undefined, {
+              dateStyle: "full",
+              timeStyle: "short",
+            })}
+          </p>
+          <p>¿Seguro que quieres agendar esta cita?</p>
           <button onClick={handleProceedToCheckout}>Sí</button>
           <button onClick={handleCancel}>No</button>
         </div>

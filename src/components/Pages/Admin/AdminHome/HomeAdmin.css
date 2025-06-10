@@ -96,3 +96,55 @@ body {
 .close-modal-btn:hover {
   background-color: #b4423e;
 }
+
+/* Estilos para el botón de re-agendar */
+.reschedule-btn {
+  background-color: #f0ad4e;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  margin: 10px 5px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.reschedule-btn:hover {
+  background-color: #ec971f;
+}
+
+/* Estilos para el modal de re-agendación */
+.reschedule-calendar {
+  margin: 20px 0;
+}
+
+.confirm-reschedule-btn {
+  background-color: #5cb85c;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  margin: 10px 5px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.confirm-reschedule-btn:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+.cancel-reschedule-btn {
+  background-color: #d9534f;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  margin: 10px 5px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
