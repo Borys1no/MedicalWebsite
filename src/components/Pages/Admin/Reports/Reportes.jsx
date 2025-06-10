@@ -47,7 +47,6 @@ import ReporteCitasPDF from "./ReporteCitasPDF";
 import SideBar from "../SideBar/SideBar";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 
-
 const Reportes = () => {
   const [citas, setCitas] = useState([]);
   const [allCitas, setAllCitas] = useState([]); // Todas las citas sin filtrar
@@ -100,8 +99,8 @@ const Reportes = () => {
                   data.respuesta?.description ||
                   data.pago?.estado ||
                   "No especificado",
-                monto: data.detail?.amount || "No especificado",
-                tarjeta: data.detail?.cardInfo || "No especificado",
+                monto:
+                  data.pago?.monto || data.detail?.amount || "No especificado",
               },
               zoomLink: data.zoomLink || "No disponible",
               timeZone: data.timeZone || "No especificado",
@@ -500,10 +499,10 @@ const Reportes = () => {
                     <strong>Estado:</strong> {citaSelected.pago.estado}
                   </Typography>
                   <Typography>
-                    <strong>Monto:</strong> ${citaSelected.pago.monto}
-                  </Typography>
-                  <Typography>
-                    <strong>Tarjeta:</strong> {citaSelected.pago.tarjeta}
+                    <strong>Monto:</strong> $
+                    {typeof citaSelected.pago.monto === "number"
+                      ? citaSelected.pago.monto.toFixed(2)
+                      : citaSelected.pago.monto}
                   </Typography>
                 </Box>
 
