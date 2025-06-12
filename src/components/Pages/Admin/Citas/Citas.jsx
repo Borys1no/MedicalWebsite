@@ -267,97 +267,194 @@ const Citas = () => {
 
   //Funcion para generar y enviar la receta
   const generarYEnviarReceta = async () => {
-    //colores
-    const colorReuma = "#aece57";
-    const colorSur = "#2a43d2";
+  // Colores corporativos
+  const colorReuma = "#aece57";
+  const colorSur = "#2a43d2";
+  const colorGris = "#666666";
 
-    if (!citaSelected || !recetaData.medicamentos) return;
+  if (!citaSelected || !recetaData.medicamentos) return;
 
-    try {
-      //Generar PDF de la receta
-      const doc = new jsPDF();
+  try {
+    // Crear nuevo documento PDF
+    const doc = new jsPDF({
+      orientation: "portrait",
+      unit: "mm",
+      format: "a4"
+    });
 
-      //Encabezado
-      doc.setFontSize(22);
-      doc.setTextColor(colorReuma);
-      doc.text("Reuma", 20, 20);
-      doc.setTextColor(colorSur);
-      doc.text("sur", 48, 20);
+  
 
+    // Margenes
+    const marginLeft = 20;
+    const marginRight = 20;
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const contentWidth = pageWidth - marginLeft - marginRight;
+
+    // --- CABECERA ---
+    // Logo (texto estilizado como logo)
+    doc.setFontSize(22);
+    doc.setTextColor(colorReuma);
+    doc.text("Reuma", marginLeft, 20);
+    doc.setTextColor(colorSur);
+    doc.text("sur", marginLeft + 28, 20);
+
+    // Información de la clínica
+    doc.setFontSize(10);
+    doc.setTextColor(colorGris);
+    doc.text("Clínica de Reumatología", marginLeft, 28);
+    doc.text("Dr. Emilio Aroca Briones", marginLeft, 33);
+    doc.text("Especialista en Reumatología", marginLeft, 38);
+
+    // Fecha y ciudad
+    const fechaActual = new Date();
+    doc.setFontSize(10);
+    doc.setTextColor(0); // Negro
+    doc.text(`Fecha: ${format(fechaActual, "dd/MM/yyyy")}`, pageWidth - marginRight - 40, 20, { align: "right" });
+    doc.text(`Machala - El Oro, Ecuador`, pageWidth - marginRight - 40, 25, { align: "right" });
+
+    // Línea divisoria
+    doc.setDrawColor(colorSur);
+    doc.setLineWidth(0.5);
+    doc.line(marginLeft, 42, pageWidth - marginRight, 42);
+
+    // --- DATOS DEL PACIENTE ---
+    doc.setFontSize(14);
+    doc.setTextColor(colorSur);
+    doc.text("DATOS DEL PACIENTE", marginLeft, 50);
+    
+    doc.setFontSize(12);
+    doc.setTextColor(0);
+    doc.text(`Nombre: ${citaSelected.paciente.nombre}`, marginLeft, 58);
+    doc.text(`Fecha de atención: ${format(citaSelected.fechaCita, "dd/MM/yyyy")}`, marginLeft, 64);
+
+    // Línea divisoria
+    doc.setDrawColor(colorReuma);
+    doc.setLineWidth(0.3);
+    doc.line(marginLeft, 68, pageWidth - marginRight, 68);
+
+    // --- RECETA / PRESCRIPCIÓN ---
+    doc.setFontSize(16);
+    doc.setTextColor(colorSur);
+    doc.text("PRESCRIPCIÓN MÉDICA", pageWidth / 2, 78, { align: "center" });
+
+    // Variables para control de posición
+    let currentY = 86;
+
+    // Medicamentos
+    doc.setFontSize(12);
+    doc.setTextColor(0);
+    doc.text("Medicamentos:", marginLeft, currentY);
+    currentY += 6;
+    
+    doc.setFontSize(11);
+    const medicamentosLines = doc.splitTextToSize(recetaData.medicamentos, contentWidth);
+    doc.text(medicamentosLines, marginLeft, currentY);
+    currentY += medicamentosLines.length * 6 + 10; // Aprox. 6mm por línea + espacio
+
+    // Indicaciones
+    doc.setFontSize(12);
+    doc.text("Indicaciones:", marginLeft, currentY);
+    currentY += 6;
+    
+    doc.setFontSize(11);
+    const indicacionesLines = doc.splitTextToSize(recetaData.indicaciones, contentWidth);
+    doc.text(indicacionesLines, marginLeft, currentY);
+    currentY += indicacionesLines.length * 6 + 10;
+
+    // Observaciones
+    if (recetaData.observaciones) {
       doc.setFontSize(12);
-      doc.setTextColor(0);
-      doc.text("Cuida tu salud a cualquier hora", 20, 28);
-
-      doc.setFontSize(16);
-      doc.text("Receta Médica", 105, 20, null, null, "center");
-      doc.setFontSize(12);
-      doc.text(`Paciente: ${citaSelected.paciente.nombre}`, 20, 40);
-      doc.text(`Fecha: ${new Date().toLocaleDateString()}`, 20, 50);
-
-      // Línea divisoria
-      doc.setLineWidth(0.5);
-      doc.line(20, 32, 190, 32);
-
-      // Contenido
-      doc.setFontSize(14);
-      doc.text("Medicamentos:", 20, 70);
-      doc.setFontSize(12);
-      doc.text(recetaData.medicamentos, 20, 80, { maxWidth: 170 });
-
-      doc.setFontSize(14);
-      doc.text("Indicaciones:", 20, 120);
-      doc.setFontSize(12);
-      doc.text(recetaData.indicaciones, 20, 130, { maxWidth: 170 });
-
-      doc.setFontSize(14);
-      doc.text("Observaciones:", 20, 170);
-      doc.setFontSize(12);
-      doc.text(recetaData.observaciones, 20, 180, { maxWidth: 170 });
-
-      // Pie de página
-      doc.setFontSize(10);
-      doc.text("Firma del médico: ________________________", 20, 260);
-      doc.text("Dr. Emilio Aroca Briones", 20, 40);
-      doc.text(
-        "Dir: Bocayá el Colón y Tarqui (Centro de Diagnóstico CEDIAG)",
-        20,
-        46
-      );
-      doc.text("Machala - El Oro, Ecuador", 20, 52);
-      doc.text("Teléfono: 0980304357", 20, 58);
-      doc.text("Email: emilio_aroca@yahoo.com", 20, 64);
-
-      //Convertir a base64
-      const pdfBase64 = doc.output("datauristring").split(",")[1];
-
-      // Enviar al Backend
-      const response = await fetch("https://zoommicroservice.fly.dev/enviar-receta", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: citaSelected.paciente.email,
-          nombrePaciente: citaSelected.paciente.nombre,
-          recetaBase64: pdfBase64,
-        }),
-      });
-
-      const result = await response.json();
-      if (response.ok) {
-        alert("Receta enviada exitosamente al paciente.");
-        handleCloseReceta();
-      } else {
-        throw new Error(result.error || "Error al enviar la receta");
-      }
-    } catch (error) {
-      console.error("Error al generar o enviar la receta:", error);
-      alert(
-        "Ocurrió un error al enviar la receta. Por favor, inténtelo de nuevo más tarde." +
-          error.message
-      );
+      doc.text("Observaciones:", marginLeft, currentY);
+      currentY += 6;
+      
+      doc.setFontSize(11);
+      const observacionesLines = doc.splitTextToSize(recetaData.observaciones, contentWidth);
+      doc.text(observacionesLines, marginLeft, currentY);
+      currentY += observacionesLines.length * 6 + 10;
     }
-  };
+
+    // --- FOOTER ---
+    const footerY = 260; // Posición fija para el footer
+    
+    // Línea divisoria del footer
+    doc.setDrawColor(colorGris);
+    doc.setLineWidth(0.2);
+    doc.line(marginLeft, footerY - 5, pageWidth - marginRight, footerY - 5);
+
+    // Firma del médico
+    doc.setFontSize(10);
+    doc.text("Firma y sello del médico:", marginLeft, footerY);
+    doc.text("_________________________", marginLeft, footerY + 6);
+    doc.text("Dr. Emilio Aroca Briones", marginLeft, footerY + 12);
+    
+    // Información de contacto
+    doc.setFontSize(9);
+    doc.setTextColor(colorGris);
+    doc.text("Centro de Diagnóstico CEDIAG", pageWidth - marginRight, footerY, { align: "right" });
+    doc.text("Bocayá el Colón y Tarqui", pageWidth - marginRight, footerY + 5, { align: "right" });
+    doc.text("Machala - El Oro, Ecuador", pageWidth - marginRight, footerY + 10, { align: "right" });
+    doc.text("Teléfono: 0980304357", pageWidth - marginRight, footerY + 15, { align: "right" });
+    doc.text("Email: emilio_aroca@yahoo.com", pageWidth - marginRight, footerY + 20, { align: "right" });
+    
+    const pdfBlob = doc.output('blob');
+    
+    // 2. Convertir a base64 de manera más confiable
+    const pdfBase64 = await new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        // Eliminar el prefijo "data:application/pdf;base64,"
+        const base64Data = reader.result.split(',')[1];
+        resolve(base64Data);
+      };
+      reader.readAsDataURL(pdfBlob);
+    });
+     // Verificar que todos los campos requeridos estén presentes
+    if (!citaSelected.paciente.email || !citaSelected.paciente.nombre || !pdfBase64) {
+      throw new Error('Faltan datos requeridos para enviar la receta');
+    }
+
+    // 4. Preparar payload con nombres exactos que espera el backend
+    const payload = {
+      email: citaSelected.paciente.email.trim(),
+      nombrePaciente: citaSelected.paciente.nombre.trim(),
+      recetaPDFBase64: pdfBase64
+    };
+    console.log('Payload completo:', {
+      ...payload,
+      recetaPDFBase64: `${payload.recetaPDFBase64.substring(0, 50)}...` // Muestra solo inicio del base64
+    });
+
+    
+    // Enviar al Backend
+    const response = await fetch("https://zoommicroservice.fly.dev/enviar-receta", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        'Accept': 'application/json'
+      },
+     body: JSON.stringify(payload)
+    });
+
+
+
+    // 6. Manejo mejorado de la respuesta
+    const responseData = await response.json();
+    
+    if (!response.ok) {
+      throw new Error(responseData.error || 'Error al enviar receta');
+    }
+
+    alert("Receta enviada exitosamente");
+    handleCloseReceta();
+    
+  } catch (error) {
+    console.error("Error completo:", {
+      message: error.message,
+      stack: error.stack
+    });
+    alert(`Error al enviar receta: ${error.message}`);
+  }
+};
 
   const actualizarEstadoCita = async () => {
     if (!citaSelected || !estado) return;
