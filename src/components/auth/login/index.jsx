@@ -33,7 +33,9 @@ const Login = () => {
       let permissionState = "prompt";
       if (navigator.permissions) {
         try {
-          const permissionStatus = await navigator.permissions.query({ name: "geolocation" });
+          const permissionStatus = await navigator.permissions.query({
+            name: "geolocation",
+          });
           permissionState = permissionStatus.state;
           setLocationPermission(permissionState);
         } catch (e) {
@@ -42,22 +44,24 @@ const Login = () => {
       }
 
       // Mostrar alerta solo si es necesario
-      const shouldShowAlert = (
-        permissionState === "prompt" || 
-        (permissionState === "denied" && !locationAlertShown)
-      );
+      const shouldShowAlert =
+        permissionState === "prompt" ||
+        (permissionState === "denied" && !locationAlertShown);
 
-      if (shouldShowAlert && localStorage.getItem('dontShowLocationAlert') !== 'true') {
+      if (
+        shouldShowAlert &&
+        localStorage.getItem("dontShowLocationAlert") !== "true"
+      ) {
         await Swal.fire({
-          title: 'Mejora tu experiencia',
-          html: 'Para ofrecerte un mejor servicio, necesitamos acceder a tu ubicación.',
-          icon: 'info',
-          confirmButtonText: 'Entendido',
-          showCancelButton: permissionState === 'denied',
-          cancelButtonText: 'No mostrar de nuevo'
+          title: "Mejora tu experiencia",
+          html: "Para ofrecerte un mejor servicio, necesitamos acceder a tu ubicación.",
+          icon: "info",
+          confirmButtonText: "Entendido",
+          showCancelButton: permissionState === "denied",
+          cancelButtonText: "No mostrar de nuevo",
         }).then((result) => {
           if (result.dismiss === Swal.DismissReason.cancel) {
-            localStorage.setItem('dontShowLocationAlert', 'true');
+            localStorage.setItem("dontShowLocationAlert", "true");
           }
         });
         setLocationAlertShown(true);
@@ -65,11 +69,10 @@ const Login = () => {
 
       // Intentar obtener ubicación
       const position = await new Promise((resolve, reject) => {
-        navigator.geolocation.getCurrentPosition(
-          resolve,
-          reject,
-          { timeout: 10000, enableHighAccuracy: true }
-        );
+        navigator.geolocation.getCurrentPosition(resolve, reject, {
+          timeout: 10000,
+          enableHighAccuracy: true,
+        });
       });
 
       // Obtener país desde coordenadas
@@ -78,10 +81,9 @@ const Login = () => {
       );
       const data = await response.json();
       return data.address?.country || null;
-
     } catch (error) {
       console.error("Error en geolocalización:", error);
-      
+
       // Manejar permiso denegado
       if (error.code === error.PERMISSION_DENIED) {
         setLocationPermission("denied");
@@ -90,7 +92,11 @@ const Login = () => {
       // Fallback: Obtener país por IP (usando un proxy CORS)
       try {
         // Usamos un proxy CORS para evitar problemas
-        const ipResponse = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent('https://ipapi.co/json/')}`);
+        const ipResponse = await fetch(
+          `https://api.allorigins.win/get?url=${encodeURIComponent(
+            "https://ipapi.co/json/"
+          )}`
+        );
         const ipData = await ipResponse.json();
         const parsedData = JSON.parse(ipData.contents);
         return parsedData.country || null;
@@ -105,26 +111,28 @@ const Login = () => {
     const initialize = async () => {
       try {
         // Cargar estado de alerta previo
-        const alertShown = localStorage.getItem('locationAlertShown') === 'true';
+        const alertShown =
+          localStorage.getItem("locationAlertShown") === "true";
         setLocationAlertShown(alertShown);
 
         // Si hay usuario autenticado, obtener su rol
         if (auth?.currentUser) {
-          const userDoc = await getDoc(doc(db, 'users', auth.currentUser.uid));
+          const userDoc = await getDoc(doc(db, "users", auth.currentUser.uid));
           if (userDoc.exists()) {
             setRole(userDoc.data().role);
           }
         }
-        
+
         // Obtener ubicación (no bloqueante)
         detectUserCountry()
-          .then(country => {
+          .then((country) => {
             if (country) {
-              setUserLocation(country === 'Ecuador' ? "EC" : "foreign");
+              setUserLocation(country === "Ecuador" ? "EC" : "foreign");
             }
           })
-          .catch(error => console.error("Error obteniendo ubicación:", error));
-
+          .catch((error) =>
+            console.error("Error obteniendo ubicación:", error)
+          );
       } catch (error) {
         console.error("Error inicializando:", error);
       } finally {
@@ -137,49 +145,54 @@ const Login = () => {
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    setErrorMessage('');
+    setErrorMessage("");
 
     if (!isSigningIn) {
       setIsSigningIn(true);
       try {
-        const userCredential = await doSignInWithEmailAndPassword(email, password);
+        const userCredential = await doSignInWithEmailAndPassword(
+          email,
+          password
+        );
         const user = userCredential.user;
 
         if (!user) {
           throw new Error("Error: No se pudo autenticar al usuario");
         }
 
-        const userDoc = await getDoc(doc(db, 'users', user.uid));
+        const userDoc = await getDoc(doc(db, "users", user.uid));
 
         if (userDoc.exists()) {
           const role = userDoc.data().role;
           let finalLocation = userLocation;
-          
+
           if (!finalLocation) {
             const detectedCountry = await detectUserCountry();
-            finalLocation = detectedCountry === 'Ecuador' ? "EC" : "foreign";
+            finalLocation = detectedCountry === "Ecuador" ? "EC" : "foreign";
           }
 
-          await updateDoc(doc(db, 'users', user.uid), {
+          await updateDoc(doc(db, "users", user.uid), {
             ubication: finalLocation,
-            lastLocationUpdate: new Date()
+            lastLocationUpdate: new Date(),
           });
 
-          if (role === 'admin') {
-            navigate('/dashboard/AdminHome');
+          if (role === "admin") {
+            navigate("/dashboard/AdminHome");
           } else {
-            navigate('/home');
+            navigate("/home");
           }
         } else {
           setErrorMessage("No se encontró el rol del usuario.");
         }
       } catch (error) {
         Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: 'Error al iniciar sesión: Usuario o contraseña incorrectos.'
+          icon: "error",
+          title: "Error",
+          text: "Error al iniciar sesión: Usuario o contraseña incorrectos.",
         });
-        setErrorMessage("Error en el inicio de sesión: Usuario o contraseña incorrectos.");
+        setErrorMessage(
+          "Error en el inicio de sesión: Usuario o contraseña incorrectos."
+        );
       } finally {
         setIsSigningIn(false);
       }
@@ -204,10 +217,13 @@ const Login = () => {
       <main className="L-main">
         {locationPermission === "denied" && (
           <div className="location-warning">
-            <p>Para una mejor experiencia, por favor habilita los permisos de ubicación en tu navegador.</p>
+            <p>
+              Para una mejor experiencia, por favor habilita los permisos de
+              ubicación en tu navegador.
+            </p>
           </div>
         )}
-        
+
         <div className="L-container">
           <div className="L-textCenter">
             <h3 className="L-title">Bienvenido de nuevo</h3>
@@ -256,6 +272,12 @@ const Login = () => {
             <Link to="/Resgister" className="L-link">
               Regístrate
             </Link>
+            <p>
+              
+              <Link to="/resetPass" className="L-link">
+                ¿Olvidaste tu contraseña?
+              </Link>
+            </p>
           </div>
         </div>
       </main>

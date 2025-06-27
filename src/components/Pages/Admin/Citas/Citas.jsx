@@ -285,7 +285,7 @@ const Citas = () => {
   
 
     // Margenes
-    const marginLeft = 20;
+    const marginLeft = 10;
     const marginRight = 20;
     const pageWidth = doc.internal.pageSize.getWidth();
     const contentWidth = pageWidth - marginLeft - marginRight;
@@ -298,12 +298,12 @@ const Citas = () => {
     doc.setTextColor(colorSur);
     doc.text("sur", marginLeft + 28, 20);
 
-    // Información de la clínica
+     // Información de la clínica
     doc.setFontSize(10);
     doc.setTextColor(colorGris);
-    doc.text("Clínica de Reumatología", marginLeft, 28);
     doc.text("Dr. Emilio Aroca Briones", marginLeft, 33);
-    doc.text("Especialista en Reumatología", marginLeft, 38);
+    doc.text("Reumatólogo", marginLeft, 28);
+    doc.text("Especializado en el Hospital Británico de Buenos Aires - Argentina y el Hospital Universitario Reina Sofia, Córdoba - España", marginLeft, 38);
 
     // Fecha y ciudad
     const fechaActual = new Date();

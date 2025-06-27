@@ -27,6 +27,7 @@ import PublicRoute from "./components/ProtectedRoutes/PublicRoutes";
 import ConfiguracionCitas from "./components/Pages/Admin/settings/ConfiguracionCitas";
 import Reportes from "./components/Pages/Admin/Reports/Reportes";
 import ProfileSettings from "./components/Pages/ProfileSettings/ProfileSettings";
+import ResetPass from "./components/auth/login/resetPass"
 
 const App = () => {
   return (
@@ -49,6 +50,7 @@ const App = () => {
               </PublicRoute>
               } />
             <Route path="/login" element={<LoginMenu />} />
+            <Route path="/resetPass" element={<ResetPass/>} />
             <Route path="/Resgister" element={<Register />} />
             <Route path="/footer" element={<Footer />} />
             <Route path="/checkout" element={<Checkout />} />
