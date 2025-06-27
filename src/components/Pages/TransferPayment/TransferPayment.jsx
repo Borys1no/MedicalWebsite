@@ -44,6 +44,7 @@ const TransferPayment = () => {
   return (
     <div className="T-transferPage-container">
       <h1>Pagar por Transferencia</h1>
+
       <div className="T-uploadSection">
         <input
           type="file"

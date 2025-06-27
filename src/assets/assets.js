@@ -38,6 +38,7 @@ import oficial6 from './imagenesOficiales/DSC00460.jpg'
 import oficial1R from './imagenesOficiales/Recortada1.jpg'
 import Cardio from './imagenesPrueba/cardiologia.jpg'
 import AgendaMedica from './icons/calendar_medical.png'
+import IconBancoB from './icons/image.png'
 
 export const assets ={
     Banner,
@@ -77,5 +78,6 @@ export const assets ={
     oficial6,
     oficial1R,
     Cardio,
-    AgendaMedica
+    AgendaMedica,
+    IconBancoB
 }

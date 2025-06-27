@@ -19,7 +19,7 @@ function ResetPassword (){
             await sendPasswordResetEmail(auth, email);
             Swal.fire({
                 title: 'Restablecer contraseña.',
-                html: 'Revisa tu correo para restablecer la contraseña.',
+                html: 'Revisa tu correo para restablecer la contraseña, en caso no encontrar el correo por favor revisa en la bandeja de span.',
                 icon: 'info',
                 confirmButtonText: 'Entendido'
 
