@@ -168,7 +168,7 @@ const PasarelaPago = () => {
               text: "Pago exitoso y cita agendada correctamente",
               icon: "success",
               confirmButtonText: "Entendido",
-              willClose: () => navigate("/home"),
+              willClose: () => navigate("/AgendarCita"),
             });
           } catch (error) {
             console.error("Error al agendar la cita:", error);
