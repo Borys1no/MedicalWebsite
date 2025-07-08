@@ -136,7 +136,7 @@ const AdminPagos = () => {
       }
 
       const response = await axios.post(
-        "https://zoommicroservice-production.up.railway.app/send-confirmation-email",
+        "https://zoommicroservice.fly.dev/send-confirmation-email",
         {
           userEmail: cita.paciente.email,
           zoomLink: cita.zoomLink,
@@ -256,7 +256,7 @@ const AdminPagos = () => {
 
         // 1. Crear la reunión Zoom
         const zoomResponse = await axios.post(
-          "https://zoommicroservice-production.up.railway.app/create-appointment",
+          "https://zoommicroservice.fly.dev/create-appointment",
           {
             userEmail: citaActualizada.paciente.email,
             startTime: fechaInicio.toISOString(),
