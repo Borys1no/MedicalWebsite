@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { db } from "../../../../Firebase/firebase";
 import { collection, getDocs, doc, updateDoc } from "firebase/firestore";
 import { useAuth } from "../../../../contexts/authContext";
@@ -34,18 +34,44 @@ import {
   subWeeks,
   subMonths,
  } from "date-fns";
-import { es } from "date-fns/locale"; // Importar el locale español
+import { es } from "date-fns/locale";
+
+// Estilos reutilizables
+const styles = {
+  mainContainer: { display: 'flex', minHeight: '100vh' },
+  sidebar: { 
+    width: '250px',
+    flexShrink: 0,
+    position: 'sticky',
+    top: 0,
+    height: '100vh',
+    overflowY: 'auto',
+    borderRight: '1px solid rgba(0, 0, 0, 0.12)'
+  },
+  content: { 
+    flexGrow: 1,
+    p: 3,
+    display: 'flex',
+    flexDirection: 'column'
+  },
+  filterControls: { 
+    mb: 3,
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    flexWrap: 'wrap',
+    gap: 2
+  }
+};
 
 const AdminPagos = () => {
-  const [citas, setCitas] = useState([]);
-  const [allcitas, setAllCitas] = useState([]);
+  const [allCitas, setAllCitas] = useState([]);
   const [loading, setLoading] = useState(true);
   const { user } = useAuth();
-
   const [filterType, setFilterType] = useState("all");
   const [currentDate, setCurrentDate] = useState(new Date());
 
-   // Función para parsear fechas
+  // Función para parsear fechas
   const parseFirestoreDate = (date) => {
     if (!date) return null;
     if (date.toDate) return date.toDate();
@@ -69,8 +95,45 @@ const AdminPagos = () => {
     }
   };
 
-  // Función para obtener el texto del rango de fechas
-  const getDateRangeText = () => {
+  // Función unificada para manejar Zoom y correo
+  const manejarReunionZoomYCorreo = async (cita) => {
+    try {
+      const fechaInicio = parseFirestoreDate(cita.fechaCita.start);
+      if (!fechaInicio || isNaN(fechaInicio.getTime())) {
+        throw new Error("Fecha de cita inválida");
+      }
+
+      // Crear reunión Zoom
+      const zoomResponse = await axios.post(
+        "https://zoommicroservice.fly.dev/create-appointment",
+        {
+          userEmail: cita.paciente.email,
+          startTime: fechaInicio.toISOString(),
+          userTimeZone: cita.timeZone || "America/Mexico_City",
+          sendEmail: true, // Indicar que también debe enviar el correo
+          userName: `${cita.paciente.firstName} ${cita.paciente.lastName}`,
+        },
+        {
+          timeout: 10000,
+          validateStatus: (status) => status < 500,
+        }
+      );
+
+      return {
+        zoomLink: zoomResponse.data?.zoomLink,
+        correoEnviado: zoomResponse.data?.emailSent || false
+      };
+    } catch (error) {
+      console.error("Error en manejarReunionZoomYCorreo:", error);
+      if (error.response?.status === 404) {
+        return { zoomLink: null, correoEnviado: false };
+      }
+      throw error;
+    }
+  };
+
+  // Obtener texto del rango de fechas
+  const dateRangeText = useMemo(() => {
     switch (filterType) {
       case "day":
         return format(currentDate, "PPPP", { locale: es });
@@ -85,89 +148,43 @@ const AdminPagos = () => {
       default:
         return "Todos los pagos";
     }
-  };
+  }, [filterType, currentDate]);
 
-  // Función para navegar entre fechas
+  // Navegación entre fechas
   const navigateDate = (direction) => {
-    switch (filterType) {
-      case "day":
-        setCurrentDate(
-          direction === "next"
-            ? addDays(currentDate, 1)
-            : subDays(currentDate, 1)
-        );
-        break;
-      case "week":
-        setCurrentDate(
-          direction === "next"
-            ? addWeeks(currentDate, 1)
-            : subWeeks(currentDate, 1)
-        );
-        break;
-      case "month":
-        setCurrentDate(
-          direction === "next"
-            ? addMonths(currentDate, 1)
-            : subMonths(currentDate, 1)
-        );
-        break;
-      default:
-        break;
+    const navigators = {
+      day: [addDays, subDays],
+      week: [addWeeks, subWeeks],
+      month: [addMonths, subMonths],
+    };
+
+    if (navigators[filterType]) {
+      setCurrentDate(navigators[filterType][direction === "next" ? 0 : 1](currentDate, 1));
     }
   };
 
-  
+  // Filtrar citas basado en el rango seleccionado
+  const citasFiltradas = useMemo(() => {
+    if (filterType === "all") return allCitas;
 
-  // Función para enviar correo de confirmación
-  const enviarCorreoConfirmacion = async (cita) => {
-    try {
-      const fechaInicio = parseFirestoreDate(cita.fechaCita.start);
+    const rangeGetters = {
+      day: [startOfDay, endOfDay],
+      week: [startOfWeek, endOfWeek],
+      month: [startOfMonth, endOfMonth],
+    };
 
-      if (!fechaInicio || isNaN(fechaInicio.getTime())) {
-        throw new Error("Fecha de cita inválida");
-      }
-      // Verificar que tenemos todos los datos necesarios
-      if (!cita.paciente?.email || !cita.zoomLink) {
-        console.error("Datos incompletos para enviar correo:", {
-          email: cita.paciente?.email,
-          zoomLink: cita.zoomLink,
-        });
-        return false;
-      }
+    if (!rangeGetters[filterType]) return allCitas;
 
-      const response = await axios.post(
-        "https://zoommicroservice.fly.dev/send-confirmation-email",
-        {
-          userEmail: cita.paciente.email,
-          zoomLink: cita.zoomLink,
-          appointmentDate: fechaInicio.toISOString(),
-          userName: `${cita.paciente.firstName} ${cita.paciente.lastName}`,
-        },
-        {
-          timeout: 10000, // 10 segundos de timeout
-          validateStatus: (status) => status < 500, // Considerar éxito cualquier respuesta < 500
-        }
-      );
-      if (response.status === 404) {
-        console.warn(
-          "Endpoint de correo no encontrado (404), pero la cita fue creada"
-        );
-        return true; // Consideramos éxito aunque falle el correo
-      }
-      return response.data?.success || false;
-    } catch (error) {
-      console.error("Error al enviar correo:", {
-        error: error.message,
-        config: error.config,
-        response: error.response?.data,
-      });
-      if (error.response?.status === 404) {
-        return true;
-      }
-      return false;
-    }
-  };
+    const [startFn, endFn] = rangeGetters[filterType];
+    const startDate = startFn(currentDate, { locale: es });
+    const endDate = endFn(currentDate, { locale: es });
 
+    return allCitas.filter((cita) =>
+      isWithinInterval(cita.fechaCita.start, { start: startDate, end: endDate })
+    );
+  }, [filterType, currentDate, allCitas]);
+
+  // Cargar citas iniciales
   useEffect(() => {
     const fetchCitas = async () => {
       try {
@@ -175,7 +192,6 @@ const AdminPagos = () => {
         const citasData = snapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
-          // Parseamos las fechas al cargar los datos
           fechaCita: {
             ...doc.data().fechaCita,
             start: parseFirestoreDate(doc.data().fechaCita?.start),
@@ -185,13 +201,9 @@ const AdminPagos = () => {
 
         const citasTransferencia = citasData
           .filter((cita) => cita.pago?.metodo === "transferencia")
-          .sort((a, b) => {
-            const verificadoA = a.pago?.verificacion?.estado ? 1 : 0;
-            const verificadoB = b.pago?.verificacion?.estado ? 1 : 0;
-            return verificadoA - verificadoB;
-          });
+          .sort((a, b) => (a.pago?.verificacion?.estado ? 1 : 0) - (b.pago?.verificacion?.estado ? 1 : 0));
+
         setAllCitas(citasTransferencia);
-        setCitas(citasTransferencia);
       } catch (error) {
         console.error("Error al obtener citas:", error);
       } finally {
@@ -202,43 +214,14 @@ const AdminPagos = () => {
     fetchCitas();
   }, []);
 
-  useEffect(() =>{
-    if (filterType === "all"){
-      setCitas(allcitas);
-      return;
-    }
-    let startDate, endDate;
-    switch (filterType){
-      case "day":
-      startDate = startOfDay(currentDate);
-      endDate = endOfDay(currentDate);
-      break;
-    case "week":
-      startDate = startOfWeek(currentDate, { locale: es });
-      endDate = endOfWeek(currentDate, { locale: es });
-      break;
-    case "month":
-      startDate = startOfMonth(currentDate);
-      endDate = endOfMonth(currentDate);
-      break;
-    default:
-      return;
-    }
-    const filtered = allcitas.filter((cita) =>
-    isWithinInterval(cita.fechaCita.start, {
-      start: startDate,
-      end: endDate })
-    );
-    setCitas(filtered);
-  }, [filterType, currentDate, allcitas]);
-
+  // Manejar aprobación/rechazo
   const manejarAprobacion = async (id, aprobado) => {
     const estado = aprobado ? "confirmada" : "rechazada";
     const fechaRevision = new Date();
 
     try {
       const citaRef = doc(db, "citas", id);
-      const citaActualizada = citas.find((c) => c.id === id);
+      const citaActualizada = allCitas.find((c) => c.id === id);
 
       if (!citaActualizada) {
         throw new Error("No se encontró la cita");
@@ -246,27 +229,8 @@ const AdminPagos = () => {
 
       if (aprobado) {
         setLoading(true);
+        const { zoomLink, correoEnviado } = await manejarReunionZoomYCorreo(citaActualizada);
 
-        // Obtenemos la fecha ya parseada (se parseó al cargar los datos)
-        const fechaInicio = citaActualizada.fechaCita.start;
-
-        if (!fechaInicio || isNaN(fechaInicio.getTime())) {
-          throw new Error("Fecha de cita inválida");
-        }
-
-        // 1. Crear la reunión Zoom
-        const zoomResponse = await axios.post(
-          "https://zoommicroservice.fly.dev/create-appointment",
-          {
-            userEmail: citaActualizada.paciente.email,
-            startTime: fechaInicio.toISOString(),
-            userTimeZone: citaActualizada.timeZone || "America/Mexico_City",
-          }
-        );
-
-        const zoomLink = zoomResponse.data.zoomLink;
-
-        // 2. Actualizar la cita con el enlace Zoom
         await updateDoc(citaRef, {
           estado,
           zoomLink,
@@ -275,42 +239,17 @@ const AdminPagos = () => {
           "pago.verificacion.fechaRevision": fechaRevision,
           "pago.status": "aprobado",
           "metadata.ultimaActualizacion": fechaRevision,
-        });
-
-        // 3. Enviar el correo de confirmación
-        const correoEnviado = await enviarCorreoConfirmacion({
-          ...citaActualizada,
-          zoomLink,
-        });
-
-        // 4. Registrar que se envió la notificación
-        await updateDoc(citaRef, {
           "notificaciones.confirmacionEnviada": correoEnviado,
           "notificaciones.fechaEnvio": correoEnviado ? new Date() : null,
         });
 
-        if (!correoEnviado) {
-          Swal.fire(
-            "Advertencia",
-            "La cita fue aprobada pero no se pudo enviar el correo de confirmación.",
-            "warning"
-          );
-        } else {
-          Swal.fire(
-            "Éxito",
-            "La cita ha sido aprobada y se ha enviado el enlace Zoom al paciente.",
-            "success"
-          );
-        }
-
-        // Actualizar estado local con zoomLink definido
-        setCitas((prev) =>
-          prev.map((c) =>
+        setAllCitas(prev =>
+          prev.map(c =>
             c.id === id
               ? {
                   ...c,
                   estado,
-                  zoomLink, // Aseguramos que zoomLink está definido aquí
+                  zoomLink,
                   pago: {
                     ...c.pago,
                     status: "aprobado",
@@ -328,10 +267,18 @@ const AdminPagos = () => {
               : c
           )
         );
+
+        Swal.fire(
+          correoEnviado ? "Éxito" : "Advertencia",
+          correoEnviado
+            ? "La cita ha sido aprobada y se ha enviado el enlace Zoom al paciente."
+            : "La cita fue aprobada pero no se pudo enviar el correo de confirmación.",
+          correoEnviado ? "success" : "warning"
+        );
       } else {
         const confirmacion = await Swal.fire({
           title: '¿Estás seguro?',
-          text: "Esta acción rechazará y eliminará permanentemente la cita. No podrás revertir esto.",
+          text: "Esta acción rechazará y eliminará permanentemente la cita.",
           icon: 'warning',
           showCancelButton: true,
           confirmButtonColor: '#d33',
@@ -339,20 +286,21 @@ const AdminPagos = () => {
           confirmButtonText: 'Sí, eliminar',
           cancelButtonText: 'Cancelar'
         });
+        
         if (!confirmacion.isConfirmed) return;
 
-      setLoading(true);
-        // Solo actualizar estado si es rechazado
-        await updateDoc(citaRef);
+        setLoading(true);
+        await updateDoc(citaRef, {
+          estado,
+          "pago.verificacion.estado": false,
+          "pago.verificacion.revisadoPor": user?.email || "admin@example.com",
+          "pago.verificacion.fechaRevision": fechaRevision,
+          "pago.status": "rechazado",
+          "metadata.ultimaActualizacion": fechaRevision,
+        });
 
-        // Actualizar estado local para rechazo
-        setCitas(prev => prev.filter(c => c.id !== id));
-
-        Swal.fire(
-          'Eliminada',
-          'La cita ha sido rechazada y eliminada correctamente.',
-          'success'
-        );
+        setAllCitas(prev => prev.filter(c => c.id !== id));
+        Swal.fire('Eliminada', 'La cita ha sido rechazada correctamente.', 'success');
       }
     } catch (error) {
       console.error("Error:", error);
@@ -362,148 +310,76 @@ const AdminPagos = () => {
     }
   };
 
-  if (loading) return <CircularProgress />;
+  if (loading) {
+    return (
+      <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
+        <CircularProgress />
+      </Box>
+    );
+  }
 
   return (
-  <Box sx={{ display: 'flex', minHeight: '100vh' }}>
-    {/* Sidebar fijo */}
-    <Box sx={{ 
-      width: '250px',
-      flexShrink: 0,
-      position: 'sticky',
-      top: 0,
-      height: '100vh',
-      overflowY: 'auto',
-      borderRight: '1px solid rgba(0, 0, 0, 0.12)'
-    }}>
-      <SideBar />
-    </Box>
-
-    {/* Contenido principal */}
-    <Box sx={{ 
-      flexGrow: 1,
-      p: 3,
-      display: 'flex',
-      flexDirection: 'column'
-    }}>
-      {/* Título */}
-      <Typography variant="h4" gutterBottom sx={{ textAlign: "center", mb: 3 }}>
-        Comprobantes de Transferencia
-      </Typography>
-
-      {/* Controles de filtrado */}
-      <Box sx={{ 
-        mb: 3,
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        flexWrap: 'wrap',
-        gap: 2
-      }}>
-        <ToggleButtonGroup
-          value={filterType}
-          exclusive
-          onChange={(e, newFilterType) => setFilterType(newFilterType)}
-          aria-label="Filtro de tiempo"
-          sx={{ flexWrap: 'wrap' }}
-        >
-          <ToggleButton value="all" aria-label="Todos">Todos</ToggleButton>
-          <ToggleButton value="day" aria-label="Día">Día</ToggleButton>
-          <ToggleButton value="week" aria-label="Semana">Semana</ToggleButton>
-          <ToggleButton value="month" aria-label="Mes">Mes</ToggleButton>
-        </ToggleButtonGroup>
-
-        {filterType !== "all" && (
-          <Box display="flex" alignItems="center" gap={2} sx={{ flexWrap: 'wrap' }}>
-            <Button onClick={() => navigateDate("prev")} variant="outlined">
-              Anterior
-            </Button>
-            <Typography variant="h6" sx={{ textAlign: 'center' }}>
-              {getDateRangeText()}
-            </Typography>
-            <Button onClick={() => navigateDate("next")} variant="outlined">
-              Siguiente
-            </Button>
-            <Button
-              onClick={() => setCurrentDate(new Date())}
-              variant="contained"
-              color="primary"
-            >
-              Hoy
-            </Button>
-          </Box>
-        )}
+    <Box sx={styles.mainContainer}>
+      {/* Sidebar */}
+      <Box sx={styles.sidebar}>
+        <SideBar />
       </Box>
 
-      {/* Lista de citas */}
-      <Box sx={{ flexGrow: 1 }}>
-        {loading ? (
-          <Box display="flex" justifyContent="center" alignItems="center" minHeight="200px">
-            <CircularProgress />
-          </Box>
-        ) : (
-          <Grid container spacing={2}>
-            {citas.length > 0 ? (
-              citas.map((cita) => (
-                <Grid item xs={12} md={6} key={cita.id}>
-                  <Card variant="outlined">
-                    <CardContent>
-                      <Typography variant="h6">
-                        {cita.paciente?.firstName} {cita.paciente?.lastName}
-                      </Typography>
-                      <Typography>Email: {cita.paciente?.email}</Typography>
-                      <Typography>
-                        Fecha: {formatearFecha(cita.fechaCita?.start)}
-                      </Typography>
-                      <Typography>Estado actual: {cita.estado}</Typography>
-                      <Typography>
-                        Revisado: {cita.pago?.verificacion?.estado ? "Sí" : "No"}
-                      </Typography>
-                      {cita.pago?.verificacion?.fechaRevision && (
-                        <Typography>
-                          Fecha de revisión: {formatearFecha(cita.pago.verificacion.fechaRevision)}
-                        </Typography>
-                      )}
-                      {cita.pago?.comprobante?.url ? (
-                        <Typography>
-                          <Link
-                            href={cita.pago.comprobante.url}
-                            download={`comprobante-${cita.id}.jpg`}
-                            rel="noopener"
-                            target="_blank"
-                          >
-                            Descargar Comprobante
-                          </Link>
-                        </Typography>
-                      ) : (
-                        <Typography color="error">
-                          No se ha subido un comprobante
-                        </Typography>
-                      )}
+      {/* Contenido principal */}
+      <Box sx={styles.content}>
+        <Typography variant="h4" gutterBottom sx={{ textAlign: "center", mb: 3 }}>
+          Comprobantes de Transferencia
+        </Typography>
 
-                      {!cita.pago?.verificacion?.estado && (
-                        <Box sx={{ mt: 2, display: "flex", gap: 2 }}>
-                          <Button
-                            variant="contained"
-                            color="success"
-                            onClick={() => manejarAprobacion(cita.id, true)}
-                            disabled={loading}
-                          >
-                            Aprobar
-                          </Button>
-                          <Button
-                            variant="contained"
-                            color="error"
-                            onClick={() => manejarAprobacion(cita.id, false)}
-                            disabled={loading}
-                          >
-                            Rechazar
-                          </Button>
-                        </Box>
-                      )}
-                    </CardContent>
-                  </Card>
-                </Grid>
+        {/* Controles de filtrado */}
+        <Box sx={styles.filterControls}>
+          <ToggleButtonGroup
+            value={filterType}
+            exclusive
+            onChange={(e, newFilterType) => setFilterType(newFilterType)}
+            aria-label="Filtro de tiempo"
+            sx={{ flexWrap: 'wrap' }}
+          >
+            <ToggleButton value="all">Todos</ToggleButton>
+            <ToggleButton value="day">Día</ToggleButton>
+            <ToggleButton value="week">Semana</ToggleButton>
+            <ToggleButton value="month">Mes</ToggleButton>
+          </ToggleButtonGroup>
+
+          {filterType !== "all" && (
+            <Box display="flex" alignItems="center" gap={2} sx={{ flexWrap: 'wrap' }}>
+              <Button onClick={() => navigateDate("prev")} variant="outlined">
+                Anterior
+              </Button>
+              <Typography variant="h6" sx={{ textAlign: 'center' }}>
+                {dateRangeText}
+              </Typography>
+              <Button onClick={() => navigateDate("next")} variant="outlined">
+                Siguiente
+              </Button>
+              <Button
+                onClick={() => setCurrentDate(new Date())}
+                variant="contained"
+                color="primary"
+              >
+                Hoy
+              </Button>
+            </Box>
+          )}
+        </Box>
+
+        {/* Lista de citas */}
+        <Box sx={{ flexGrow: 1 }}>
+          <Grid container spacing={2}>
+            {citasFiltradas.length > 0 ? (
+              citasFiltradas.map((cita) => (
+                <CitaCard 
+                  key={cita.id} 
+                  cita={cita} 
+                  formatearFecha={formatearFecha}
+                  manejarAprobacion={manejarAprobacion}
+                  loading={loading}
+                />
               ))
             ) : (
               <Grid item xs={12}>
@@ -513,11 +389,71 @@ const AdminPagos = () => {
               </Grid>
             )}
           </Grid>
-        )}
+        </Box>
       </Box>
     </Box>
-  </Box>
-);
+  );
 };
+
+// Componente separado para la tarjeta de cita
+const CitaCard = ({ cita, formatearFecha, manejarAprobacion, loading }) => (
+  <Grid item xs={12} md={6}>
+    <Card variant="outlined">
+      <CardContent>
+        <Typography variant="h6">
+          {cita.paciente?.firstName} {cita.paciente?.lastName}
+        </Typography>
+        <Typography>Email: {cita.paciente?.email}</Typography>
+        <Typography>Fecha: {formatearFecha(cita.fechaCita?.start)}</Typography>
+        <Typography>Estado actual: {cita.estado}</Typography>
+        <Typography>
+          Revisado: {cita.pago?.verificacion?.estado ? "Sí" : "No"}
+        </Typography>
+        {cita.pago?.verificacion?.fechaRevision && (
+          <Typography>
+            Fecha de revisión: {formatearFecha(cita.pago.verificacion.fechaRevision)}
+          </Typography>
+        )}
+        {cita.pago?.comprobante?.url ? (
+          <Typography>
+            <Link
+              href={cita.pago.comprobante.url}
+              download={`comprobante-${cita.id}.jpg`}
+              rel="noopener"
+              target="_blank"
+            >
+              Descargar Comprobante
+            </Link>
+          </Typography>
+        ) : (
+          <Typography color="error">
+            No se ha subido un comprobante
+          </Typography>
+        )}
+
+        {!cita.pago?.verificacion?.estado && (
+          <Box sx={{ mt: 2, display: "flex", gap: 2 }}>
+            <Button
+              variant="contained"
+              color="success"
+              onClick={() => manejarAprobacion(cita.id, true)}
+              disabled={loading}
+            >
+              Aprobar
+            </Button>
+            <Button
+              variant="contained"
+              color="error"
+              onClick={() => manejarAprobacion(cita.id, false)}
+              disabled={loading}
+            >
+              Rechazar
+            </Button>
+          </Box>
+        )}
+      </CardContent>
+    </Card>
+  </Grid>
+);
 
 export default AdminPagos;
