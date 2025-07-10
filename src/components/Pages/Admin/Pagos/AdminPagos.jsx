@@ -118,10 +118,12 @@ const AdminPagos = () => {
           validateStatus: (status) => status < 500,
         }
       );
+      console.log("Respuesta completa del servidor:", zoomResponse.data);
+      const correoEnviado = zoomResponse.data?.emailSent === true || zoomResponse.data?.success === true;
 
       return {
         zoomLink: zoomResponse.data?.zoomLink,
-        correoEnviado: zoomResponse.data?.emailSent || false
+        correoEnviado: correoEnviado
       };
     } catch (error) {
       console.error("Error en manejarReunionZoomYCorreo:", error);
@@ -239,8 +241,8 @@ const AdminPagos = () => {
           "pago.verificacion.fechaRevision": fechaRevision,
           "pago.status": "aprobado",
           "metadata.ultimaActualizacion": fechaRevision,
-          "notificaciones.confirmacionEnviada": correoEnviado,
-          "notificaciones.fechaEnvio": correoEnviado ? new Date() : null,
+          "notificaciones.confirmacionEnviada": !!zoomLink,
+          "notificaciones.fechaEnvio": zoomLink ? new Date() : null,
         });
 
         setAllCitas(prev =>
@@ -260,21 +262,30 @@ const AdminPagos = () => {
                     },
                   },
                   notificaciones: {
-                    confirmacionEnviada: correoEnviado,
-                    fechaEnvio: correoEnviado ? new Date() : null,
+                    confirmacionEnviada: !!zoomLink,
+                    fechaEnvio: zoomLink ? new Date() : null,
                   },
                 }
               : c
           )
         );
 
-        Swal.fire(
-          correoEnviado ? "Éxito" : "Advertencia",
-          correoEnviado
-            ? "La cita ha sido aprobada y se ha enviado el enlace Zoom al paciente."
-            : "La cita fue aprobada pero no se pudo enviar el correo de confirmación.",
-          correoEnviado ? "success" : "warning"
-        );
+        if(zoomLink){
+          Swal.fire({
+            title: correoEnviado ? '¡Éxito!' : ' Cita confirmada',
+            html: 'La cita ha sido aprobada correctamente.',
+            icon: correoEnviado ? 'success' : 'info',
+            confirmButtonText: 'Entendido'
+          });
+        } else{
+          Swal.fire(
+            'Error',
+            'No se pudo generar el enlace Zoom para la cita',
+            'Error'
+          );
+        }
+
+        
       } else {
         const confirmacion = await Swal.fire({
           title: '¿Estás seguro?',

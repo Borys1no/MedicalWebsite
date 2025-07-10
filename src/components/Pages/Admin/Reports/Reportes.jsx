@@ -25,6 +25,7 @@ import {
   InputLabel,
   ToggleButton,
   ToggleButtonGroup,
+  TextField,
 } from "@mui/material";
 import {
   format,
@@ -55,6 +56,7 @@ const Reportes = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [detalleOpen, setDetalleOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState(""); // Estado para el término de búsqueda
 
   const [filterType, setFilterType] = useState("all"); // 'day', 'week', 'month', 'all'
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -121,45 +123,57 @@ const Reportes = () => {
     fetchCitas();
   }, []);
 
-  // Efecto para aplicar filtros cuando cambia el tipo o la fecha
+  // Efecto para aplicar filtros cuando cambia el tipo, la fecha o el término de búsqueda
   useEffect(() => {
-    if (filterType === "all") {
-      setCitas(allCitas);
-      return;
+    let filtered = [...allCitas];
+    
+    // Aplicar filtro por nombre si hay un término de búsqueda
+    if (searchTerm) {
+      const term = searchTerm.toLowerCase();
+      filtered = filtered.filter(cita => 
+        cita.paciente.nombre.toLowerCase().includes(term)
+      );
     }
 
-    let startDate, endDate;
+    // Aplicar filtro por fecha si no es "all"
+    if (filterType !== "all") {
+      let startDate, endDate;
 
-    switch (filterType) {
-      case "day":
-        startDate = startOfDay(currentDate);
-        endDate = endOfDay(currentDate);
-        break;
-      case "week":
-        startDate = startOfWeek(currentDate, { locale: es });
-        endDate = endOfWeek(currentDate, { locale: es });
-        break;
-      case "month":
-        startDate = startOfMonth(currentDate);
-        endDate = endOfMonth(currentDate);
-        break;
-      default:
-        return;
+      switch (filterType) {
+        case "day":
+          startDate = startOfDay(currentDate);
+          endDate = endOfDay(currentDate);
+          break;
+        case "week":
+          startDate = startOfWeek(currentDate, { locale: es });
+          endDate = endOfWeek(currentDate, { locale: es });
+          break;
+        case "month":
+          startDate = startOfMonth(currentDate);
+          endDate = endOfMonth(currentDate);
+          break;
+        default:
+          break;
+      }
+
+      filtered = filtered.filter(
+        (cita) =>
+          isWithinInterval(cita.startTime, { start: startDate, end: endDate }) ||
+          isWithinInterval(cita.endTime, { start: startDate, end: endDate })
+      );
     }
-
-    const filtered = allCitas.filter(
-      (cita) =>
-        isWithinInterval(cita.startTime, { start: startDate, end: endDate }) ||
-        isWithinInterval(cita.endTime, { start: startDate, end: endDate })
-    );
 
     setCitas(filtered);
-  }, [filterType, currentDate, allCitas]);
+  }, [filterType, currentDate, allCitas, searchTerm]);
 
   const handleFilterChange = (event, newFilterType) => {
     if (newFilterType !== null) {
       setFilterType(newFilterType);
     }
+  };
+
+  const handleSearchChange = (event) => {
+    setSearchTerm(event.target.value);
   };
 
   const navigateDate = (direction) => {
@@ -284,6 +298,7 @@ const Reportes = () => {
         <Typography variant="h4" gutterBottom>
           Gestión de Reportes
         </Typography>
+        
         {/* Controles de filtrado */}
         <Box
           display="flex"
@@ -291,25 +306,37 @@ const Reportes = () => {
           alignItems="center"
           mb={3}
         >
-          <ToggleButtonGroup
-            value={filterType}
-            exclusive
-            onChange={handleFilterChange}
-            aria-label="Filtro de tiempo"
-          >
-            <ToggleButton value="all" aria-label="Todas">
-              Todas
-            </ToggleButton>
-            <ToggleButton value="day" aria-label="Día">
-              Día
-            </ToggleButton>
-            <ToggleButton value="week" aria-label="Semana">
-              Semana
-            </ToggleButton>
-            <ToggleButton value="month" aria-label="Mes">
-              Mes
-            </ToggleButton>
-          </ToggleButtonGroup>
+          <Box display="flex" alignItems="center" gap={2}>
+            <ToggleButtonGroup
+              value={filterType}
+              exclusive
+              onChange={handleFilterChange}
+              aria-label="Filtro de tiempo"
+            >
+              <ToggleButton value="all" aria-label="Todas">
+                Todas
+              </ToggleButton>
+              <ToggleButton value="day" aria-label="Día">
+                Día
+              </ToggleButton>
+              <ToggleButton value="week" aria-label="Semana">
+                Semana
+              </ToggleButton>
+              <ToggleButton value="month" aria-label="Mes">
+                Mes
+              </ToggleButton>
+            </ToggleButtonGroup>
+
+            {/* Campo de búsqueda por nombre */}
+            <TextField
+              label="Buscar por nombre"
+              variant="outlined"
+              size="small"
+              value={searchTerm}
+              onChange={handleSearchChange}
+              sx={{ width: 250 }}
+            />
+          </Box>
 
           <Box display="flex" alignItems="center" gap={2}>
             {filterType !== "all" && (
