@@ -65,13 +65,13 @@ const SideBar = () => {
       icon: <CircleDollarSign size={20} />,
       path: "/Admin/Pagos",
     },
-    { text: "Configuración",
-      icon: <Settings size={20} />, 
-      path: "/Admin/settings/ConfiguracionCitas" 
-    },
     { text: "Reportes",
       icon: <FolderDown size={20} />, 
       path: "/Admin/Reports/Reportes" 
+    },
+    { text: "Configuración",
+      icon: <Settings size={20} />, 
+      path: "/Admin/settings/ConfiguracionCitas" 
     },
   ];
 

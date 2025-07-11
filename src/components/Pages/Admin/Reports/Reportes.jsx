@@ -76,6 +76,9 @@ const Reportes = () => {
 
         querySnapshot.forEach((doc) => {
           const data = doc.data();
+          if (data.type === "NoDisponible"){
+            return; 
+          }
           const start = convertirFecha(data.startTime || data.fechaCita?.start);
           const end = convertirFecha(data.endTime || data.fechaCita?.end);
 
