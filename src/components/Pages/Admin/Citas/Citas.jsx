@@ -843,24 +843,6 @@ const Citas = () => {
                 </Box>
 
                 <Typography variant="h6" gutterBottom>
-                  Información de Pago
-                </Typography>
-                <Box mb={3}>
-                  <Typography>
-                    <strong>Método:</strong> {citaSelected.pago.metodo}
-                  </Typography>
-                  <Typography>
-                    <strong>Estado:</strong> {citaSelected.pago.estado}
-                  </Typography>
-                  <Typography>
-                    <strong>Monto:</strong> ${citaSelected.pago.monto}
-                  </Typography>
-                  <Typography>
-                    <strong>Tarjeta:</strong> {citaSelected.pago.tarjeta}
-                  </Typography>
-                </Box>
-
-                <Typography variant="h6" gutterBottom>
                   Enlace de Zoom
                 </Typography>
                 <Typography>
