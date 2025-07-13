@@ -108,7 +108,7 @@ const Home = () => {
             <div className="doctor-info">
               <h2>Dr. Emilio Aroca Briones</h2>
               <p className="doctor-description">
-              Terapista Neural, Médico Funcion con amplia experiencia en el diagnóstico y tratamiento de enfermedades reumáticas. Comprometido con brindar atención médica de calidad a través de consultas virtuales.
+              Terapista Neural, Médico Funcional con amplia experiencia en el diagnóstico y tratamiento de enfermedades reumáticas. Comprometido con brindar atención médica de calidad a través de consultas virtuales.
               
               
               </p>
