@@ -1,10 +1,22 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
-// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
   build: {
-    target: 'es2015'
+    target: 'es2015',
+    commonjsOptions: {
+      transformMixedEsModules: true
+    },
+    rollupOptions: {
+      output: {
+        manualChunks: undefined, // evitar split demasiado agresivo
+      }
+    }
+  },
+  optimizeDeps: {
+    esbuildOptions: {
+      target: 'es2015'
+    }
   }
 })
