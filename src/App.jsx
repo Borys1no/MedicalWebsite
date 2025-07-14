@@ -1,5 +1,5 @@
 import {
-  BrowserRouter as Router,
+  HashRouter as Router,
   Routes,
   Route,
   Navigate,
@@ -31,7 +31,7 @@ import ResetPass from "./components/auth/login/resetPass"
 
 const App = () => {
   return (
-    <AuthProvider>
+    
       <Router>
         <Routes>
           {/* Rutas públicas y protegidas con Navbar y Footer */}
@@ -114,7 +114,7 @@ const App = () => {
           />
         </Routes>
       </Router>
-    </AuthProvider>
+    
   );
 };
 

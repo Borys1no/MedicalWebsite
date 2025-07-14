@@ -9,9 +9,12 @@ export default defineConfig({
       targets: ['defaults', 'not IE 11', 'iOS >= 11'],
       modernPolyfills: true,
     })
+    
   ],
   build: {
     target: 'es2015',
+    minify: 'terser', // Asegúrate de usar Terser para mejor compatibilidad
+    chunkSizeWarningLimit: 1600, // Evita warnings de chunks grandes
     commonjsOptions: {
       transformMixedEsModules: true,
     },

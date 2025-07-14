@@ -1,3 +1,5 @@
+import 'core-js/stable';
+import 'regenerator-runtime/runtime';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { ThemeProvider, createTheme } from '@mui/material/styles'; // Importa ThemeProvider
@@ -20,11 +22,11 @@ const theme = createTheme({
 });
 
 createRoot(document.getElementById('root')).render(
-  <StrictMode>
+  //<StrictMode>
     <ThemeProvider theme={theme}> {/* Envuelve todo con ThemeProvider */}
       <AuthProvider>
         <App />
       </AuthProvider>
     </ThemeProvider>
-  </StrictMode>
+  //</StrictMode>
 );
