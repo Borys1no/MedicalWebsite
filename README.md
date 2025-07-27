@@ -51,7 +51,6 @@ npm run dev
 
 ## Licencia y uso
 
-[MIT](https://choosealicense.com/licenses/mit/)
 
 
 
