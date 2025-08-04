@@ -5,6 +5,7 @@ import './Home.css';
 import { assets } from '../../../assets/assets';
 import { ArrowRight, Calendar, CheckCircle, Clock, MapPin, Phone, Video } from "lucide-react";
 import Register from '../../auth/register';
+import { useNavigate } from 'react-router-dom';
 
 const Home = () => {
   const [showPopup, setShowPopup] = useState(false);
@@ -12,7 +13,7 @@ const Home = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const {currentUser} = useAuth();
 
-
+  const navigate = useNavigate();
   const handleAgendarCita = (e) => {
     e.preventDefault();
     
@@ -28,13 +29,13 @@ const Home = () => {
         cancelButtonColor: '#28a745',
       }).then((result) => {
         if (result.isConfirmed) {
-          window.location.href = '/login';
+          navigate('/login');
         } else if (result.dismiss === Swal.DismissReason.cancel) {
-          window.location.href = '/Resgister';
+          navigate('/Register');
         }
       });
     } else {
-      window.location.href = '/AgendarCita';
+      navigate('/AgendarCita');
     }
   };
 
